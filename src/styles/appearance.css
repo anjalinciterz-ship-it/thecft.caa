@@ -1,0 +1,159 @@
+/* ==========================================================
+   APPEARANCE — the branded light/dark control
+   Dark is what this site has always been: Cosmic Plum canvas, champagne gold,
+   warm ivory text. Light keeps the same five palette colours and only swaps
+   which ones sit behind the words: Warm Ivory / Pure White / Lavender Mist
+   become the canvas and Cosmic Plum becomes the text.
+
+   Nothing here touches access, routing or data — presentation only, and the
+   control itself is gated by the admin's `appearance.toggleEnabled` setting.
+
+   Two mechanisms:
+   1. [data-theme='light'] remaps the semantic tokens, so every rule that reads
+      a token flips with it.
+   2. The brand's cosmic bands re-declare the same tokens on themselves. CSS
+      custom properties inherit, so one block keeps every descendant readable
+      while the band keeps its plum background.
+========================================================== */
+
+[data-theme='light']{
+  /* Canvas: deep space becomes paper. */
+  --ink-950:var(--color-warm-ivory);
+  --ink-900:var(--color-pure-white);
+  --ink-800:var(--color-lavender-mist);
+  --ink-700:var(--color-lavender-mist);
+  --violet-500:var(--color-lavender-mist);
+
+  /* Text: the words that were ivory on plum are now plum on ivory. */
+  --text:var(--color-cosmic-plum);
+  --text-on-dark:var(--color-cosmic-plum);
+  --ink-on-glass:rgba(18,10,36,.72);
+  --cream-dim:rgba(18,10,36,.66);
+  --cream-dimmer:rgba(18,10,36,.46);
+
+  /* Gold: the light champagne used on plum is unreadable on paper, so the
+     accent family steps down to the gold-ink already used on light surfaces. */
+  --gold-300:var(--gold-ink);
+  --card-ring-hover:rgba(138,106,31,.42);
+
+  /* Glass + elevation: light-on-dark frosting becomes paper with a plum cast. */
+  --glass-bg:rgba(255,255,255,.66);
+  --glass-bg-strong:rgba(255,255,255,.86);
+  --glass-border:rgba(18,10,36,.12);
+  --glass-ring:rgba(18,10,36,.12);
+  --glass-shadow:0 20px 50px rgba(18,10,36,.12);
+  --glass-fill:linear-gradient(160deg,rgba(255,255,255,.86) 0%,rgba(255,255,255,.58) 46%,rgba(255,255,255,.78) 100%);
+  --card-shadow:0 20px 46px rgba(18,10,36,.12), inset 0 1px 0 rgba(255,255,255,.6);
+  --card-shadow-hover:0 30px 62px rgba(18,10,36,.18), 0 0 40px rgba(232,185,95,.22), inset 0 1px 0 rgba(255,255,255,.9);
+
+  /* Hairlines that were drawn in light on plum are drawn in plum on paper. */
+  --plum-faint:rgba(18,10,36,.14);
+}
+
+/* ---------- The bands that stay cosmic in light mode ----------
+   These are the brand's plum moments — the hero sky, the Wednesday Call, the
+   closer, the Connect CTA, the mega-menu. They keep their background, so they
+   re-declare the on-dark tokens for everything inside them. */
+[data-theme='light'] :is(
+  .site-header,
+  .hero-band,
+  .exact-section,
+  .journey-hero,
+  .nxt,
+  .wc-band,
+  .wc2-hero,
+  .wcp-panel,
+  .cx-band,
+  .cc-cta,
+  .cc-brand,
+  .cc-info,
+  .cc-close,
+  .nxt-panel,
+  .ts-hero,
+  .ts-cta,
+  .cn-hero,
+  .cn-cta,
+  .cq-plum,
+  .wp-aud-card,
+  .wp-details,
+  .wp-count-band .wc2-count,
+  .nxt-stay,
+  .wcp-hero,
+  .wc2-hero,
+  .ab-tedx,
+  .ab-mile-item,
+  .au-grid,
+  .au-hero,
+  .au-card,
+  .touch-pop,
+  .media-frame,
+  .book-cover-frame
+){
+  --ink-950:#120a24;
+  --ink-900:#1a1033;
+  --ink-800:#241a45;
+  --ink-700:#2f2258;
+  --violet-500:#63409f;
+  --text:var(--color-warm-ivory);
+  --text-on-dark:var(--color-pure-white);
+  --ink-on-glass:rgba(237,231,245,.84);
+  --cream-dim:rgba(237,231,245,.72);
+  --cream-dimmer:rgba(237,231,245,.52);
+  --gold-300:#f3dca6;
+  --card-ring-hover:rgba(232,185,95,.5);
+  --glass-bg:rgba(255,255,255,.06);
+  --glass-bg-strong:rgba(255,255,255,.10);
+  --glass-border:rgba(255,255,255,.16);
+  --glass-ring:rgba(255,255,255,.16);
+  --glass-shadow:0 20px 60px rgba(10,4,25,.45);
+  --glass-fill:linear-gradient(160deg,rgba(255,255,255,.11) 0%,rgba(255,255,255,.035) 46%,rgba(255,255,255,.07) 100%);
+  --card-shadow:0 26px 60px rgba(9,3,22,.55), inset 0 1px 0 rgba(255,255,255,.14);
+  --card-shadow-hover:0 36px 74px rgba(9,3,22,.68), 0 0 42px rgba(232,185,95,.15), inset 0 1px 0 rgba(255,255,255,.2);
+}
+
+/* ---------- Spill that the token remap cannot reach ----------
+   Rules that paint light-on-dark colours directly, on surfaces the light
+   scheme turns to paper. Scoped narrowly on purpose. */
+
+/* Ghost buttons are frosted white in the dark scheme; on paper they need the
+   plum hairline treatment the editorial bands already use. */
+[data-theme='light'] .btn-ghost{
+  background:rgba(255,255,255,.72);
+  border-color:rgba(18,10,36,.26);
+  color:var(--color-cosmic-plum);
+}
+[data-theme='light'] .btn-ghost:hover{background:var(--color-pure-white);border-color:var(--gold-ink);}
+
+/* Chips, tracks and slider dots that were picked out of the dark. */
+[data-theme='light'] .chip{background:rgba(18,10,36,.06);border-color:rgba(18,10,36,.16);color:var(--color-cosmic-plum);}
+[data-theme='light'] .divider{background:rgba(18,10,36,.12);}
+[data-theme='light'] .nav-toggle{border-color:rgba(237,231,245,.4);}
+
+/* The starfield is a night sky effect; keep it where the sky is kept. */
+[data-theme='light'] .stars{display:none;}
+[data-theme='light'] :is(.site-header,.hero-band,.exact-section,.journey-hero,.nxt,.wc-band,.wc2-hero,.wcp-hero,.cx-band,.cc-cta,.ts-hero,.ts-cta,.cn-hero,.cn-cta,.cq-plum,.wp-aud-card,.au-grid,.au-hero,.au-card,.touch-pop) .stars{display:block;}
+
+/* ---------- The control itself ----------
+   Sits in the header next to the account pill. Two states, one click, and the
+   choice is remembered locally so the next visit opens the same way. */
+.appearance-toggle{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  height:38px;padding:0 14px;border-radius:50px;cursor:pointer;
+  background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);
+  color:var(--color-warm-ivory);
+  font:700 12px/1 var(--font-body);letter-spacing:.06em;
+  transition:background .2s ease,border-color .2s ease,color .2s ease,transform .2s ease;
+}
+.appearance-toggle:hover{background:rgba(255,255,255,.16);border-color:rgba(243,220,166,.55);transform:translateY(-1px);}
+.appearance-toggle:focus-visible{outline:2px solid var(--gold-ink);outline-offset:3px;}
+.appearance-toggle svg{width:16px;height:16px;flex:none;}
+.appearance-toggle .ap-word{display:inline;}
+@media(max-width:520px){
+  .appearance-toggle{width:38px;padding:0;}
+  .appearance-toggle .ap-word{display:none;}
+}
+
+@media (prefers-reduced-motion:reduce){
+  .appearance-toggle{transition:none;}
+  .appearance-toggle:hover{transform:none;}
+}
