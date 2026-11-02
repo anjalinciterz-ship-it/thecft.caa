@@ -9,8 +9,6 @@ import { initials, useAuth } from '../lib/auth';
 import AppearanceToggle from './AppearanceToggle';
 import { Icon } from './icons';
 
-const SUB_ONLY = ['/testimonials', '/connect', '/faq'];
-
 function MenuAbout() {
   return (
     <div className="mm-grid mm-about">
@@ -270,7 +268,6 @@ export default function Header() {
                 key={item.to}
                 to={item.to}
                 end={item.to === '/'}
-                className={SUB_ONLY.includes(item.to) ? 'nav-sub-only' : undefined}
                 onMouseEnter={closeMenu}
                 onFocus={closeMenu}
               >

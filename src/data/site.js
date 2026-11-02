@@ -81,8 +81,8 @@ export const site = {
     { to: '/books', label: 'Books' },
     { to: '/blog', label: 'Blog' },
     { to: '/testimonials', label: 'Testimonials' },
-    { to: '/connect', label: 'Connect Us' },
     { to: '/faq', label: 'FAQs' },
+    { to: '/connect', label: 'Connect Us' },
   ],
   footerAccount: [
     { to: '/login', label: 'Login' },

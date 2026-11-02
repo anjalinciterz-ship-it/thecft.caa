@@ -69,9 +69,7 @@
   .cc-info,
   .cc-close,
   .nxt-panel,
-  .ts-hero,
   .ts-cta,
-  .cn-hero,
   .cn-cta,
   .cq-plum,
   .wp-aud-card,
@@ -131,7 +129,7 @@
 
 /* The starfield is a night sky effect; keep it where the sky is kept. */
 [data-theme='light'] .stars{display:none;}
-[data-theme='light'] :is(.site-header,.hero-band,.exact-section,.journey-hero,.nxt,.wc-band,.wc2-hero,.wcp-hero,.cx-band,.cc-cta,.ts-hero,.ts-cta,.cn-hero,.cn-cta,.cq-plum,.wp-aud-card,.au-grid,.au-hero,.au-card,.touch-pop) .stars{display:block;}
+[data-theme='light'] :is(.site-header,.hero-band,.exact-section,.journey-hero,.nxt,.wc-band,.wc2-hero,.wcp-hero,.cx-band,.cc-cta,.ts-cta,.cn-cta,.cq-plum,.wp-aud-card,.au-grid,.au-hero,.au-card,.touch-pop) .stars{display:block;}
 
 /* ---------- The control itself ----------
    Sits in the header next to the account pill. Two states, one click, and the
