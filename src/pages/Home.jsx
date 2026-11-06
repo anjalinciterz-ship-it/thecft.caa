@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { apiRequest } from '../lib/api';
 import { useBlog } from '../lib/blog';
@@ -24,107 +24,221 @@ import { SectionHead } from '../components/ui';
 import { TextEffect } from '../components/TextEffect';
 import { Icon } from '../components/icons';
 
+// Inside his 3–5 second ask; long enough to read a banner, short enough that
+// the rotation is obvious.
+const HERO_ROTATE_MS = 4000;
+
+function prefersReduced() {
+  return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+}
+
+// The reveal is CSS-staggered, so it only plays when the tokens are created.
+// Re-keying the copy on activation restarts it, which is what makes each slide
+// animate as it takes the stage instead of once at page load while hidden.
+const runKey = (name, active) => `${name}-${active ? 'run' : 'idle'}`;
+
+// The cosmic artwork keeps its own frame and its own floating pieces; the three
+// photographs only fill the stage. See site.heroSlides.
+const COSMIC_ART = {
+  src: '/images/site/hero-banner.webp',
+  srcSet: '/images/site/hero-banner-900.webp 900w, /images/site/hero-banner.webp 1672w',
+  alt: 'Zalah welcoming you to The Centre for Transformation',
+  width: '1672',
+  height: '941',
+};
+
+const cosmicCopy = (h) => ({
+  eyebrow: h.eyebrow,
+  titleLead: h.titleLead,
+  titleAccent: h.titleAccent,
+  lead: h.lead,
+  ctaPrimary: 'Explore Courses',
+  ctaSecondary: 'Join Wednesday Wisdom Class',
+  features: h.features.map((f) => f.label),
+  footnote: h.footnote,
+});
+
+// One renderer for all four slides: the photograph fills the frame, a wash
+// keeps the words readable over it, and every word is live HTML that re-types
+// as the slide takes the stage.
+function HeroSlide({ slide, h, eager, active }) {
+  const cosmic = slide.kind === 'live';
+  const art = cosmic ? COSMIC_ART : slide;
+  const copy = cosmic ? cosmicCopy(h) : slide.copy;
+  return (
+    <>
+      <img
+        className={`hero-art${cosmic ? ' hero-art-cosmic' : ' hero-art-photo'}`}
+        src={art.src}
+        srcSet={art.srcSet}
+        sizes="100vw"
+        alt={art.alt}
+        width={art.width}
+        height={art.height}
+        loading={eager ? 'eager' : 'lazy'}
+        fetchpriority={eager ? 'high' : 'auto'}
+        decoding="async"
+        style={cosmic ? undefined : { '--hero-art-pos': slide.mobilePos }}
+      />
+      <div className="hero-veil" aria-hidden="true" />
+
+      {slide.planks ? (
+        // One word on each plank of the signpost, in the order the boards read
+        // top to bottom, so the sentence arrives as a sentence.
+        <p className="hero-planks" key={runKey('planks', active)}>
+          {slide.planks.map((p, i) => (
+            <span
+              key={`${p.word}-${i}`}
+              className="hero-plank"
+              style={{ left: `${p.x}%`, top: `${p.y}%`, '--pi': i }}
+            >
+              {p.word}
+            </span>
+          ))}
+        </p>
+      ) : null}
+
+      <div className="hero-copy" key={runKey('copy', active)}>
+        <p className="hero-eyebrow">
+          <TextEffect per="word" preset="spring" delay={0} intensity={0.35}>
+            {copy.eyebrow}
+          </TextEffect>
+        </p>
+        <h1>
+          <TextEffect per="char" preset="fade" delay={0.15}>
+            {copy.titleLead}
+          </TextEffect>{' '}
+          <TextEffect
+            as="span"
+            className="accent"
+            per="word"
+            preset="spring"
+            delay={0.8}
+            step={0.12}
+            intensity={0.5}
+          >
+            {copy.titleAccent}
+          </TextEffect>
+        </h1>
+        <p className="hero-lead">
+          <TextEffect per="word" preset="fade" delay={1.15} step={0.02}>
+            {copy.lead}
+          </TextEffect>
+        </p>
+        <div className="hero-actions">
+          <Link to="/courses" className="btn btn-gold">
+            {copy.ctaPrimary} <Icon name="arrow" />
+          </Link>
+          <Link to="/connect#cn-wisdom" className="btn btn-ghost">
+            {copy.ctaSecondary}
+          </Link>
+        </div>
+        <ul className="hero-features">
+          {copy.features.map((label, i) => (
+            <li key={label}>
+              <span className="gdot" aria-hidden="true" />
+              <TextEffect per="word" preset="spring" delay={1.7 + i * 0.18} intensity={0.3}>
+                {label}
+              </TextEffect>
+            </li>
+          ))}
+        </ul>
+        <p className="hero-footnote">
+          <TextEffect per="word" preset="spring" delay={2.15} intensity={0.25}>
+            {copy.footnote}
+          </TextEffect>
+        </p>
+      </div>
+
+      {/* The three floating pieces belong to the cosmic composition only. The
+          photographs carry their own words and nothing else. */}
+      {cosmic && (
+        <>
+          <div className="hero-cred">
+            <div className="lockup">
+              <span className="tedx">
+                TED<sup>x</sup>
+              </span>
+              <span className="role">{h.tedx.label}</span>
+            </div>
+            <div className="talk">{h.tedx.talk}</div>
+          </div>
+
+          <Link to="/connect#cn-wisdom" className="hero-note">
+            <Icon name="calendar" />
+            <span className="hero-note-lines">
+              <span className="k">{h.classCard.line1}</span>
+              <span className="v">{h.classCard.line2}</span>
+              <span className="m">{site.wisdomClass.when}</span>
+            </span>
+          </Link>
+
+          <figure className="hero-quote" key={runKey('quote', active)}>
+            <blockquote>
+              <TextEffect per="word" preset="spring" delay={2.5} intensity={0.3}>
+                {`“${site.quote.text}”`}
+              </TextEffect>
+            </blockquote>
+            <figcaption>
+              <TextEffect per="word" preset="spring" delay={2.8} intensity={0.3}>
+                {site.quote.by}
+              </TextEffect>
+            </figcaption>
+          </figure>
+        </>
+      )}
+    </>
+  );
+}
+
 function Hero() {
   const h = site.hero;
+  const slides = site.heroSlides;
+  const n = slides.length;
+  const [active, setActive] = useState(0);
+  const [paused, setPaused] = useState(false);
+
+  useEffect(() => {
+    if (paused || prefersReduced()) return undefined;
+    const id = setInterval(() => setActive((a) => (a + 1) % n), HERO_ROTATE_MS);
+    return () => clearInterval(id);
+    // Depending on `active` restarts the clock after a dot click, so a manually
+    // chosen slide gets its full 4 seconds instead of the leftover fraction.
+  }, [paused, n, active]);
+
   return (
     <section className="hero-band">
-      <div className="hero-stage">
-        <img
-          className="hero-art"
-          src="/images/site/hero-banner.webp"
-          srcSet="/images/site/hero-banner-900.webp 900w, /images/site/hero-banner.webp 1672w"
-          sizes="100vw"
-          alt="Zalah welcoming you to The Centre for Transformation"
-          width="1672"
-          height="941"
-          fetchpriority="high"
-        />
-        <div className="hero-veil" aria-hidden="true" />
-
-        <div className="hero-copy">
-          <p className="hero-eyebrow">
-            <TextEffect per="word" preset="spring" delay={0} intensity={0.35}>
-              {h.eyebrow}
-            </TextEffect>
-          </p>
-          <h1>
-            <TextEffect per="char" preset="fade" delay={0.15}>
-              {h.titleLead}
-            </TextEffect>{' '}
-            <TextEffect
-              as="span"
-              className="accent"
-              per="word"
-              preset="spring"
-              delay={0.8}
-              step={0.12}
-              intensity={0.5}
-            >
-              {h.titleAccent}
-            </TextEffect>
-          </h1>
-          <p className="hero-lead">
-            <TextEffect per="word" preset="fade" delay={1.15} step={0.02}>
-              {h.lead}
-            </TextEffect>
-          </p>
-          <div className="hero-actions">
-            <Link to="/courses" className="btn btn-gold">
-              Explore Courses <Icon name="arrow" />
-            </Link>
-            <Link to="/connect#cn-wisdom" className="btn btn-ghost">
-              Join Wednesday Wisdom Class
-            </Link>
+      <div
+        className="hero-stage"
+        role="group"
+        aria-roledescription="carousel"
+        aria-label="Welcome to The Centre for Transformation"
+        onMouseEnter={() => setPaused(true)}
+        onMouseLeave={() => setPaused(false)}
+        onFocusCapture={() => setPaused(true)}
+        onBlurCapture={() => setPaused(false)}
+      >
+        {slides.map((slide, i) => (
+          <div
+            key={slide.key}
+            className={`hero-slide${slide.kind === 'live' ? '' : ' hero-slide-photo'}${i === active ? ' is-active' : ''}`}
+            aria-hidden={i !== active}
+          >
+            <HeroSlide slide={slide} h={h} eager={i === 0} active={i === active} />
           </div>
-          <ul className="hero-features">
-            {h.features.map((f, i) => (
-              <li key={f.label}>
-                <Icon name={f.icon} />
-                <TextEffect per="word" preset="spring" delay={1.7 + i * 0.18} intensity={0.3}>
-                  {f.label}
-                </TextEffect>
-              </li>
-            ))}
-          </ul>
-          <p className="hero-footnote">
-            <TextEffect per="word" preset="spring" delay={2.15} intensity={0.25}>
-              {h.footnote}
-            </TextEffect>
-          </p>
+        ))}
+        <div className="hero-dots slider-dots">
+          {slides.map((slide, i) => (
+            <button
+              key={slide.key}
+              type="button"
+              className={`slider-dot${i === active ? ' is-active' : ''}`}
+              aria-label={`Show the ${slide.title} slide`}
+              aria-current={i === active}
+              onClick={() => setActive(i)}
+            />
+          ))}
         </div>
-
-        <div className="hero-cred">
-          <div className="lockup">
-            <span className="tedx">
-              TED<sup>x</sup>
-            </span>
-            <span className="role">{h.tedx.label}</span>
-          </div>
-          <div className="talk">{h.tedx.talk}</div>
-          <div className="rule" />
-        </div>
-
-        <Link to="/connect#cn-wisdom" className="hero-note">
-          <Icon name="calendar" />
-          <span className="hero-note-lines">
-            <span className="k">{h.classCard.line1}</span>
-            <span className="v">{h.classCard.line2}</span>
-            <span className="m">{site.wisdomClass.when}</span>
-          </span>
-        </Link>
-
-        <figure className="hero-quote">
-          <blockquote>
-            <TextEffect per="word" preset="spring" delay={2.5} intensity={0.3}>
-              {`“${site.quote.text}”`}
-            </TextEffect>
-          </blockquote>
-          <figcaption>
-            <TextEffect per="word" preset="spring" delay={2.8} intensity={0.3}>
-              {`— ${site.quote.by}`}
-            </TextEffect>
-          </figcaption>
-        </figure>
       </div>
     </section>
   );
@@ -372,9 +486,7 @@ function Questions() {
       <div className="container faq-inner">
         <div className="faq-head">
           <p className="faq-eyebrow">
-            <span className="faq-rule" aria-hidden="true" />
             Questions &amp; Answers
-            <span className="faq-rule" aria-hidden="true" />
           </p>
           <h2 className="faq-title">
             Find the <span>Clarity You’re Looking For</span>
@@ -403,23 +515,6 @@ function Questions() {
             Visit The FAQ Page <Icon name="arrow" size={16} />
           </Link>
         </div>
-
-        <div className="faq-foot">
-          <ul>
-            <li>
-              <span className="faq-prop-ico"><img src="/images/icons/value-clear-answers-1.png" alt="" /></span>
-              <span><b>Clear Answers</b>For Your Journey</span>
-            </li>
-            <li>
-              <span className="faq-prop-ico"><img src="/images/icons/value-personal-guidance-1.png" alt="" /></span>
-              <span><b>Guidance</b>You Can Trust</span>
-            </li>
-            <li>
-              <span className="faq-prop-ico"><img src="/images/icons/value-supportive-community-1.png" alt="" /></span>
-              <span><b>A Supportive</b>Community</span>
-            </li>
-          </ul>
-        </div>
       </div>
     </section>
   );
@@ -433,9 +528,9 @@ function WisdomCall() {
       <figure className="wc2-photo">
         <img
           src={wisdomCall.image}
-          alt="A woman seated in meditation, calm and still amid a rushing street crowd"
-          width="2048"
-          height="1365"
+          alt="A woman seated in meditation at home, eyes closed and at ease"
+          width="1331"
+          height="749"
           loading="lazy"
         />
       </figure>
@@ -443,9 +538,7 @@ function WisdomCall() {
       <div className="container wc2-inner">
         <div className="wc2-copy">
           <p className="wc2-eyebrow">
-            <i aria-hidden="true" />
             {wisdomCall.eyebrow}
-            <i aria-hidden="true" />
           </p>
           <h2 className="wc2-title" id="wc2-title">
             {wisdomCall.titleLead}
@@ -473,7 +566,7 @@ function WisdomCall() {
           {wisdomCall.benefits.map((b) => (
             <li key={b.title}>
               <span className="wc2-b-ico" aria-hidden="true">
-                <Icon name={b.icon} size={30} />
+                <span className="gdot" />
               </span>
               <span className="wc2-b-txt">
                 <b>{b.title}</b>
@@ -487,10 +580,13 @@ function WisdomCall() {
   );
 }
 
+// The badge art he supplied carries its own label, so the title lives in the
+// image (and its alt text) and only the supporting line stays live copy —
+// otherwise the same words would print twice, once baked and once typeset.
 const closeProps = [
-  { icon: 'value-personal-guidance-2', title: 'Personal Guidance', text: 'Support for your unique journey' },
-  { icon: 'value-meaningful-conversations-2', title: 'Meaningful Conversations', text: 'A warm, like-minded community' },
-  { icon: 'value-supportive-community-2', title: 'A Supportive Community', text: 'Together, we create positive change' },
+  { badge: 'personal-growth', title: 'Personal Growth', text: 'Support for your unique journey' },
+  { badge: 'meaningful-conversations', title: 'Meaningful Conversations', text: 'A warm, like-minded community' },
+  { badge: 'supportive-community', title: 'A Supportive Community', text: 'Together, we create positive change' },
 ];
 
 function ClosingConnect() {
@@ -529,9 +625,7 @@ function ClosingConnect() {
         <div className="cx-grid">
           <div className="cx-copy">
             <p className="cx-eyebrow">
-              <span className="cx-rule" aria-hidden="true" />
               Get In Touch
-              <span className="cx-rule" aria-hidden="true" />
             </p>
             <h2 className="cx-title">
               Let’s Connect
@@ -611,11 +705,16 @@ function ClosingConnect() {
         <ul className="cx-props" aria-label="What you can expect">
           {closeProps.map((p) => (
             <li key={p.title}>
-              <span className="cx-p-ico" aria-hidden="true">
-                <img src={`/images/icons/${p.icon}.png`} alt="" />
-              </span>
+              <img
+                className="cx-p-badge"
+                src={`/images/icons/value-badge-${p.badge}.png`}
+                alt={p.title}
+                width={288}
+                height={301}
+                loading="lazy"
+                decoding="async"
+              />
               <span className="cx-p-txt">
-                <b>{p.title}</b>
                 <span>{p.text}</span>
               </span>
             </li>

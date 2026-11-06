@@ -6,10 +6,11 @@ import { usePageMeta } from '../lib/seo';
 import { Icon } from '../components/icons';
 import GoogleSignIn from '../components/GoogleSignIn';
 import OtpForm from '../components/OtpForm';
+import MagicLinkForm from '../components/MagicLinkForm';
 import { AuthShell, AuthCardHead, AuthField, AuthOr } from '../components/AuthShell';
 
 export default function Login() {
-  usePageMeta({ title: 'Log In · The Centre for Transformation', description: 'Sign in with an email code, mobile code, Google, or your password.', path: '/login' });
+  usePageMeta({ title: 'Log In · The Centre for Transformation', description: 'Sign in with a one-click email link, an email code, mobile code, Google, or your password.', path: '/login' });
   const { login, loading, isAuthed } = useAuth();
   const navigate = useNavigate();
   const { search } = useLocation();
@@ -41,13 +42,13 @@ export default function Login() {
     }
   };
 
-  return <AuthShell image="/images/site/auth-beach.webp" eyebrow="Welcome Back" titleLead="Continue Your" titleAccent="Journey" lead="Your courses, books and personal guidance, together in one place. Choose the sign-in method that suits you.">
+  return <AuthShell image="/images/photos/mountain-sit.webp" eyebrow="Welcome Back" titleLead="Continue Your" titleAccent="Journey" lead="Your courses, books and personal guidance, together in one place. Choose the sign-in method that suits you.">
     <AuthCardHead title="Welcome Back" sub="Sign in securely. Pick up where you left off." />
     {destination !== '/dashboard' && <p className="au-method-notice">Your selection is saved. We’ll take you back after sign-in.</p>}
-    <div className="au-methods" role="group" aria-label="Sign-in method">
-      {[['email', 'Email code', 'mail'], ['sms', 'Mobile code', 'phone'], ['password', 'Password', 'lock']].map(([value, label, icon]) => <button key={value} type="button" aria-pressed={method === value} disabled={submitting || loading} onClick={() => { setMethod(value); setError(''); }}><Icon name={icon} size={18} /><span>{label}</span></button>)}
+    <div className="au-methods au-methods-four" role="group" aria-label="Sign-in method">
+      {[['email', 'Email code', 'mail'], ['magic', 'Sign-in link', 'link'], ['sms', 'Mobile code', 'phone'], ['password', 'Password', 'lock']].map(([value, label, icon]) => <button key={value} type="button" aria-pressed={method === value} disabled={submitting || loading} onClick={() => { setMethod(value); setError(''); }}><Icon name={icon} size={18} /><span>{label}</span></button>)}
     </div>
-    {method !== 'password' ? <OtpForm key={method} channel={method} onDone={land} /> : <form className="au-fields" onSubmit={submit} aria-busy={submitting || loading}>
+    {method === 'magic' ? <MagicLinkForm /> : method !== 'password' ? <OtpForm key={method} channel={method} onDone={land} /> : <form className="au-fields" onSubmit={submit} aria-busy={submitting || loading}>
       <AuthField id="au-identifier" label="Email, mobile number or username" icon="seeker"><input id="au-identifier" type="text" autoComplete="username" placeholder="Email, +country code number, or username" maxLength={254} required value={identifier} disabled={submitting || loading} onChange={(event) => setIdentifier(event.target.value)} /></AuthField>
       <AuthField id="au-password" label="Password" icon="lock">
         <input id="au-password" type={show ? 'text' : 'password'} autoComplete="current-password" placeholder="Enter your password" maxLength={200} required value={password} disabled={submitting || loading} onChange={(event) => setPassword(event.target.value)} />

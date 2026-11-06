@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { apiRequest } from '../lib/api';
+import { apiRequest, apiUrl } from '../lib/api';
 import { useAuth } from '../lib/auth';
 import { EmptyState, PageHeading, RequestState, dateTime, money, useDashboardResource } from '../components/DashboardUI';
 
@@ -276,7 +276,7 @@ function CertificateRow({ certificate, action }) {
     <td><Badge value={certificate.status} />{certificate.revocationReason && <p className="db-muted">{certificate.revocationReason}</p>}</td>
     <td>{date(certificate.issuedAt)}</td>
     <td><div className="db-actions">
-      {canDownload && <a className="db-button-secondary" href={`/api/v1/admin/certificates/${encodeURIComponent(certificate.id)}/pdf`} target="_blank" rel="noopener noreferrer">Download PDF</a>}
+      {canDownload && <a className="db-button-secondary" href={apiUrl(`/admin/certificates/${encodeURIComponent(certificate.id)}/pdf`)} target="_blank" rel="noopener noreferrer">Download PDF</a>}
       {certificate.verifyUrl && <a className="db-text-link" href={certificate.verifyUrl} target="_blank" rel="noopener noreferrer">Verify</a>}
     </div>
     <CertificateControls certificate={certificate} action={action} /></td>
@@ -419,7 +419,7 @@ export function AdminModeration() {
         <span className="db-muted">{reports.length} report(s) shown</span>
       </div>
       <RequestState resource={reportsResource}>
-        {reports.length ? reports.map((report) => <ReportCard key={report.id} report={report} action={action} />) : <div className="db-panel"><EmptyState icon="chat" title="No reports in this queue">Resolved reports leave the open queue. Nothing is deleted — the audit trail remains.</EmptyState></div>}
+        {reports.length ? reports.map((report) => <ReportCard key={report.id} report={report} action={action} />) : <div className="db-panel"><EmptyState icon="chat" title="No reports in this queue">Resolved reports leave the open queue. Nothing is deleted, the audit trail remains.</EmptyState></div>}
       </RequestState>
       <Pagination page={page} meta={reportsResource.meta} disabled={reportsResource.loading || action.busy} name="Reports" onPage={(next) => { const p = new URLSearchParams(params); p.set('reportStatus', reportStatus); p.set('page', String(next)); setParams(p); }} />
     </section>
@@ -650,7 +650,7 @@ export function AdminPlatform() {
   const emailHasProvider = emailRows.some((row) => row.provider);
 
   return <StaffOnly><div className="db-stack">
-    <PageHeading eyebrow="Operations" title="Platform integrations" action={<button type="button" className="db-button-secondary" disabled={webhooks.loading || emails.loading || videos.loading || action.busy} onClick={() => { webhooks.reload(); emails.reload(); videos.reload(); }}>Refresh ledgers</button>}>Provider configuration, the job runner and the webhook, email and video delivery ledgers. Nothing here proves that a provider reached a customer — only that the platform recorded an event.</PageHeading>
+    <PageHeading eyebrow="Operations" title="Platform integrations" action={<button type="button" className="db-button-secondary" disabled={webhooks.loading || emails.loading || videos.loading || action.busy} onClick={() => { webhooks.reload(); emails.reload(); videos.reload(); }}>Refresh ledgers</button>}>Provider configuration, the job runner and the webhook, email and video delivery ledgers. Nothing here proves that a provider reached a customer, only that the platform recorded an event.</PageHeading>
     <ActionState action={action} />
     <ProviderStatus />
     <JobRunner action={action} admin={admin} />
@@ -791,7 +791,7 @@ function DiscountRow({ discount, action, admin }) {
     <td>{discount.code}<div className="db-muted">{discount.label || 'No label'}</div></td>
     <td>{discount.kind === 'percentage' ? `${discount.value}% off` : `${money(discount.value, discount.currency)} off`}{discount.maxDiscountMinor ? <div className="db-muted">Capped at {money(discount.maxDiscountMinor, discount.currency)}</div> : null}</td>
     <td>{discount.startsAt ? date(discount.startsAt) : 'Any time'}<div className="db-muted">{discount.endsAt ? `Until ${date(discount.endsAt)}` : 'No end date'}</div></td>
-    <td>{discount.redemptionCount}{discount.redemptionLimit ? ` of ${discount.redemptionLimit}` : ''} used<div className="db-muted">{discount.perUserLimit ? `${discount.perUserLimit} per student` : 'Unlimited per student'}</div>{discount.overLimitCount > 0 && <p className="db-error">{discount.overLimitCount} redemption past the limit — review this code</p>}</td>
+    <td>{discount.redemptionCount}{discount.redemptionLimit ? ` of ${discount.redemptionLimit}` : ''} used<div className="db-muted">{discount.perUserLimit ? `${discount.perUserLimit} per student` : 'Unlimited per student'}</div>{discount.overLimitCount > 0 && <p className="db-error">{discount.overLimitCount} redemption past the limit, review this code</p>}</td>
     <td><Badge value={discount.active ? 'active' : 'inactive'} />{restricted > 0 && <div className="db-muted">Restricted to {restricted} product(s)</div>}</td>
     <td className="db-actions">{admin ? <>
       <button type="button" className="db-button-secondary" aria-expanded={open} aria-label={`${open ? 'Close' : 'Edit'} discount ${discount.code}`} disabled={action.busy} onClick={() => { action.clear(); setOpen(!open); }}>{open ? 'Close editor' : 'Edit terms'}</button>

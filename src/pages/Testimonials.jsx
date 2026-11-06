@@ -16,10 +16,9 @@ export default function Testimonials() {
             Real People. <span>Real Transformations.</span>
           </h1>
           <p>
-            In their own words — what students have experienced through the classes, courses and retreats at The Centre
+            In their own words, what students have experienced through the classes, courses and retreats at The Centre
             for Transformation. Select any story to read the complete message, exactly as it was shared.
           </p>
-          <span className="ts-rule" aria-hidden="true" />
           <a className="ts-jump" href="#t-stories">
             Read the stories below ↓
           </a>

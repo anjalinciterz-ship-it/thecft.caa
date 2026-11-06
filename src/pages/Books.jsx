@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { books, meditation } from '../data/books';
-import { AudioPlaylist, ProtectedVideo } from '../components/ProtectedMedia';
+import { VideoSlot } from '../components/ProtectedMedia';
 import BookCard from '../components/BookCard';
 import { BookCallCta } from '../components/ScheduleCta';
 import { Icon } from '../components/icons';
@@ -17,9 +17,7 @@ export default function Books() {
             <span>Books</span>
           </nav>
           <span className="cq-eyebrow">
-            <i className="rule" aria-hidden="true" />
             The Writings of Author: Zalah
-            <i className="rule" aria-hidden="true" />
           </span>
           <h1 className="cq-title">
             Books for <span>Transformation</span>
@@ -41,20 +39,27 @@ export default function Books() {
         </div>
       </section>
 
-      <section className="cq-band cq-ivory">
+      <section className="cq-band cq-ivory kids-meditation" aria-labelledby="km-title">
         <div className="container">
-          <div className="cq-prose">
-            <span className="cq-eyebrow">
-              <i className="rule" aria-hidden="true" />
-              {meditation.kind}
-              <i className="rule" aria-hidden="true" />
-            </span>
-            <h2 className="cq-h2">{meditation.title}</h2>
+          <div className="km-head">
+            <span className="cq-eyebrow">{meditation.kind}</span>
+            <h2 className="cq-h2" id="km-title">{meditation.title}</h2>
+            <p className="cq-lead">{meditation.intro}</p>
           </div>
-          <div className="meditation-grid">
-            <ProtectedVideo title={`${meditation.title} Video`} video={meditation.video} />
-            <AudioPlaylist audio={meditation.audio} />
-          </div>
+
+          <ol className="km-parts">
+            {meditation.parts.map((part) => (
+              <li key={part.num} className="km-part">
+                <div className="km-part-head">
+                  <span className="km-num" aria-hidden="true">{part.num}</span>
+                  {part.tag ? <span className="km-tag">{part.tag}</span> : null}
+                </div>
+                <h3 className="km-part-title">{part.heading}</h3>
+                <p className="km-part-body">{part.body}</p>
+                <VideoSlot src={part.src} poster={part.poster} />
+              </li>
+            ))}
+          </ol>
         </div>
       </section>
 
@@ -84,9 +89,7 @@ export default function Books() {
       <section className="cq-band cq-plum">
         <div className="container cq-col">
           <span className="cq-eyebrow">
-            <i className="rule" aria-hidden="true" />
             Keep Exploring
-            <i className="rule" aria-hidden="true" />
           </span>
           <h2 className="cq-h2">Continue Your Journey of Transformation</h2>
           <p className="cq-lead">

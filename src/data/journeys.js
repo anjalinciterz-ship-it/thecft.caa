@@ -9,12 +9,14 @@ export const journeys = [
     icon: 'lotus',
     theme: 'Expand your awareness. Experience life from a higher perspective.',
     text: 'Expand your awareness and see life from a higher perspective.',
-    image: '/images/journeys/consciousness.webp',
-    imageSmall: '/images/journeys/consciousness-760.webp',
-    focus: 'center 68%',
+    image: '/images/photos/consciousness.webp',
+    imageWidth: 1170,
+    imageSmall: '/images/photos/consciousness-760.webp',
+    imageSmallWidth: 760,
+    focus: 'center 50%',
     hero: {
       eyebrow: 'The journey of awareness',
-      heading: 'Consciousness —',
+      heading: 'Consciousness',
       headingAccent: 'Awaken to a Deeper Understanding of Life',
       lead: [
         'Discover a deeper relationship with yourself and the world around you. Consciousness begins with the ability to observe your thoughts, understand your emotions, and become aware of the patterns that influence your daily life.',
@@ -147,12 +149,14 @@ export const journeys = [
     icon: 'seeker',
     theme: 'Reconnect with your true self and uncover your unique path.',
     text: 'Reconnect with your true self and uncover your unique path.',
-    image: '/images/journeys/self-discovery.webp',
-    imageSmall: '/images/journeys/self-discovery-760.webp',
-    focus: 'center 62%',
+    image: '/images/photos/self-discovery.webp',
+    imageWidth: 687,
+    imageSmall: '/images/photos/self-discovery.webp',
+    imageSmallWidth: 687,
+    focus: 'center 45%',
     hero: {
       eyebrow: 'The journey within',
-      heading: 'Self-Discovery —',
+      heading: 'Self-Discovery',
       headingAccent: 'Understand Who You Truly Are',
       lead: [
         'Who are you beyond the expectations of others, the roles you play, and the responsibilities you carry?',
@@ -297,12 +301,14 @@ export const journeys = [
     icon: 'sun',
     theme: 'Find calm within, no matter what life brings.',
     text: 'Find calm within, no matter what life brings.',
-    image: '/images/journeys/inner-peace.webp',
-    imageSmall: '/images/journeys/inner-peace-760.webp',
-    focus: 'center 55%',
+    image: '/images/photos/inner-peace.webp',
+    imageWidth: 687,
+    imageSmall: '/images/photos/inner-peace.webp',
+    imageSmallWidth: 687,
+    focus: 'center 58%',
     hero: {
       eyebrow: 'The art of inner balance',
-      heading: 'Inner Peace —',
+      heading: 'Inner Peace',
       headingAccent: 'Discover Calm Amid the Noise of Life',
       lead: [
         'Life brings responsibilities, uncertainty, changing circumstances, and moments of emotional difficulty. Although we cannot control everything that happens around us, we can learn ways to respond with greater awareness and balance.',
@@ -441,12 +447,14 @@ export const journeys = [
     icon: 'sprout',
     theme: 'Live a more meaningful life and create a positive impact.',
     text: 'Live a more meaningful life and create a positive impact.',
-    image: '/images/journeys/purpose.webp',
-    imageSmall: '/images/journeys/purpose-760.webp',
-    focus: 'center 58%',
+    image: '/images/photos/purpose.webp',
+    imageWidth: 1170,
+    imageSmall: '/images/photos/purpose-760.webp',
+    imageSmallWidth: 760,
+    focus: 'center 50%',
     hero: {
       eyebrow: 'The journey toward meaning',
-      heading: 'Purpose —',
+      heading: 'Purpose',
       headingAccent: 'Discover What Makes Your Life Meaningful',
       lead: [
         'A meaningful life is not defined only by achievements, recognition, or material success. It can also be shaped by the values you live by, the relationships you nurture, the work you contribute, and the difference you make in the lives of others.',
@@ -540,10 +548,10 @@ export const journeys = [
         body: ['A practical way to explore purpose is to consider four connected areas.'],
         pointsTitle: 'Four connected areas',
         points: [
-          { term: 'Values — What Matters to You?', def: 'Identify the principles you want to guide your decisions.' },
-          { term: 'Strengths — What Can You Offer?', def: 'Recognize your abilities and the skills you want to develop.' },
-          { term: 'Interests — What Inspires Your Curiosity?', def: 'Explore the activities, questions, and subjects that engage you.' },
-          { term: 'Contribution — Where Can You Make a Difference?', def: 'Identify how your values, abilities, and interests can benefit your own life and the lives of others.' },
+          { term: 'Values, What Matters to You?', def: 'Identify the principles you want to guide your decisions.' },
+          { term: 'Strengths, What Can You Offer?', def: 'Recognize your abilities and the skills you want to develop.' },
+          { term: 'Interests, What Inspires Your Curiosity?', def: 'Explore the activities, questions, and subjects that engage you.' },
+          { term: 'Contribution, Where Can You Make a Difference?', def: 'Identify how your values, abilities, and interests can benefit your own life and the lives of others.' },
         ],
         exampleLabel: 'Example',
         example:
@@ -607,3 +615,11 @@ export const journeys = [
 
 export const getJourney = (slug) => journeys.find((j) => j.slug === slug);
 export const relatedJourneys = (slug) => journeys.filter((j) => j.slug !== slug);
+
+// The candidates a journey image can honestly offer. The two portrait photos
+// exist at one size only, so declaring a 1400w candidate for a 687px file made
+// the browser treat that file as if it carried twice the pixels it has.
+export const journeySrcSet = (j) =>
+  (j.imageSmall === j.image
+    ? `${j.image} ${j.imageWidth}w`
+    : `${j.imageSmall} ${j.imageSmallWidth}w, ${j.image} ${j.imageWidth}w`);

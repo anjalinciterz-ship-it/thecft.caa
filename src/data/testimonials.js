@@ -4,7 +4,7 @@ export const testimonials = [
   {
     name: 'Karen',
     lead:
-      'I would highly recommend The Centre for Transformation for anyone who is seeking — seeking a deep “knowing” of how powerful they truly are, a seeking of a life of clarity.',
+      'I would highly recommend The Centre for Transformation for anyone who is seeking, seeking a deep “knowing” of how powerful they truly are, a seeking of a life of clarity.',
   },
   {
     name: 'Terry',

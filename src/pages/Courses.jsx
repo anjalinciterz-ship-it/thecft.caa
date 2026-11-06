@@ -25,9 +25,7 @@ function Compare() {
     <section id="compare" className="cq-band cq-white cq-compare">
       <div className="container">
         <span className="cq-eyebrow">
-          <i className="rule" aria-hidden="true" />
           Choose Your Path
-          <i className="rule" aria-hidden="true" />
         </span>
         <h2 className="cq-h2">Compare the Five Programs</h2>
         <div className="cq-table" role="table" aria-label="Comparison of the five CFT programs">
@@ -127,7 +125,7 @@ function Guidance() {
                 </button>
               </div>
               <p className="cq-guide-note">
-                This is a starting suggestion based on how each program is positioned — not a professional or
+                This is a starting suggestion based on how each program is positioned, not a professional or
                 psychological assessment.{' '}
                 <Link to="/connect">Prefer to talk it through? Book a call with Zalah.</Link>
               </p>
@@ -147,9 +145,7 @@ function WisdomBand() {
       <div className="container cq-wisdom-box">
         <div>
           <span className="cq-eyebrow">
-            <i className="rule" aria-hidden="true" />
             Free Weekly Class
-            <i className="rule" aria-hidden="true" />
           </span>
           <h2 className="cq-h2">{w.title}</h2>
           <p className="cq-wisdom-when">
@@ -167,7 +163,7 @@ function WisdomBand() {
 export default function Courses() {
   const { offerings } = useCatalog();
   usePageMeta({
-    title: 'Courses & Transformation — CFT by Zalah',
+    title: 'Courses & Transformation, CFT by Zalah',
     description:
       'Explore five thoughtfully designed programs to deepen your awareness, cultivate inner peace, and create a more meaningful, purposeful life.',
     path: '/courses',
@@ -183,9 +179,7 @@ export default function Courses() {
             <span>Courses</span>
           </nav>
           <span className="cq-eyebrow">
-            <i className="rule" aria-hidden="true" />
             COURSES &amp; TRANSFORMATION
-            <i className="rule" aria-hidden="true" />
           </span>
           <h1 className="cq-title">
             Transform Your Life With <span>Practical Wisdom</span>
@@ -219,9 +213,7 @@ export default function Courses() {
       <section className="cq-band cq-plum">
         <div className="container cq-col">
           <span className="cq-eyebrow">
-            <i className="rule" aria-hidden="true" />
             Your Next Step
-            <i className="rule" aria-hidden="true" />
           </span>
           <h2 className="cq-h2">Wherever You Are, There Is a Way Deeper.</h2>
           <p className="cq-lead">

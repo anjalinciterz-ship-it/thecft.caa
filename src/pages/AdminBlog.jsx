@@ -256,7 +256,7 @@ function CoverField({ articleId, value, onChange, disabled }) {
       const stepNumber = { signature: 1, upload: 2, registration: 3 }[stage];
       const stepName = { signature: 'the upload signature', upload: 'the upload to Cloudinary', registration: 'registering the asset' }[stage];
       if (error?.code === 'cloudinary_not_configured') {
-        setFailure(`Step 1 (${stepName}) failed: Cloudinary is not configured on this server — ${error.message}. Nothing was uploaded. You can still paste an image URL above and the editor works normally offline.`);
+        setFailure(`Step 1 (${stepName}) failed: Cloudinary is not configured on this server, ${error.message}. Nothing was uploaded. You can still paste an image URL above and the editor works normally offline.`);
       } else {
         setFailure(`Step ${stepNumber} (${stepName}) failed: ${error?.message || 'The upload could not be completed.'} Nothing was registered, and the cover fields above are unchanged. Paste an image URL instead if this server has no Cloudinary access.`);
       }
@@ -274,7 +274,7 @@ function CoverField({ articleId, value, onChange, disabled }) {
       <Field label="Cover URL" value={value.url} onChange={set('url')} disabled={disabled} maxLength={600} placeholder="https://res.cloudinary.com/… or /images/…" hint="Filled in automatically by an upload, or paste any web or /-rooted image URL." />
       <Field label="Alt text" value={value.alt} onChange={set('alt')} disabled={disabled} maxLength={LIMITS.alt} hint={`${value.alt.length} / ${LIMITS.alt} characters. Describe the image for screen readers.`} />
     </div>
-    <p className="db-muted">Cloudinary public ID: {value.publicId || 'none — set automatically when you upload'}</p>
+    <p className="db-muted">Cloudinary public ID: {value.publicId || 'none, set automatically when you upload'}</p>
     <div className="db-actions">
       <label className="db-button-secondary cms-admin-upload">
         <input ref={fileRef} type="file" accept={IMAGE_TYPES.join(',')} disabled={disabled || Boolean(step)} onChange={(event) => upload(event.target.files?.[0])} />
@@ -400,7 +400,7 @@ function Pagination({ page, setPage, resource }) {
 function RevisionList({ article, busy, dirty, resource, onRestore }) {
   const revisions = resource.data?.revisions || [];
   return <section className="db-panel db-stack" aria-label="Revision history">
-    <div className="cms-admin-row"><div><h2>Revision history</h2><p className="db-muted">Every save, publish and restore is recorded. Restoring copies an old revision into the working draft — it never changes the live article until you publish again.</p></div><button type="button" className="db-button-secondary" disabled={busy || resource.loading} onClick={resource.reload}>Refresh history</button></div>
+    <div className="cms-admin-row"><div><h2>Revision history</h2><p className="db-muted">Every save, publish and restore is recorded. Restoring copies an old revision into the working draft, it never changes the live article until you publish again.</p></div><button type="button" className="db-button-secondary" disabled={busy || resource.loading} onClick={resource.reload}>Refresh history</button></div>
     <RequestState resource={resource}>{revisions.length ? <ol className="cms-revisions">{revisions.map((revision) => <li key={revision.revisionNumber}>
       <div><strong>Revision {revision.revisionNumber}</strong><span>{revision.changeNote || 'Saved draft'}</span><small className="db-muted">{date(revision.createdAt)}</small></div>
       <button type="button" className="db-button-secondary" disabled={busy || revision.revisionNumber === article.revisionCount} onClick={() => {
@@ -464,7 +464,7 @@ function ArticleWorkspace({ initial }) {
     if (action.lock.current) return;
     const confirmText = status === 'archived'
       ? 'Archive this article? Visitors cannot see it, and it keeps its working copy and revision history. Find it again with the Archived status filter, then move it back to draft to work on it.'
-      : 'Move this article back to draft? Nothing changes for visitors — it is already not published.';
+      : 'Move this article back to draft? Nothing changes for visitors, it is already not published.';
     if (!window.confirm(confirmText)) return;
     action.run(async () => { accept((await apiRequest(`${articlePath(saved.id)}/status`, { method: 'PATCH', body: { status, expectedRevision: saved.revisionCount } })).article); revisionResource.reload(); }, status === 'archived' ? 'Article archived. Move it back to draft to edit it toward a publication.' : 'Article moved back to draft.');
   };

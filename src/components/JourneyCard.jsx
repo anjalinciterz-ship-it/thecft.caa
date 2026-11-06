@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Icon } from './icons';
 import { SkeletonImage } from './Skeleton';
+import { journeySrcSet } from '../data/journeys';
 
 export default function JourneyCard({ journey, enter, delay = 0 }) {
   const ref = useRef(null);
@@ -34,7 +35,7 @@ export default function JourneyCard({ journey, enter, delay = 0 }) {
       <SkeletonImage
         className="journey-card-bg"
         src={journey.imageSmall}
-        srcSet={`${journey.imageSmall} 760w, ${journey.image} 1400w`}
+        srcSet={journeySrcSet(journey)}
         sizes="(max-width: 640px) 100vw, (max-width: 980px) 50vw, 330px"
         alt=""
         loading="lazy"
@@ -42,7 +43,7 @@ export default function JourneyCard({ journey, enter, delay = 0 }) {
       />
       <span className="journey-card-veil" aria-hidden="true" />
       <span className="journey-card-icon">
-        <Icon name={journey.icon} size={26} />
+        <span className="gdot" aria-hidden="true" />
       </span>
       <div className="journey-card-body">
         <span className="num">{journey.num}</span>

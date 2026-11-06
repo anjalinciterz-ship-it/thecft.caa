@@ -227,14 +227,14 @@ export default function CoursePlayer({ courseId, initialLessonId }) {
                 Select lesson
                 <select value={lessonId} disabled={starting} onChange={(event) => { setPlayback(null); setLessonId(event.target.value); setProgress(null); setError(''); setSaveError(''); }} style={{ display: 'block', width: '100%', maxWidth: 600, padding: 12, marginTop: 8 }}>
                   {!lessonId && <option value="">Choose a video lesson</option>}
-                  {lessons.map((lesson) => <option key={lesson.id} value={lesson.id} disabled={!lesson.hasVideo || lesson.locked}>{lesson.title}{!lesson.hasVideo ? ' — no video attached' : ''}</option>)}
+                  {lessons.map((lesson) => <option key={lesson.id} value={lesson.id} disabled={!lesson.hasVideo || lesson.locked}>{lesson.title}{!lesson.hasVideo ? ', no video attached' : ''}</option>)}
                 </select>
               </label>
             ) : <p>No lessons have been published yet.</p>}
             <div ref={frame} style={{ position: 'relative', aspectRatio: '16 / 9', width: '100%', background: '#120a24', border: '1px solid #e8b95f', borderRadius: 12, overflow: 'hidden' }}>
               {playback ? (
                 <>
-                  <iframe ref={iframe} title={selected?.title || 'Course video'} src={playback.playbackUrl} allow="autoplay; encrypted-media" referrerPolicy="strict-origin-when-cross-origin" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', border: 0 }} />
+                  <iframe ref={iframe} title={selected?.title || 'Course video'} src={playback.playbackUrl} allow="autoplay; encrypted-media" referrerPolicy="no-referrer" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', border: 0 }} />
                   {playback.watermark.enabled && <span aria-hidden="true" style={{ position: 'absolute', ...marks[position], maxWidth: '85%', pointerEvents: 'none', zIndex: 2, color: '#fff', background: '#120a24', padding: '4px 8px', opacity: playback.watermark.opacity, fontSize: 'clamp(10px, 1.3vw, 16px)' }}>{playback.watermark.text}</span>}
                 </>
               ) : (
@@ -244,7 +244,7 @@ export default function CoursePlayer({ courseId, initialLessonId }) {
                 </div>
               )}
             </div>
-            {progress && <p role="status" style={{ marginTop: 16 }}>{progress.status === 'completed' ? 'Lesson complete' : `${progress.watchedPercent || 0}% watched — saved to your account`}</p>}
+            {progress && <p role="status" style={{ marginTop: 16 }}>{progress.status === 'completed' ? 'Lesson complete' : `${progress.watchedPercent || 0}% watched, saved to your account`}</p>}
             {error && <p role="alert" style={{ color: '#e8b95f', marginTop: 16 }}>{error}</p>}
             {saveError && <p role="alert" style={{ color: '#e8b95f', marginTop: 16 }}>{saveError}</p>}
             {playback && <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12, marginTop: 16 }}>

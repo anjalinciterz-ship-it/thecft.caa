@@ -4,10 +4,17 @@ import { site } from '../data/site';
 import { useCatalog } from '../lib/catalog';
 import { books } from '../data/books';
 import { blogCategories, postMeta } from '../data/blog';
+import { faqGroups, faqs } from '../data/faqs';
+import { testimonials } from '../data/testimonials';
 import { useBlog } from '../lib/blog';
 import { initials, useAuth } from '../lib/auth';
 import AppearanceToggle from './AppearanceToggle';
 import { Icon } from './icons';
+
+/* A preview line has to stay inside one panel row, so quotes are cut at the
+   last whole word and the trailing punctuation goes with them. */
+const clip = (text, max = 150) =>
+  text.length <= max ? text : `${text.slice(0, text.lastIndexOf(' ', max)).replace(/[,.;:—-]\s*$/, '')}…`;
 
 function MenuAbout() {
   return (
@@ -164,12 +171,157 @@ function MenuBlog() {
   );
 }
 
-const MENUS = { '/about': 'about', '/courses': 'courses', '/books': 'books', '/blog': 'blog' };
+function MenuTestimonials() {
+  return (
+    <div className="mm-quotes">
+      <div className="mm-list">
+        {testimonials.slice(0, 3).map((t) => (
+          <Link key={t.name} to="/testimonials#t-stories" className="mm-quote">
+            <p className="mm-quote-text">&ldquo;{clip(t.lead)}&rdquo;</p>
+            <span className="mm-quote-name">
+              {t.name}
+              <span className="mm-item-arrow" aria-hidden="true">
+                →
+              </span>
+            </span>
+          </Link>
+        ))}
+        <div className="mm-rule" />
+        <Link to="/testimonials" className="mm-big">
+          See all testimonials
+        </Link>
+      </div>
+      <Link to="/testimonials" className="mm-promo mm-promo-dark">
+        <h4>Real people. Real transformations.</h4>
+        <p>
+          Students who have sat with Zalah for five, twenty, twenty-five years writing about what actually changed,
+          calm, clarity, and a kinder way of living with themselves.
+        </p>
+        <span className="mm-cta">
+          Read every story
+          <span className="mm-arrow">
+            <Icon name="arrow" size={12} />
+          </span>
+        </span>
+      </Link>
+    </div>
+  );
+}
+
+function MenuFaqs() {
+  return (
+    <div className="mm-faq">
+      <div className="mm-list">
+        {faqGroups.map((g) => (
+          <Link key={g.key} to={`/faq#fq-${g.key}`} className="mm-item mm-item-sm">
+            {g.title}
+            <span className="mm-item-arrow" aria-hidden="true">
+              →
+            </span>
+          </Link>
+        ))}
+      </div>
+      {faqs.slice(0, 1).map((f) => (
+        <Link key={f.q} to={`/faq#fq-${f.category}`} className="mm-promo">
+          <h4>{f.q}</h4>
+          <p>{clip(f.a[0], 190)}</p>
+          <span className="mm-cta">
+            Explore
+            <span className="mm-arrow">
+              <Icon name="arrow" size={12} />
+            </span>
+          </span>
+        </Link>
+      ))}
+      <Link to="/faq" className="mm-promo mm-promo-dark">
+        <h4>{faqs.length} questions, seven topics</h4>
+        <p>Everything about the teachings, the courses, the free Wednesday class and the practical details.</p>
+        <span className="mm-cta">
+          See all FAQs
+          <span className="mm-arrow">
+            <Icon name="arrow" size={12} />
+          </span>
+        </span>
+      </Link>
+    </div>
+  );
+}
+
+function MenuConnect() {
+  return (
+    <div className="mm-connect">
+      <div className="mm-list">
+        <Link to="/connect#cn-form" className="mm-item mm-item-sm">
+          Send us a message
+          <span className="mm-item-arrow" aria-hidden="true">
+            →
+          </span>
+        </Link>
+        <Link to="/connect#cn-wisdom" className="mm-item mm-item-sm">
+          Join the Wednesday Wisdom Class
+          <span className="mm-item-arrow" aria-hidden="true">
+            →
+          </span>
+        </Link>
+        <a href={site.calendly} target="_blank" rel="noreferrer" className="mm-item mm-item-sm">
+          Book a call
+          <span className="mm-item-arrow" aria-hidden="true">
+            →
+          </span>
+        </a>
+        <a href={`mailto:${site.email}`} className="mm-item mm-item-sm">
+          {site.email}
+          <span className="mm-item-arrow" aria-hidden="true">
+            →
+          </span>
+        </a>
+        <a href={`tel:${site.phone.replace(/[^\d+]/g, '')}`} className="mm-item mm-item-sm">
+          {site.phone}
+          <span className="mm-item-arrow" aria-hidden="true">
+            →
+          </span>
+        </a>
+        <div className="mm-rule" />
+        <Link to="/connect" className="mm-big">
+          See all ways to connect
+        </Link>
+      </div>
+      <div className="mm-promo mm-promo-dark">
+        <h4>Every meaningful journey begins with a conversation.</h4>
+        <p>
+          {site.address.line1}
+          <br />
+          {site.address.line2}
+        </p>
+        <p>Tell us where you are on your path and we will point you to the right first step.</p>
+        <Link to="/connect" className="mm-cta">
+          Start a conversation
+          <span className="mm-arrow">
+            <Icon name="arrow" size={12} />
+          </span>
+        </Link>
+      </div>
+    </div>
+  );
+}
+
+const MENUS = {
+  '/about': 'about',
+  '/courses': 'courses',
+  '/books': 'books',
+  '/blog': 'blog',
+  '/testimonials': 'testimonials',
+  '/faq': 'faq',
+  '/connect': 'connect',
+};
 const MENU_CONTENT = {
   about: <MenuAbout />,
   courses: <MenuCourses />,
   books: <MenuBooks />,
   blog: <MenuBlog />,
+  testimonials: <MenuTestimonials />,
+  faq: <MenuFaqs />,
+  connect: <MenuConnect />,
 };
 
 export default function Header() {

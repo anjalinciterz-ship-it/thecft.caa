@@ -3,9 +3,7 @@ import { Link } from 'react-router-dom';
 export function SectionDivider() {
   return (
     <div className="section-divider" aria-hidden="true">
-      <span className="line l" />
       <span className="diamond" />
-      <span className="line r" />
     </div>
   );
 }

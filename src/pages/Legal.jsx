@@ -6,9 +6,7 @@ import { Icon } from '../components/icons';
 function Eyebrow({ children }) {
   return (
     <span className="cq-eyebrow">
-      <i className="rule" aria-hidden="true" />
       {children}
-      <i className="rule" aria-hidden="true" />
     </span>
   );
 }

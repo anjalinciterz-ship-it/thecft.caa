@@ -50,7 +50,7 @@ export default function ResetPassword() {
       setSearchParams(new URLSearchParams(returnSearch), { replace: true });
     } catch (failure) {
       setError(failure.code === 'reset_link_invalid'
-        ? 'That link no longer works. It may have been used or has expired — request a new one.'
+        ? 'That link no longer works. It may have been used or has expired, request a new one.'
         : failure.message || 'We could not update your password. Please try again.');
     } finally {
       pending.current = false;
@@ -60,7 +60,7 @@ export default function ResetPassword() {
 
   return (
     <AuthShell
-      image="/images/site/auth-beach.webp"
+      image="/images/photos/mountain-sit.webp"
       eyebrow="Account Recovery"
       lead="Choose a new password. When it is saved, every other device signing in with the old password is signed out."
       titleLead="Choose a "

@@ -349,7 +349,7 @@ function BlockedDateCreateForm({ action, onOverlap }) {
     action.run({ path: '/admin/blocked-dates', method: 'POST', body,
       confirm: `Block ${dateValue}${allDay ? ' (all day)' : ' (part of the day)'} for ${body.timeZone}? This closes that time to new bookings.`,
       message: `Blocked date ${dateValue} saved.` }).then((result) => {
-      if (result?.blockedDate?.conflictingBookings > 0) onOverlap(`${result.blockedDate.conflictingBookings} active booking(s) already overlap ${result.blockedDate.date}. They were NOT cancelled — review them on the bookings screen.`);
+      if (result?.blockedDate?.conflictingBookings > 0) onOverlap(`${result.blockedDate.conflictingBookings} active booking(s) already overlap ${result.blockedDate.date}. They were NOT cancelled, review them on the bookings screen.`);
       else onOverlap(null);
       if (!action.error) formEl.reset();
     });
@@ -634,7 +634,7 @@ function LiveClassDetail({ item, action, onClose }) {
     <div className="db-panel db-stack"><h3>Providers & recording</h3>
       <ProviderLine name="Zoom" status={item.zoom?.syncStatus} />
       {item.zoom?.joinUrl ? <p className="db-muted">Attendee join link is stored for students; the host link and passcode are never shown here.</p> : null}
-      <p className="db-muted">{item.recording?.available ? 'A recording is marked available by the pipeline.' : 'No recording is marked available yet. Recording availability is set by the pipeline, not by this screen — you cannot fabricate it here.'}</p>
+      <p className="db-muted">{item.recording?.available ? 'A recording is marked available by the pipeline.' : 'No recording is marked available yet. Recording availability is set by the pipeline, not by this screen, you cannot fabricate it here.'}</p>
       <p className="db-muted">Recording access policy: {label(item.recording?.accessPolicy)}.</p>
     </div>
     {['draft', 'archived'].includes(item.publicationStatus) ? (

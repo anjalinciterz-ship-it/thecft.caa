@@ -33,6 +33,88 @@ export const site = {
     tedx: { label: 'Speaker', talk: 'Integrity & Life on the Planet' },
     classCard: { line1: 'Wednesday Evening', line2: 'Wisdom Class' },
   },
+  /* The hero rotates through these in order. Every slide is composed live: the
+     artwork is a text-free photograph that fills the frame, and the words over
+     it are real HTML that animates as the slide takes the stage. `kind:'live'`
+     marks the original cosmic composition, which keeps its floating TEDx cred,
+     wisdom card and quote; the banners supply only background + copy. */
+  heroSlides: [
+    {
+      key: 'guidance',
+      kind: 'banner',
+      title: 'Heart-Centered Guidance',
+      src: '/images/site/hero-bg-guidance.webp',
+      srcSet: '/images/site/hero-bg-guidance-900.webp 900w, /images/site/hero-bg-guidance.webp 1824w',
+      alt: 'Zalah, smiling with his head resting on his hand, beside a rustic signpost in the desert',
+      // Where each photograph is framed when a phone crops its band to 16:10.
+      mobilePos: '62% 45%',
+      /* The sentence rides the signpost, one word per plank. The coordinates
+         are the plank bands measured out of the photograph itself, as
+         percentages of the frame: on the desktop stage the frame and the image
+         share the 1824/862 box, so nothing is cropped and they line up exactly.
+         Below 1080px the photo is cropped to 16:10 and the planks move, so the
+         words fall back to a single line under the picture. */
+      planks: [
+        { word: 'YOU', x: 90.1, y: 33.99 },
+        { word: 'ARE', x: 86.87, y: 40.89 },
+        { word: 'EXACTLY', x: 90.68, y: 47.33 },
+        { word: 'WHERE', x: 87.55, y: 53.25 },
+        { word: 'YOU', x: 90.71, y: 59.63 },
+        { word: 'NEED', x: 87.77, y: 66.76 },
+        { word: 'TO', x: 90.82, y: 72.91 },
+        { word: 'BE', x: 89.31, y: 80.16 },
+      ],
+      copy: {
+        eyebrow: 'Welcome to The Centre for Transformation',
+        titleLead: 'Navigate Life’s Transformations with',
+        titleAccent: 'Heart-Centered Guidance',
+        lead: 'Discover expert teachings and guided self-growth that blend timeless wisdom with spirituality & science, from beginner concepts to advanced consciousness work, led live by Zalah.',
+        ctaPrimary: 'Explore Courses',
+        ctaSecondary: 'Join Wednesday Wisdom Class',
+        features: ['Self-Paced Learning', 'Live Interactive Classes', 'A Global Community'],
+        footnote: 'Greater awareness · A kinder tomorrow',
+      },
+    },
+    { key: 'cosmic', kind: 'live', title: 'Zalah welcomes you' },
+    {
+      key: 'lake',
+      kind: 'banner',
+      title: 'Discover Inner Peace',
+      src: '/images/site/hero-bg-lake.webp',
+      srcSet: '/images/site/hero-bg-lake-900.webp 900w, /images/site/hero-bg-lake.webp 1824w',
+      alt: 'A woman sitting on a wooden dock, meditating by a mountain lake',
+      mobilePos: '50% 62%',
+      copy: {
+        eyebrow: 'The Centre for Transformation',
+        titleLead: 'Discover Inner Peace',
+        titleAccent: 'and Lasting Change',
+        lead: 'Practical teachings, guided practices, and conscious insights to help you grow, heal, and live a more meaningful life.',
+        ctaPrimary: 'Explore Courses',
+        ctaSecondary: 'Join the Next Wisdom Class',
+        features: ['Live Classes', 'Self-Paced Courses', 'A Global Community'],
+        footnote: 'Greater awareness · A kinder tomorrow',
+      },
+    },
+    {
+      key: 'path',
+      kind: 'banner',
+      title: 'A Clearer Path',
+      src: '/images/site/hero-bg-path.webp',
+      srcSet: '/images/site/hero-bg-path-900.webp 900w, /images/site/hero-bg-path.webp 1824w',
+      alt: 'Zalah welcoming you beside a path through grass, with a man walking on it',
+      mobilePos: '70% 45%',
+      copy: {
+        eyebrow: 'A path of awareness, growth & transformation',
+        titleLead: 'Walk a Clearer Path to a More Conscious,',
+        titleAccent: 'Fulfilled Life',
+        lead: 'Practical teachings, timeless wisdom, and heart-centered guidance to help you grow, heal, and live with greater clarity, compassion, and purpose.',
+        ctaPrimary: 'Explore the Teachings',
+        ctaSecondary: 'Join a Live Wisdom Class',
+        features: ['Inner Growth', 'Guided Practices', 'A Supportive Global Community'],
+        footnote: 'A more aware · kinder · purposeful world',
+      },
+    },
+  ],
   socials: [
     {
       key: 'IG',

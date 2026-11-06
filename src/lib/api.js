@@ -1,4 +1,11 @@
+// When the frontend and API live on different hosts (Netlify + Render), the
+// API origin comes from VITE_API_BASE with no trailing slash. Unset, it falls
+// back to same-origin, which is what the local stack and the old deploys use.
+export const API_ORIGIN = (import.meta.env.VITE_API_BASE || '').replace(/\/+$/, '');
 const API_PREFIX = '/api/v1';
+// One builder for every API URL so a bare href or fetch cannot skip the origin
+// and quietly hit the frontend host instead of the API.
+export const apiUrl = (path) => `${API_ORIGIN}${API_PREFIX}${path.startsWith('/') ? path : `/${path}`}`;
 const SAFE_METHODS = new Set(['GET', 'HEAD', 'OPTIONS']);
 let csrfToken = null;
 let csrfRequest = null;
@@ -20,7 +27,7 @@ function describeFailure(message, details) {
   const first = Array.isArray(issues) ? issues[0] : null;
   if (!first || typeof first.message !== 'string') return message;
   const field = Array.isArray(first.path) ? first.path.join('.') : (first.path || first.field || 'form');
-  return `${message}: ${field} — ${first.message}${issues.length > 1 ? ` (+${issues.length - 1} more)` : ''}`;
+  return `${message}: ${field}, ${first.message}${issues.length > 1 ? ` (+${issues.length - 1} more)` : ''}`;
 }
 
 export function invalidateCsrfToken() {
@@ -36,7 +43,7 @@ function aborted() {
 async function request(path, options, includeMeta = false) {
   let response;
   try {
-    response = await fetch(`${API_PREFIX}${path}`, { ...options, credentials: 'include' });
+    response = await fetch(apiUrl(path), { ...options, credentials: 'include' });
   } catch (error) {
     if (options.signal?.aborted || error.name === 'AbortError') throw aborted();
     throw new ApiError('NETWORK_ERROR', 0, 'Unable to connect. Please check your connection and try again.');

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { getJourney, relatedJourneys } from '../data/journeys';
+import { getJourney, journeySrcSet, relatedJourneys } from '../data/journeys';
 import { Icon } from '../components/icons';
 import JourneyCard from '../components/JourneyCard';
 import NotFound from './NotFound';
@@ -8,9 +8,7 @@ import NotFound from './NotFound';
 function Eyebrow({ children }) {
   return (
     <span className="cq-eyebrow">
-      <i className="rule" aria-hidden="true" />
       {children}
-      <i className="rule" aria-hidden="true" />
     </span>
   );
 }
@@ -54,9 +52,9 @@ function JourneyHero({ journey }) {
           </div>
           <div className="cq-post-art">
             <img
-              className="cq-art"
+              className="cq-art jy-art"
               src={journey.image}
-              srcSet={`${journey.imageSmall} 760w, ${journey.image} 1400w`}
+              srcSet={journeySrcSet(journey)}
               sizes="(max-width: 980px) 100vw, 48vw"
               alt={journey.title}
               style={{ objectPosition: journey.focus }}

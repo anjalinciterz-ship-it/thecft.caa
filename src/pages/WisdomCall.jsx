@@ -9,9 +9,9 @@ import { useNextWisdomCall } from '../lib/schedule';
 export default function WisdomCall() {
   const { next } = useNextWisdomCall();
   usePageMeta({
-    title: 'Wednesday Wisdom Call — CFT by Zalah',
+    title: 'Wednesday Wisdom Call, CFT by Zalah',
     description:
-      'Join the free Wednesday Wisdom Call: a live weekly session at 7:00 PM Mountain Time with Zalah. Insights, guided reflection, interactive Q&A and practical tools — open to everyone, live on Zoom.',
+      'Join the free Wednesday Wisdom Call: a live weekly session at 7:00 PM Mountain Time with Zalah. Insights, guided reflection, interactive Q&A and practical tools, open to everyone, live on Zoom.',
     path: '/wisdom-call',
   });
 
@@ -22,7 +22,6 @@ export default function WisdomCall() {
         <div className="container wp-hero-grid">
           <div className="wp-hero-copy">
             <span className="cq-eyebrow">
-              <i className="rule" aria-hidden="true" />
               {c.intro.eyebrow}
             </span>
             <h1 className="cq-title">{c.intro.title}</h1>
@@ -39,9 +38,9 @@ export default function WisdomCall() {
           <figure className="wp-hero-art">
             <img
               src={c.image}
-              alt="A woman seated in meditation, calm and still amid a rushing street crowd"
-              width="2048"
-              height="1365"
+              alt="A woman seated in meditation at home, eyes closed and at ease"
+              width="1331"
+              height="749"
               fetchpriority="high"
             />
           </figure>
@@ -56,7 +55,7 @@ export default function WisdomCall() {
             {c.details.rows.map((row) => (
               <div className="wp-detail" key={row.label}>
                 <span className="wp-detail-ico" aria-hidden="true">
-                  <Icon name={row.icon} size={24} />
+                  <span className="gdot" />
                 </span>
                 <em>{row.label}</em>
                 <b>{row.value}</b>
@@ -85,7 +84,7 @@ export default function WisdomCall() {
             {c.why.items.map((item) => (
               <article className="wp-why-card" key={item.title}>
                 <span className="wp-why-ico" aria-hidden="true">
-                  <Icon name={item.icon} size={22} />
+                  <span className="gdot" />
                 </span>
                 <h3>{item.title}</h3>
                 <p>{item.text}</p>
@@ -185,9 +184,7 @@ export default function WisdomCall() {
       <section className="cq-band cq-plum wp-close">
         <div className="container wp-narrow wp-center">
           <span className="cq-eyebrow wp-center-eyebrow">
-            <i className="rule" aria-hidden="true" />
             {c.closing.eyebrow}
-            <i className="rule" aria-hidden="true" />
           </span>
           <h2 className="cq-h2">
             <span>{c.closing.title}</span>

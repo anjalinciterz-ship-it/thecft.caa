@@ -1,9 +1,8 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { books, meditation, resources } from '../data/books';
-import { site } from '../data/site';
+import { books, meditation } from '../data/books';
 import { mediaUrl } from '../components/ProtectedMedia';
-import { DashIcon, EmptyState, PageHeading, safeImage } from '../components/DashboardUI';
+import { DashIcon, PageHeading, safeImage } from '../components/DashboardUI';
 
 const noSave = (event) => event.preventDefault();
 
@@ -33,8 +32,6 @@ function AudioLibrary({ audio }) {
 }
 
 export function FreeBooks() {
-  const complimentary = resources.filter((item) => item.price === null);
-  const priced = resources.filter((item) => item.price !== null);
   return <div className="db-stack">
     <PageHeading eyebrow="Included with your membership" title="Free Books" action={<Link className="db-button-secondary" to="/books">See the shelf on the website<DashIcon name="external" size={15} /></Link>}>The writings of Zalah, open to every member at your own pace.</PageHeading>
 
@@ -50,21 +47,13 @@ export function FreeBooks() {
 
     <section className="db-panel db-stack">
       <div><span className="db-eyebrow">{meditation.kind}</span><h2>{meditation.title}</h2></div>
-      <video className="db-library-video" src={mediaUrl(meditation.video.src)} poster={meditation.video.poster || undefined} controls preload="none" playsInline controlsList="nodownload noremoteplayback" onContextMenu={noSave} onDragStart={noSave} />
-      <h3>{meditation.audio.heading}</h3>
-      <AudioLibrary audio={meditation.audio} />
-    </section>
-
-    <section className="db-stack">
-      <div className="db-section-title"><h2>More from the shelf</h2></div>
-      {complimentary.length ? <div className="db-grid db-shelf-grid">{complimentary.map((item) => <article className="db-panel db-stack db-shelf-card" key={item.id}>
-        {safeImage(item.image) ? <img src={safeImage(item.image)} alt="" /> : <span className="db-shelf-art" style={{ background: item.grad }} aria-hidden="true" />}
-        <h3>{item.title}</h3>
-        <p className="db-muted">{item.tagline}</p>
-        <span className="db-badge">Free · {item.type}</span>
-        <a className="db-text-link" href={`mailto:${site.email}?subject=${encodeURIComponent(item.title)}`}>Ask how to receive it<DashIcon name="arrow" size={15} /></a>
-      </article>)}</div> : <div className="db-panel"><EmptyState icon="lotus" title="Nothing free on the shelf yet">Recorded sessions and guides will be listed here as they are released to members.</EmptyState></div>}
-      {priced.length > 0 && <p className="db-muted">Printed copies and priced recordings — {priced.map((item) => item.title).join(', ')} — are shown on the website. Ordering them from your dashboard opens once their shipping charges are confirmed.</p>}
+      <p className="db-muted">{meditation.intro}</p>
+      {meditation.parts.map((part) => <div className="db-stack" key={part.num}>
+        <h3>{part.heading}</h3>
+        {part.src
+          ? <video className="db-library-video" src={mediaUrl(part.src)} poster={part.poster || undefined} controls preload="none" playsInline controlsList="nodownload noremoteplayback" onContextMenu={noSave} onDragStart={noSave} />
+          : <p className="db-muted">The film for this part is being prepared. It will play right here.</p>}
+      </div>)}
     </section>
   </div>;
 }

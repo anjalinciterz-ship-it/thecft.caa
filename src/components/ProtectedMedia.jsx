@@ -106,30 +106,36 @@ export function AudioPlaylist({ audio }) {
   );
 }
 
-export function ProtectedVideo({ title, video }) {
-  return (
-    <div className="glass media-card">
-      <div className="media-head">
-        <span className="media-mark">
-          <Icon name="film" size={20} />
+// A video slot that already looks finished before the file arrives: same 16:9
+// frame, same transport affordance, with a note instead of a broken player.
+// Supplying the video is one field in the data — nothing here changes.
+export function VideoSlot({ src, poster }) {
+  if (!src) {
+    return (
+      <figure className="video-slot is-empty">
+        <span className="video-slot-play" aria-hidden="true">
+          <Icon name="play" size={22} />
         </span>
-        <div>
-          <h3>{title}</h3>
-        </div>
-      </div>
-      <video
-        className="media-video"
-        src={mediaUrl(video.src)}
-        poster={video.poster || undefined}
-        controls
-        preload="none"
-        playsInline
-        controlsList="nodownload noremoteplayback"
-        disablePictureInPicture
-        disableRemotePlayback
-        onContextMenu={noSave}
-        onDragStart={noSave}
-      />
-    </div>
+        <figcaption className="video-slot-note">
+          <b>Video coming soon</b>
+          <span>The film for this part is being prepared. It will play right here.</span>
+        </figcaption>
+      </figure>
+    );
+  }
+  return (
+    <video
+      className="video-slot"
+      src={mediaUrl(src)}
+      poster={poster || undefined}
+      controls
+      preload="none"
+      playsInline
+      controlsList="nodownload noremoteplayback"
+      disablePictureInPicture
+      disableRemotePlayback
+      onContextMenu={noSave}
+      onDragStart={noSave}
+    />
   );
 }

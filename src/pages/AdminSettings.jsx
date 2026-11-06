@@ -112,7 +112,7 @@ const sections = [
   {
     key: 'appearance',
     title: 'Appearance',
-    note: 'The default theme is what a first-time visitor gets. “Light” and “Dark” apply that theme immediately; “System” follows the visitor’s own device setting, so a phone in dark mode opens the site in dark. Either way the moment a visitor picks a theme themselves their choice is theirs to keep — the default only ever applies to a first visit.',
+    note: 'The default theme is what a first-time visitor gets. “Light” and “Dark” apply that theme immediately; “System” follows the visitor’s own device setting, so a phone in dark mode opens the site in dark. Either way the moment a visitor picks a theme themselves their choice is theirs to keep, the default only ever applies to a first visit.',
     fields: [
       ['toggleEnabled', 'Show the theme toggle to visitors', 'checkbox'],
       ['defaultTheme', 'Default theme', 'select', [['light', 'light'], ['dark', 'dark'], ['system', 'system']]],

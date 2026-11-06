@@ -49,9 +49,7 @@ export default function Faq() {
             <span>FAQs</span>
           </nav>
           <p className="faq-eyebrow">
-            <span className="faq-rule" aria-hidden="true" />
             Questions &amp; Answers
-            <span className="faq-rule" aria-hidden="true" />
           </p>
           <h1 className="faq-title fq-title">
             Find the <span>Clarity You’re Looking For</span>
@@ -169,7 +167,7 @@ export default function Faq() {
 
           <aside className="fq-crisis">
             <span className="fq-crisis-ico" aria-hidden="true">
-              <Icon name="heart" size={20} />
+              <span className="gdot" />
             </span>
             <div>
               <h2>A note about mental health &amp; wellbeing</h2>

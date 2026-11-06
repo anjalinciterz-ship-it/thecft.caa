@@ -26,7 +26,7 @@ export default function CourseDetail() {
           path: `/course/${course.id}`,
           jsonLd: courseJsonLd(course),
         }
-      : { title: 'Course not found — CFT by Zalah' },
+      : { title: 'Course not found, CFT by Zalah' },
   );
 
   if (!course) return <NotFound />;
@@ -116,9 +116,7 @@ export default function CourseDetail() {
       <section id="purpose" className="cq-band cq-white">
         <div className="container cq-col">
           <span className="cq-eyebrow">
-            <i className="rule" aria-hidden="true" />
             The Purpose
-            <i className="rule" aria-hidden="true" />
           </span>
           <h2 className="cq-h2">What This Program Is For</h2>
           <p className="cq-body">{course.description}</p>
@@ -129,9 +127,7 @@ export default function CourseDetail() {
       <section className="cq-band cq-ivory">
         <div className="container cq-col">
           <span className="cq-eyebrow">
-            <i className="rule" aria-hidden="true" />
             A Good Fit
-            <i className="rule" aria-hidden="true" />
           </span>
           <h2 className="cq-h2">Who This Course Is For</h2>
           <ul className="cq-outcomes cq-outcomes-lg">
@@ -148,9 +144,7 @@ export default function CourseDetail() {
       <section className="cq-band cq-white">
         <div className="container cq-col">
           <span className="cq-eyebrow">
-            <i className="rule" aria-hidden="true" />
             Curriculum
-            <i className="rule" aria-hidden="true" />
           </span>
           <h2 className="cq-h2">What You Will Learn</h2>
           {modules.length ? (
@@ -183,7 +177,7 @@ export default function CourseDetail() {
                     <p>
                       {to ? (
                         <>
-                          Also available as its own program —{' '}
+                          Also available as its own program,{' '}
                           <Link to={to}>view {label}</Link>.
                         </>
                       ) : (
@@ -203,9 +197,7 @@ export default function CourseDetail() {
       <section className="cq-band cq-lav">
         <div className="container cq-col">
           <span className="cq-eyebrow">
-            <i className="rule" aria-hidden="true" />
             Structure
-            <i className="rule" aria-hidden="true" />
           </span>
           <h2 className="cq-h2">How the Program Runs</h2>
           <dl className="cq-facts">
@@ -222,9 +214,7 @@ export default function CourseDetail() {
       <section className="cq-band cq-white">
         <div className="container cq-col">
           <span className="cq-eyebrow">
-            <i className="rule" aria-hidden="true" />
             Included
-            <i className="rule" aria-hidden="true" />
           </span>
           <h2 className="cq-h2">What Is Included</h2>
           <ul className="cq-outcomes cq-outcomes-lg">
@@ -280,9 +270,7 @@ export default function CourseDetail() {
       <section className="cq-band cq-ivory">
         <div className="container cq-col">
           <span className="cq-eyebrow">
-            <i className="rule" aria-hidden="true" />
             Questions
-            <i className="rule" aria-hidden="true" />
           </span>
           <h2 className="cq-h2">Frequently Asked Questions</h2>
           <CourseFaqs faqs={course.faqs} />
@@ -293,9 +281,7 @@ export default function CourseDetail() {
         <section className="cq-band cq-white cq-related">
           <div className="container">
             <span className="cq-eyebrow">
-              <i className="rule" aria-hidden="true" />
               Keep Exploring
-              <i className="rule" aria-hidden="true" />
             </span>
             <h2 className="cq-h2">Related Programs</h2>
             <div className="cq-grid">
@@ -314,7 +300,7 @@ export default function CourseDetail() {
             <p className="cq-price cq-price-lg">
               <OfferingPrice offering={course} className="" />
             </p>
-            <p className="cq-enrol-note">Enrolment is handled securely on this site — your course opens in My Courses.</p>
+            <p className="cq-enrol-note">Enrolment is handled securely on this site, your course opens in My Courses.</p>
           </div>
           <div className="cq-enrol-cta">
             {unlocked ? (

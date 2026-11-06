@@ -23,10 +23,10 @@ export const books = [
       heading: 'The Secret of Creation',
       subheading: 'When Nothing Matters',
       intro: [
-        'This is a book for parents to read to children about life values. Within every awakening soul lies a deep and ancient wisdom—buried, forgotten, and waiting to be awakened.',
+        'This is a book for parents to read to children about life values. Within every awakening soul lies a deep and ancient wisdom, buried, forgotten, and waiting to be awakened.',
       ],
       quote:
-        'The Secret of Creation is a journey of awakening, remembrance, and discovery—an invitation to reconnect with the wisdom of the Self and the secret of creation.',
+        'The Secret of Creation is a journey of awakening, remembrance, and discovery, an invitation to reconnect with the wisdom of the Self and the secret of creation.',
     },
     sections: [
       {
@@ -200,16 +200,34 @@ export const books = [
   },
 ];
 
-// The children's meditation that sits on the books page.
-// Set poster to '/images/books/meditation-poster.webp' once a still is supplied.
+// The children's meditation on the books page, in the two-part shape he laid
+// out on 2026-11-06. He has not sent the video files yet, so `src` stays null
+// and the page paints a placeholder in each slot; filling one in is a one-line
+// change per part. The old "Walk in the Woods" audio is gone by his request.
 export const meditation = {
-  title: 'Walk in the Woods',
-  kind: 'A guided meditation for children',
-  video: { src: 'video/childrens-meditation.mp4', poster: null },
-  audio: {
-    heading: 'Listen to the Meditation',
-    groups: [{ label: null, tracks: [{ label: 'Walk in the Woods', src: 'audio/kids-meditation/walk-in-the-woods.mp3' }] }],
-  },
+  kind: 'A Special Meditation Experience',
+  title: 'A Kids Meditation by Zalah',
+  intro:
+    'For the best experience, watch Part 1 first, then continue to Part 2. Both videos can be played directly on this page. Take a peaceful moment to relax, explore your imagination, and enjoy this children’s meditation experience with Zalah.',
+  parts: [
+    {
+      num: '01',
+      tag: 'Must watch before meditating',
+      heading: 'Part 1: Introduction to the Meditation',
+      body: 'Please watch this introduction before starting the meditation. It will help you understand the experience and get ready for the guided meditation in Part 2.',
+      src: null,
+      poster: null,
+    },
+    {
+      num: '02',
+      // No tag on Part 2 — his layout marks up only the introduction.
+      tag: null,
+      heading: 'Part 2: Start Your Meditation',
+      body: 'Once you have watched the introduction, you are ready to begin. Find a comfortable, quiet place, press play, and enjoy the full guided kids meditation with Zalah.',
+      src: null,
+      poster: null,
+    },
+  ],
 };
 
 export const getBook = (slug) => books.find((b) => b.slug === slug);
@@ -257,7 +275,7 @@ export const resources = [
   {
     id: 'medifestation',
     image: '/images/books/medifestation.png',
-    title: 'Medifestation — Awaken the True Power of Guided Meditation & Manifestation (Level 1)',
+    title: 'Medifestation, Awaken the True Power of Guided Meditation & Manifestation (Level 1)',
     type: 'course',
     price: 29,
     tagline: 'Meditation and manifestation working together.',
@@ -289,7 +307,7 @@ export const resources = [
   {
     id: 'earth-day',
     image: '/images/books/earth-day-bundle.png',
-    title: 'Earth Day — The Complete Healing The Earth Bundle',
+    title: 'Earth Day, The Complete Healing The Earth Bundle',
     type: 'bundle',
     price: null,
     tagline: 'A collection on connection with the living world.',

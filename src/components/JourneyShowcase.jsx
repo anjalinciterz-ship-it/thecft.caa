@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { journeys } from '../data/journeys';
+import { journeySrcSet, journeys } from '../data/journeys';
 import { SectionHead } from './ui';
 import { Icon } from './icons';
 
@@ -85,7 +85,7 @@ export default function JourneyShowcase() {
             <span className="jy-polaroid">
               <img
                 src={j.image}
-                srcSet={`${j.imageSmall} 760w, ${j.image} 1200w`}
+                srcSet={journeySrcSet(j)}
                 sizes="(max-width: 900px) 88vw, 380px"
                 alt={j.title}
                 style={{ objectPosition: j.focus }}

@@ -32,9 +32,7 @@ function Section({ block, tone }) {
       <div className="container">
         <div className="cq-prose">
           <span className="cq-eyebrow">
-            <i className="rule" aria-hidden="true" />
             {SECTION_LABEL[block.type] || 'From the Book'}
-            <i className="rule" aria-hidden="true" />
           </span>
           <h2 className="cq-h2">{block.heading}</h2>
           {block.body.map((p) => (
@@ -115,9 +113,7 @@ export default function BookDetail() {
           <div className="container">
             <div className="cq-prose">
               <span className="cq-eyebrow">
-                <i className="rule" aria-hidden="true" />
                 Listen
-                <i className="rule" aria-hidden="true" />
               </span>
               <h2 className="cq-h2">Listen to the Book</h2>
             </div>

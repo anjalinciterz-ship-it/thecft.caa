@@ -141,6 +141,12 @@ export function AuthProvider({ children }) {
 
   const login = useCallback((identifier, password) => authenticate('/auth/login', { identifier, password }), [authenticate]);
   const verifyOtp = useCallback((challengeId, code) => authenticate('/auth/otp/verify', { challengeId, code }), [authenticate]);
+  const verifyMagicLink = useCallback((token) => {
+    if (typeof token !== 'string' || !token) {
+      return Promise.reject(new ApiError('invalid_link', 0, 'That sign-in link is missing its code. Request a new one.'));
+    }
+    return authenticate('/auth/magic/verify', { token });
+  }, [authenticate]);
   const googleLogin = useCallback((credential) => {
     if (typeof credential !== 'string' || !credential) {
       return Promise.reject(new ApiError('GOOGLE_CREDENTIAL_MISSING', 0, 'Google did not return a sign-in credential. Please try again.'));
@@ -154,7 +160,11 @@ export function AuthProvider({ children }) {
     refreshSession().catch(() => {});
     return () => {
       mounted.current = false;
-      sessionRequest.current?.abort();
+      // A sign-in that a page asked for owns the request slot. Cancelling it here
+      // would throw away a request the server already accepted — in development
+      // StrictMode remounts the tree, and the magic-link page verifies the moment
+      // it mounts.
+      if (!mutationPending.current) sessionRequest.current?.abort();
       enrollmentRequest.current?.abort();
     };
   }, [refreshSession]);
@@ -188,10 +198,10 @@ export function AuthProvider({ children }) {
   }, [user, enrollments]);
 
   const value = useMemo(() => ({
-    user, isAuthed: !!user, loading, authError, login, verifyOtp, googleLogin, logout,
+    user, isAuthed: !!user, loading, authError, login, verifyOtp, verifyMagicLink, googleLogin, logout,
     refreshSession, refreshEnrollments, enrollments, owns,
     authConfig, authConfigLoading, authConfigError,
-  }), [user, loading, authError, login, verifyOtp, googleLogin, logout, refreshSession,
+  }), [user, loading, authError, login, verifyOtp, verifyMagicLink, googleLogin, logout, refreshSession,
     refreshEnrollments, enrollments, owns, authConfig, authConfigLoading, authConfigError]);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

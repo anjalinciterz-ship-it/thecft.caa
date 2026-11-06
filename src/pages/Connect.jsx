@@ -13,7 +13,7 @@ const PATHS = [
   {
     icon: 'chat',
     title: 'Ask a Question',
-    text: 'Course details, the Wisdom Class, technical help or anything else — write to us and we’ll answer personally.',
+    text: 'Course details, the Wisdom Class, technical help or anything else, write to us and we’ll answer personally.',
     href: '#cn-form',
     cta: 'Open the form',
   },
@@ -106,7 +106,7 @@ function ContactForm() {
     return (
       <div className="cn-sent" role="status">
         <span className="cn-sent-ico" aria-hidden="true">
-          <Icon name="heart" size={22} />
+          <span className="gdot" />
         </span>
         <h3>Thank you, {values.first.trim()}.</h3>
         <p>Your message is with the CFT team. We usually respond within 24–48 hours.</p>
@@ -254,7 +254,6 @@ export default function Connect() {
             Whether you have a question, want to explore a program, or simply want to connect, we’re here to help you
             find your next step.
           </p>
-          <span className="cn-rule" aria-hidden="true" />
           <div className="cn-hero-actions">
             <a className="btn btn-gold" href="#cn-form">
               Send Us a Message <Icon name="arrow" size={16} />
@@ -274,7 +273,7 @@ export default function Connect() {
             {PATHS.map((p) => (
               <article className="cn-path" key={p.title}>
                 <span className="cn-path-ico" aria-hidden="true">
-                  <Icon name={p.icon} size={22} />
+                  <span className="gdot" />
                 </span>
                 <h3>{p.title}</h3>
                 <p>{p.text}</p>
@@ -292,7 +291,7 @@ export default function Connect() {
             <figure className="cn-poster">
               <img
                 src={site.wisdomClass.image}
-                alt="Wednesday Free Wisdom Call poster with Zalah — every Wednesday, 7:00 PM Mountain Time"
+                alt="Wednesday Free Wisdom Call poster with Zalah, every Wednesday, 7:00 PM Mountain Time"
                 width="1024"
                 height="683"
               />
@@ -326,7 +325,7 @@ export default function Connect() {
               </ul>
               <WisdomCallCta next={next}>Reserve My Place</WisdomCallCta>
               <NextCallNotice next={next} className="cn-published" />
-              <p className="cn-fine">Come as you are — no preparation needed.</p>
+              <p className="cn-fine">Come as you are, no preparation needed.</p>
             </div>
           </div>
         </div>
@@ -388,7 +387,7 @@ export default function Connect() {
           <h2>
             Ready when you are. <span>Take the first step.</span>
           </h2>
-          <p>Explore the teachings, or join us live on Wednesday — whichever feels right for today.</p>
+          <p>Explore the teachings, or join us live on Wednesday, whichever feels right for today.</p>
           <div className="cn-cta-row">
             <Link to="/courses" className="btn btn-gold">
               Explore CFT

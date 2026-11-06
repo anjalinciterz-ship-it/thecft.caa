@@ -40,7 +40,7 @@ export default function ForgotPassword() {
 
   return (
     <AuthShell
-      image="/images/site/auth-beach.webp"
+      image="/images/photos/mountain-sit.webp"
       eyebrow="Account Recovery"
       lead="We will email you a link to choose a new password. The link works once and expires in 30 minutes."
       titleLead="Reset Your "

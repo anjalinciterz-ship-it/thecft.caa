@@ -1,0 +1,15 @@
+# Netlify builds the SPA from source and publishes Vite's dist output. The API
+# origin is NOT baked here: VITE_API_BASE is set in the Netlify dashboard
+# (Site settings → Environment variables) to the Render URL, so the same commit
+# works whether the API lives on the same host or on Render.
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+# public/_redirects already ships the SPA fallback, so deep links like
+# /dashboard/courses resolve to index.html instead of a 404. This block mirrors
+# it so the rule also holds if the file ever moves.
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

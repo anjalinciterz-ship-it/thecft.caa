@@ -32,7 +32,7 @@ export default function FaqAccordion({ id, question, answer, icon, level = 3, de
         >
           {icon && (
             <span className="faq-ico" aria-hidden="true">
-              <Icon name={icon} size={21} />
+              <span className="gdot" />
             </span>
           )}
           <span className="faq-q">{question}</span>

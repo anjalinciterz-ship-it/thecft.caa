@@ -19,7 +19,7 @@ export default function Signup() {
   useEffect(() => { if (isAuthed && !loading) navigate(destination, { replace: true }); }, [isAuthed, loading, navigate, destination]);
   const land = () => navigate(destination, { replace: true });
 
-  return <AuthShell image="/images/site/auth-arch.webp" eyebrow="Begin Your Journey" titleLead="Create Your" titleAccent="Account" lead="A little space for learning, reflection and growth. Start with your email or mobile number—no password required.">
+  return <AuthShell image="/images/photos/fog-pier.webp" eyebrow="Begin Your Journey" titleLead="Create Your" titleAccent="Account" lead="A little space for learning, reflection and growth. Start with your email or mobile number, no password required.">
     <AuthCardHead eyebrow="Create Your Account" title="Get Started" sub="Verify your email or mobile number to begin." />
     {destination !== '/dashboard' && <p className="au-method-notice">Your selected course will be waiting after registration.</p>}
     <div className="au-methods au-methods-two" role="group" aria-label="Registration method">

@@ -20,6 +20,22 @@ function respond(file, type, size, req, res) {
   res.setHeader('Cache-Control', 'no-store');
   res.setHeader('X-Content-Type-Options', 'nosniff');
 
+  // An aborted download is normal: the visitor leaves the page, or the player
+  // gives up on a file that is not there. Piping a read stream into a response
+  // that has already gone emits an error on the stream, and nothing is listening
+  // for it, so the whole dev server dies with an unhandled exception.
+  const pump = (start, end) => {
+    const stream = createReadStream(file, start === undefined ? undefined : { start, end });
+    const giveUp = () => {
+      stream.destroy();
+      if (!res.writableEnded) res.destroy();
+    };
+    stream.on('error', giveUp);
+    res.on('error', giveUp);
+    res.on('close', () => stream.destroy());
+    stream.pipe(res);
+  };
+
   const range = /^bytes=(\d*)-(\d*)$/.exec(req.headers.range || '');
   if (range && (range[1] || range[2])) {
     const start = range[1] ? Number(range[1]) : Math.max(0, size - Number(range[2]));
@@ -33,12 +49,12 @@ function respond(file, type, size, req, res) {
     res.setHeader('Content-Range', `bytes ${start}-${end}/${size}`);
     res.setHeader('Content-Length', end - start + 1);
     if (req.method === 'HEAD') return res.end();
-    return createReadStream(file, { start, end }).pipe(res);
+    return pump(start, end);
   }
 
   res.setHeader('Content-Length', size);
   if (req.method === 'HEAD') return res.end();
-  return createReadStream(file).pipe(res);
+  return pump();
 }
 
 /**

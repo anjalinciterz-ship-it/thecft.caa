@@ -89,9 +89,7 @@ export default function WisdomCountdown({ heading = 'The next call starts in', v
         </span>
         {heading ? (
           <p className="wc2-count-head">
-            <i aria-hidden="true" />
             {heading}
-            <i aria-hidden="true" />
           </p>
         ) : null}
         <div className="wc2-tiles" role="timer" aria-live="off">

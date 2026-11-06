@@ -14,7 +14,6 @@ export function AuthShell({ image, eyebrow, titleLead, titleAccent, lead, featur
           </Link>
           <div className="au-hero-copy">
             <p className="au-eyebrow">
-              <i aria-hidden="true" />
               {eyebrow}
             </p>
             <h1 className="au-title">
@@ -47,11 +46,9 @@ export function AuthCardHead({ eyebrow, title, sub }) {
   return (
     <>
       <div className="au-card-head">
-        <i className="au-rule" aria-hidden="true" />
         <span className="au-badge">
-          <Icon name="lotus" size={26} />
+          <span className="gdot" />
         </span>
-        <i className="au-rule au-rule-flip" aria-hidden="true" />
       </div>
       {eyebrow ? <p className="au-card-eyebrow">{eyebrow}</p> : null}
       <h2 className="au-card-title">{title}</h2>

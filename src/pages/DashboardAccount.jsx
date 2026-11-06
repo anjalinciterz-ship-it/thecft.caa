@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import { apiRequest } from '../lib/api';
+import { apiRequest, apiUrl } from '../lib/api';
 import { useAuth } from '../lib/auth';
 import ProfileSettings from '../components/ProfileSettings';
 import { authDestination } from '../lib/authNavigation';
@@ -67,7 +67,7 @@ export function Certificates() {
   const resource = useDashboardResource('/student/certificates');
   const action = useAction();
   const download = (certificate) => action.run(async () => {
-    const response = await fetch(`/api/v1/certificates/${encodeURIComponent(certificate.certificateId)}/pdf`, { credentials: 'include', redirect: 'error' });
+    const response = await fetch(apiUrl(`/certificates/${encodeURIComponent(certificate.certificateId)}/pdf`), { credentials: 'include', redirect: 'error' });
     if (!response.ok) { const result = await response.json().catch(() => null); throw new Error(result?.error?.message || 'The certificate could not be downloaded.'); }
     if (!response.headers.get('content-type')?.includes('application/pdf')) throw new Error('The server did not return a certificate PDF.');
     const url = URL.createObjectURL(await response.blob());

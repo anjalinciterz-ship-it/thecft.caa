@@ -137,9 +137,7 @@ export default function Blog() {
             <span>Blog</span>
           </nav>
           <p className="bl-eyebrow">
-            <span className="rule" aria-hidden="true" />
             INSIGHTS &amp; WISDOM
-            <span className="rule" aria-hidden="true" />
           </p>
           <h1 className="bl-title">
             Ideas for a <span>More Conscious Life</span>

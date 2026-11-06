@@ -3,13 +3,14 @@ import { site } from '../data/site';
 import { testimonials } from '../data/testimonials';
 import { Icon } from '../components/icons';
 import TestimonialCard from '../components/TestimonialCard';
+import PhotoMosaic from '../components/PhotoMosaic';
 import { usePageMeta } from '../lib/seo';
 
 const VOICE_PICKS = ['Jay', 'Barry', 'Chris'];
 
 export default function About() {
   usePageMeta({
-    title: 'About Us — CFT by Zalah',
+    title: 'About Us, CFT by Zalah',
     description:
       'Meet Zalah, founder of The Centre for Transformation: our mission, vision and values, our story and philosophy, his teaching approach, milestones and TEDx talk, and real student transformations.',
     path: '/about',
@@ -34,9 +35,7 @@ export default function About() {
           </figure>
           <div className="ab-hero-copy">
             <span className="cq-eyebrow">
-              <i className="rule" aria-hidden="true" />
               About Our Founder
-              <i className="rule" aria-hidden="true" />
             </span>
             <h1 className="cq-title">
               A Life Dedicated to <span>Transformation</span>
@@ -66,9 +65,7 @@ export default function About() {
       <section className="cq-band cq-white ab-mvv">
         <div className="container">
           <span className="cq-eyebrow">
-            <i className="rule" aria-hidden="true" />
             Our Purpose
-            <i className="rule" aria-hidden="true" />
           </span>
           <h2 className="cq-h2">
             Guiding You Toward a <span>Brighter Tomorrow</span>
@@ -80,7 +77,7 @@ export default function About() {
           <div className="ab-mvv-grid">
             {mvv.map((p) => (
               <div key={p.title} className="ab-mvv-block">
-                <Icon name={p.icon} size={26} />
+                <span className="gdot" aria-hidden="true" />
                 <h3>{p.title}</h3>
                 <p>{p.text}</p>
                 <span className="ab-mvv-foot">{p.foot}</span>
@@ -94,9 +91,7 @@ export default function About() {
       <section id="story" className="cq-band cq-ivory ab-story">
         <div className="container">
           <span className="cq-eyebrow">
-            <i className="rule" aria-hidden="true" />
             Our Story &amp; Philosophy
-            <i className="rule" aria-hidden="true" />
           </span>
           <h2 className="cq-h2">A Sanctuary for Your Spiritual Transformation</h2>
           <div className="ab-story-cols">
@@ -121,15 +116,27 @@ export default function About() {
               </p>
               <p>
                 Our wisdom ranges from “novice” to “university” levels, offering insights that are often not found in
-                mainstream circles. Learning here is ongoing and shared — community, practice and conversation matter as
+                mainstream circles. Learning here is ongoing and shared, community, practice and conversation matter as
                 much as the teachings themselves.
               </p>
             </div>
           </div>
           <blockquote className="ab-quote">
             <p>“{site.philosophy}”</p>
-            <cite>— Zalah</cite>
+            <cite>Zalah</cite>
           </blockquote>
+        </div>
+      </section>
+
+      {/* 3b — the photographs, viewable full-size */}
+      <section className="cq-band cq-plum ab-mosaic-band">
+        <div className="container">
+          <PhotoMosaic
+            eyebrow="On The Path"
+            title="Ordinary Moments,"
+            accent="Uncommon Stillness."
+            sub="Photographs from the everyday practice behind these teachings. Select any picture to open it full-size."
+          />
         </div>
       </section>
 
@@ -138,9 +145,7 @@ export default function About() {
         <div className="container ab-approach-grid">
           <div className="ab-approach-copy">
             <span className="cq-eyebrow">
-              <i className="rule" aria-hidden="true" />
               Zalah’s Approach
-              <i className="rule" aria-hidden="true" />
             </span>
             <h2 className="cq-h2">
               A Holistic Path to <span>Transformation</span>
@@ -169,10 +174,10 @@ export default function About() {
           </div>
           <figure className="ab-approach-art">
             <img
-              src="/images/site/meditation-concept.jpg"
-              alt="Meditation concept artwork used in CFT sessions"
-              width={1600}
-              height={897}
+              src="/images/photos/practice-morning.webp"
+              alt="A student practising a gentle movement at home in the morning light"
+              width={1344}
+              height={747}
               loading="lazy"
             />
             <figcaption>Teachings move from concept to lived practice in every CFT session.</figcaption>
@@ -184,9 +189,7 @@ export default function About() {
       <section className="cq-band cq-plum ab-exp">
         <div className="container">
           <span className="cq-eyebrow">
-            <i className="rule" aria-hidden="true" />
             Experience &amp; Milestones
-            <i className="rule" aria-hidden="true" />
           </span>
           <h2 className="cq-h2">
             Two Decades of Teaching, <span>Shared Worldwide</span>
@@ -208,7 +211,7 @@ export default function About() {
                 <sup>x</sup> Speaker
               </span>
               <h3>{site.hero.tedx.talk}</h3>
-              <p>{f.tedx.join(' ')} — Zalah has carried CFT’s ideas from the classroom to the TEDx stage.</p>
+              <p>{f.tedx.join(' ')}, Zalah has carried CFT’s ideas from the classroom to the TEDx stage.</p>
             </div>
             <a href={site.tedTalk} target="_blank" rel="noreferrer" className="btn btn-gold">
               Watch His TEDx Talk
@@ -222,9 +225,7 @@ export default function About() {
       <section className="cq-band cq-ivory ab-voices">
         <div className="container">
           <span className="cq-eyebrow">
-            <i className="rule" aria-hidden="true" />
             Results &amp; Testimonials
-            <i className="rule" aria-hidden="true" />
           </span>
           <h2 className="cq-h2">
             Real People. <span>Real Transformations.</span>
@@ -247,16 +248,14 @@ export default function About() {
       <section className="cq-band cq-plum ab-cta">
         <div className="container ab-cta-box">
           <span className="cq-eyebrow">
-            <i className="rule" aria-hidden="true" />
             Be Part of a Kinder World
-            <i className="rule" aria-hidden="true" />
           </span>
           <h2 className="cq-h2">
             Together, We Can Create a <span>Brighter Tomorrow</span>
           </h2>
           <p className="cq-lead">
-            Explore CFT’s educational programs, join the free Wednesday Evening Wisdom Class, or start a conversation —
-            every path begins with a single step.
+            Explore CFT’s educational programs, join the free Wednesday Evening Wisdom Class, or start a conversation.
+            Every path begins with a single step.
           </p>
           <div className="ab-cta-row">
             <Link to="/courses" className="btn btn-gold">

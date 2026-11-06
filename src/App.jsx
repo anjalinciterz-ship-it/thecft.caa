@@ -16,6 +16,7 @@ import Connect from './pages/Connect';
 import WisdomCall from './pages/WisdomCall';
 import Faq from './pages/Faq';
 import Login from './pages/Login';
+import MagicLink from './pages/MagicLink';
 import Signup from './pages/Signup';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
@@ -38,7 +39,7 @@ function ScrollToTop() {
 
 export default function App() {
   const { pathname } = useLocation();
-  const authPages = new Set(['/login', '/signup', '/forgot-password', '/reset-password']);
+  const authPages = new Set(['/login', '/signup', '/forgot-password', '/reset-password', '/magic-link']);
   const bare = authPages.has(pathname) || pathname.startsWith('/dashboard') || pathname.startsWith('/admin');
   return (
     <>
@@ -62,6 +63,7 @@ export default function App() {
           <Route path="/faq" element={<Faq />} />
           <Route path="/pages/:slug" element={<Suspense fallback={<p role="status">Loading page…</p>}><CMSPage /></Suspense>} />
           <Route path="/login" element={<Login />} />
+          <Route path="/magic-link" element={<MagicLink />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password" element={<ResetPassword />} />

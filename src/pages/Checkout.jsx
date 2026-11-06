@@ -266,7 +266,7 @@ export default function Checkout() {
           <h1 className="cq-post-title">Review your enrolment</h1>
           <p className="cq-post-dek">{offering.short || offering.name}</p>
 
-          {status === 'cancelled' && <StatusLine tone="error">Payment was cancelled — nothing was charged and no access was granted. You can try again below.</StatusLine>}
+          {status === 'cancelled' && <StatusLine tone="error">Payment was cancelled, nothing was charged and no access was granted. You can try again below.</StatusLine>}
 
           {alreadyOwns ? <div className="cq-show-cta">
             <Link className="btn btn-gold" to={offering.productKind === 'program' ? '/dashboard/courses' : `/dashboard/courses/${encodeURIComponent(offering.slug)}`}>Open course<Icon name="arrow" size={16} /></Link>
@@ -285,11 +285,11 @@ export default function Checkout() {
             </form>}
 
             {!offering.availableForPurchase && <StatusLine tone="error">Enrolment is not open yet: the lessons for this offering are still being prepared. You will not be charged.</StatusLine>}
-            {!user?.emailVerified && <StatusLine>Add and verify your email so we can send your receipt — <Link to={settingsReturn}>verify email</Link>.</StatusLine>}
+            {!user?.emailVerified && <StatusLine>Add and verify your email so we can send your receipt, <Link to={settingsReturn}>verify email</Link>.</StatusLine>}
             {message && <StatusLine tone={failed ? 'error' : 'info'}>{message}</StatusLine>}
-            {errorCode === 'email_required' && <StatusLine>Checkout needs a verified email — <Link to={settingsReturn}>add and verify it</Link>.</StatusLine>}
+            {errorCode === 'email_required' && <StatusLine>Checkout needs a verified email, <Link to={settingsReturn}>add and verify it</Link>.</StatusLine>}
             {order && order.paymentStatus === 'pending' && <p className="cq-enrol-note">Order {order.orderNumber} is awaiting payment. <button type="button" className="btn btn-ghost" onClick={() => resumeOrder(order.id)}>Refresh status</button></p>}
-            {order && order.paymentStatus !== 'pending' && !alreadyOwns && <p className="cq-enrol-note">Payment recorded for order {order.orderNumber}, but your access has not been issued yet — it appears the moment the provider confirmation is verified. <button type="button" className="btn btn-ghost" onClick={() => resumeOrder(order.id)}>Refresh status</button></p>}
+            {order && order.paymentStatus !== 'pending' && !alreadyOwns && <p className="cq-enrol-note">Payment recorded for order {order.orderNumber}, but your access has not been issued yet, it appears the moment the provider confirmation is verified. <button type="button" className="btn btn-ghost" onClick={() => resumeOrder(order.id)}>Refresh status</button></p>}
 
             <div className="cq-show-cta">
               {offering.availableForPurchase && <button type="button" className="btn btn-gold" disabled={paying || quoteState.busy || Boolean(quoteState.error)} onClick={beginPayment}>
@@ -298,7 +298,7 @@ export default function Checkout() {
               </button>}
               <Link className="btn btn-ghost" to={`/course/${encodeURIComponent(offering.id)}`}>Back to the course page</Link>
             </div>
-            <p className="cq-enrol-note">Card details are entered on Stripe’s secure page. Access is granted only after the server verifies the payment — arriving back here is not a receipt.</p>
+            <p className="cq-enrol-note">Card details are entered on Stripe’s secure page. Access is granted only after the server verifies the payment, arriving back here is not a receipt.</p>
           </>}
         </div>
         <div className="cq-post-art">{offering.banner && <img className="cq-art" src={offering.banner} alt="" width={offering.bannerW || undefined} height={offering.bannerH || undefined} />}</div>

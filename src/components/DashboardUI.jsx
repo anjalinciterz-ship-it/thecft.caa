@@ -83,3 +83,108 @@ export function CourseTile({ course, owned = false }) {
     <Link to={to} className="db-button-secondary">{owned ? active ? progress > 0 ? 'Continue learning' : 'Start learning' : 'Review access' : 'Explore course'}<DashIcon name="arrow" size={15} /></Link>
   </article>;
 }
+
+/* ---------- The 2026-11-06 comps ----------
+   Ivory hero with the photograph bleeding in from the right, section heads on a
+   gold rule, and the cards that sit under them. The gold link is a stretched
+   link, so the card opens the same place as its label. */
+
+export function MemberHero({ eyebrow, title, tag, lead, actions }) {
+  return (
+    <section className="db-hero">
+      <img className="db-hero-art" src="/images/photos/signpost.webp" alt="" aria-hidden="true" />
+      <div className="db-hero-copy">
+        <span className="db-eyebrow">{eyebrow}</span>
+        <h1>{title}</h1>
+        {tag ? <p className="db-hero-tag">{tag}</p> : null}
+        {lead ? <p className="db-hero-lead">{lead}</p> : null}
+        {actions ? <div className="db-hero-actions">{actions}</div> : null}
+      </div>
+    </section>
+  );
+}
+
+export function RuleHead({ title, sub }) {
+  return <div className="db-rule-head"><h2>{title}</h2>{sub ? <p>{sub}</p> : null}</div>;
+}
+
+// Two stacked paths so the band reads as a wave rather than a cut edge.
+function Wave({ tone = 'lavender' }) {
+  return (
+    <svg className={`db-wave db-wave-${tone}`} viewBox="0 0 320 46" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+      <path d="M0 30c46-15 78 8 128-1s92-21 192-6v23H0Z" />
+      <path d="M0 39c58-11 96 6 150-2s110-13 170-3v12H0Z" />
+    </svg>
+  );
+}
+
+export function NextCard({ icon, title, text, to, label, tone }) {
+  return (
+    <article className="db-next-card db-panel">
+      <span className="db-chip"><DashIcon name={icon} size={22} /></span>
+      <div className="db-next-body">
+        <h3>{title}</h3>
+        <p>{text}</p>
+        <Link className="db-next-link" to={to}>{label}<DashIcon name="arrow" size={16} /></Link>
+      </div>
+      <Wave tone={tone} />
+    </article>
+  );
+}
+
+export function MiniCard({ icon, title, text, to }) {
+  return (
+    <article className="db-mini-card db-panel">
+      <span className="db-chip"><DashIcon name={icon} size={21} /></span>
+      <div><h3><Link to={to}>{title}</Link></h3><p>{text}</p></div>
+      <DashIcon className="db-mini-arrow" name="arrow" size={19} />
+    </article>
+  );
+}
+
+export function ContinueCard({ course }) {
+  const to = `/dashboard/courses/${encodeURIComponent(course.slug)}`;
+  // A course's only image is its banner — a wide promo graphic with the price
+  // printed into it. Cropped to this thumbnail it turns unreadable, so the card
+  // uses a photograph from the approved pool instead.
+  const art = '/images/photos/inner-peace.webp';
+  const percent = Math.max(0, Math.min(100, Number(course.percent || 0)));
+  return (
+    <article className="db-learn db-panel">
+      <Link className="db-learn-art" to={to} tabIndex={-1} aria-hidden="true">
+        <img src={art} alt="" loading="lazy" />
+        <span className="db-learn-play"><DashIcon name="play" size={19} /></span>
+      </Link>
+      <div className="db-learn-copy">
+        <span className="db-eyebrow">Your program</span>
+        <h3><Link to={to}>{course.title}</Link></h3>
+        <p className="db-learn-meta">
+          <span><DashIcon name="play" size={14} />{course.lessonsTotal || 0} lessons</span>
+          <i aria-hidden="true" />
+          <span><DashIcon name="film" size={14} />{course.hasVideo ? 'Video program' : 'Self-paced course'}</span>
+        </p>
+        <div className="db-learn-progress">
+          <progress max="100" value={percent} aria-label={`${course.title} progress`} />
+          <span>{percent}% Complete</span>
+        </div>
+      </div>
+      <Link className="db-button-plum" to={to}><DashIcon name="play" size={15} />{percent > 0 ? 'Resume Learning' : 'Start Learning'}</Link>
+    </article>
+  );
+}
+
+export function EventCard({ title, cadence, when, to }) {
+  return (
+    <aside className="db-event">
+      <img className="db-event-art" src="/images/photos/mountain-sit.webp" alt="" aria-hidden="true" />
+      <span className="db-chip db-chip-solid"><DashIcon name="calendar" size={21} /></span>
+      <span className="db-eyebrow">Upcoming event</span>
+      <h3>{title}</h3>
+      <ul>
+        <li><DashIcon name="calendar" size={16} /><span>{cadence}</span></li>
+        <li><DashIcon name="clock" size={16} /><span>{when}</span></li>
+      </ul>
+      <Link className="db-button-outline" to={to}>Register Now<DashIcon name="arrow" size={15} /></Link>
+    </aside>
+  );
+}

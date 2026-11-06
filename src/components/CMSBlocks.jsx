@@ -180,7 +180,7 @@ export function CMSBlock({ block, preview = false, heroHeading = 'h1' }) {
     case 'navigation': return <nav className="cms-navigation" aria-label={`${text(d.group) || 'Page'} navigation`}><ul>{list(d.items).filter((item) => item.visible !== false).map((item, index) => <li key={index}><SafeLink to={item.to}>{text(item.label)}</SafeLink>{list(item.children).length > 0 && <ul>{item.children.map((child, i) => <li key={i}><SafeLink to={child.to}>{text(child.label)}</SafeLink></li>)}</ul>}</li>)}</ul></nav>;
     case 'stats': return <Stats items={d.items} />;
     case 'divider': return <div className="cms-divider" style={{ minHeight: Math.min(200, Math.max(0, Number(d.height) || 0)) }} aria-hidden="true">{d.style === 'ornament' ? <SectionDivider /> : d.style === 'spacer' ? null : <hr />}</div>;
-    case 'quote': return <figure className="cms-quote"><blockquote>“{text(d.text)}”</blockquote>{d.attribution && <figcaption>— {text(d.attribution)}</figcaption>}</figure>;
+    case 'quote': return <figure className="cms-quote"><blockquote>“{text(d.text)}”</blockquote>{d.attribution && <figcaption>{text(d.attribution)}</figcaption>}</figure>;
     case 'countdown': return <Countdown data={d} preview={preview} />;
     default: return preview ? <p className="cms-empty">Unsupported block type: {text(block?.type)}. The public renderer omits this block.</p> : null;
   }

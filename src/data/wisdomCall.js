@@ -23,7 +23,7 @@ export const wisdomCall = {
     { icon: 'heart', title: 'Reflect Together', text: 'Share, learn and grow in a safe space' },
     { icon: 'bulb', title: 'Practical Tools', text: 'Take away simple practices for a calmer, happier you' },
   ],
-  image: '/images/site/wisdom-meditation-2x.webp',
+  image: '/images/photos/wisdom-call.webp',
 
   intro: {
     eyebrow: 'Wednesday Wisdom Call · Free Live Session',
