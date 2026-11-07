@@ -257,8 +257,8 @@ export const courses = [
     outcome:
       'Perfect for those who are ready to expand their awareness, gain clarity, and step into a more aligned and purposeful life.',
     bonus:
-      'Exclusive bonus: the first 35 students get a private 1-on-1 session with Zalah to receive tailored insights and direction.',
-    bundleIncludes: ['accelerator', 'sa1', 'sa2'],
+      'Includes 4 free 1-on-1 sessions with Zalah for personalized guidance and direction.',
+    bundleIncludes: ['accelerator', 'mindlife', 'sa1', 'sa2'],
     bannerW: 1671,
     bannerH: 941,
     outcomes: [
@@ -270,20 +270,20 @@ export const courses = [
     whoFor: [
       'Want the full pathway, Accelerator plus both Spiritual Awakening stages, in one enrolment.',
       'Ready for deep, sustained transformation work.',
-      'Early enrollees: the first 35 students also receive a private 1-on-1 session with Zalah.',
+      'Includes 4 free 1-on-1 sessions with Zalah for personalized guidance.',
     ],
     faqs: [
       {
         q: 'What is inside the program?',
-        a: 'It bundles the 10-Part Consciousness Accelerator, Spiritual Awakening 1 and Spiritual Awakening 2 into a single enrolment.',
+        a: 'It bundles the 10-Part Consciousness Accelerator, The Mind & Life Transformation Collection, Spiritual Awakening 1 and Spiritual Awakening 2 into a single enrolment.',
       },
       {
         q: 'How do I enrol and pay?',
         a: 'The Enroll Now button enrols you right here on this site, and the program opens in My Courses. The price is $2,199 USD.',
       },
       {
-        q: 'Is there a bonus?',
-        a: 'Yes, the first 35 students receive a private 1-on-1 session with Zalah for tailored insights and direction.',
+        q: 'Are there 1-on-1 sessions included?',
+        a: 'Yes, the Complete Program includes 4 free 1-on-1 sessions with Zalah for tailored insights and direction.',
       },
     ],
     seo: {
