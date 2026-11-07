@@ -267,6 +267,53 @@ export default function CourseDetail() {
         </div>
       </section>
 
+      {course.community && (
+        <section className="cq-band cq-lav">
+          <div className="container cq-col">
+            <span className="cq-eyebrow">
+              Community & Welcome
+            </span>
+            <h2 className="cq-h2">What You'll Get From {course.name}</h2>
+            <p className="cq-body">As a student, you'll get a few great benefits from being here:</p>
+            <ul className="cq-outcomes cq-outcomes-lg">
+              {course.community.benefits.map((b) => (
+                <li key={b.title}>
+                  <Icon name="lotus" size={16} />
+                  <span>
+                    <strong>{b.title}</strong> {b.text}
+                  </span>
+                </li>
+              ))}
+            </ul>
+
+            <h3 className="cq-h3" style={{ marginTop: '2rem' }}>
+              How to Get the Most Out of {course.name}
+            </h3>
+            <p className="cq-body">
+              We're here to get results and we know you are too. Here's the best way for each of us to get there:
+            </p>
+            <ul className="cq-outcomes cq-outcomes-lg">
+              {course.community.guidelines.map((g) => (
+                <li key={g.title}>
+                  <Icon name="lotus" size={16} />
+                  <span>
+                    <strong>{g.title}</strong> {g.text}
+                  </span>
+                </li>
+              ))}
+            </ul>
+
+            <h3 className="cq-h3" style={{ marginTop: '2rem' }}>
+              You're a Part of Something Bigger
+            </h3>
+            <p className="cq-body">{course.community.note}</p>
+            <p className="cq-body" style={{ marginTop: '1.5rem', fontWeight: 600 }}>
+              Let's get started.
+            </p>
+          </div>
+        </section>
+      )}
+
       <section className="cq-band cq-ivory">
         <div className="container cq-col">
           <span className="cq-eyebrow">

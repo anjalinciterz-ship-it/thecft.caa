@@ -6,6 +6,44 @@ export const courseCategories = [
   { key: 'life-transformation', label: 'Life Transformation' },
 ];
 
+// Community/welcome text shown on each course detail page. Templated so the
+// same structure applies to every course with just the name substituted.
+const makeCommunity = (courseName) => ({
+  benefits: [
+    {
+      title: 'Access exclusive content.',
+      text: `We've designed ${courseName} to inspire, instruct, and engage.`,
+    },
+    {
+      title: 'Meet new people.',
+      text: `Your fellow students are as motivated as you are to master what we're exploring here in ${courseName}.`,
+    },
+    {
+      title: 'Get results.',
+      text: `As you dive into the course content and meet the community here in ${courseName}, you're on a path of mastery. While it's not necessarily easy, the transformation we'll get together matters.`,
+    },
+  ],
+  guidelines: [
+    {
+      title: 'Be supportive.',
+      text: 'Encourage and support your fellow students. No one here is looking for your criticism, cynicism, advice, or judgement. (We can get those things on the rest of the Internet).',
+    },
+    {
+      title: 'Share generously.',
+      text: 'Your stories and experiences may be exactly what another student needs to hear today to solve a problem or seize an opportunity.',
+    },
+    {
+      title: 'Be constructive.',
+      text: "We're here to push each other forward and lift each other up. Find ways to help each other think bigger, reframe challenges, and stay curious.",
+    },
+    {
+      title: "Don't spam, promote, or troll.",
+      text: `${courseName} exists to help you learn. It's not a place to spam, promote, or bully anyone else.`,
+    },
+  ],
+  note: `By joining ${courseName}, you're also a member of The Centre for Transformation, our overarching community. You'll be able to keep up with our ${courseName} activity both here, but also in your main The Centre for Transformation Activity Feed (think about it as our own Facebook newsfeed with Course and other activity all in one place).`,
+});
+
 // Prices verified against the live Mighty Networks checkout on 2026-10-13.
 // The WooCommerce product prices on thecft.ca are stale (e.g. Accelerator $33).
 export const courses = [
@@ -73,6 +111,7 @@ export const courses = [
       { title: 'Lesson 9', items: ['Lesson 9 Video', 'Exercise #9'] },
       { title: 'Lesson 10', items: ['Lesson 10 Video', 'Exercise #10'] },
     ],
+    community: makeCommunity('10-Part Consciousness Accelerator'),
   },
   {
     id: 'mindlife',
@@ -125,6 +164,7 @@ export const courses = [
       title: 'The Mind & Life Transformation Collection, CFT by Zalah',
       desc: 'Five practical teachings for a calmer, clearer and more meaningful life, including the 10-Part Consciousness Accelerator. $299 USD.',
     },
+    community: makeCommunity('The Mind & Life Transformation Collection'),
   },
   {
     id: 'sa1',
@@ -180,6 +220,7 @@ export const courses = [
       title: 'Spiritual Awakening 1, CFT by Zalah',
       desc: 'Start your journey to a deeper connection, inner peace and a more fulfilling life. Level 1, self-paced. $1,000 USD.',
     },
+    community: makeCommunity('Spiritual Awakening 1'),
   },
   {
     id: 'sa2',
@@ -235,6 +276,7 @@ export const courses = [
       title: 'Spiritual Awakening 2, CFT by Zalah',
       desc: 'Go deeper into your inner transformation with advanced teachings on detachment, stillness, worthiness and self-love. $2,000 USD.',
     },
+    community: makeCommunity('Spiritual Awakening 2'),
   },
   {
     id: 'complete',
@@ -290,6 +332,7 @@ export const courses = [
       title: 'Awakening & Consciousness Transformation Program, CFT by Zalah',
       desc: 'The complete path: the Consciousness Accelerator plus Spiritual Awakening 1 and 2 in one enrolment. $2,199 USD.',
     },
+    community: makeCommunity('Awakening & Consciousness Program'),
   },
 ];
 
