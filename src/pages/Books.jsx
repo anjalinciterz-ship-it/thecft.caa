@@ -56,7 +56,7 @@ export default function Books() {
                 </div>
                 <h3 className="km-part-title">{part.heading}</h3>
                 <p className="km-part-body">{part.body}</p>
-                <VideoSlot src={part.src} poster={part.poster} />
+                <VideoSlot src={part.src} poster={part.poster} title={part.heading} guid={part.guid} />
               </li>
             ))}
           </ol>

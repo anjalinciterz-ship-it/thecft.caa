@@ -1,10 +1,14 @@
 import { useEffect, useRef, useState } from 'react';
 import { Icon } from './icons';
+import HlsVideoPlayer from './HlsVideoPlayer';
 
-// The single seam between the players and wherever the bytes come from. Today
-// the dev server streams /media/<id>; once enforcement is decided this becomes
-// a request for a short-lived signed URL from the backend.
-export const mediaUrl = (src) => `/media/${src}`;
+// The single seam between the players and wherever the bytes come from. Audiobook
+// paths are the ones inside the Bunny storage zone; the dev server reads the same
+// paths from the repo-root media/ folder, so this base is the only line that
+// changes when the pull zone hostname exists. Absolute urls pass through untouched.
+const AUDIO_BASE = '/media';
+
+export const mediaUrl = (src) => (/^https?:/.test(src) ? src : `${AUDIO_BASE}/${encodeURI(src)}`);
 
 const noSave = (e) => e.preventDefault();
 
@@ -108,8 +112,9 @@ export function AudioPlaylist({ audio }) {
 
 // A video slot that already looks finished before the file arrives: same 16:9
 // frame, same transport affordance, with a note instead of a broken player.
-// Supplying the video is one field in the data — nothing here changes.
-export function VideoSlot({ src, poster }) {
+// When the HLS source is set, it hands off to the custom HlsVideoPlayer so
+// every control (play/pause, skip, CC, volume, fullscreen) lives inside the frame.
+export function VideoSlot({ src, poster, title, guid }) {
   if (!src) {
     return (
       <figure className="video-slot is-empty">
@@ -123,19 +128,5 @@ export function VideoSlot({ src, poster }) {
       </figure>
     );
   }
-  return (
-    <video
-      className="video-slot"
-      src={mediaUrl(src)}
-      poster={poster || undefined}
-      controls
-      preload="none"
-      playsInline
-      controlsList="nodownload noremoteplayback"
-      disablePictureInPicture
-      disableRemotePlayback
-      onContextMenu={noSave}
-      onDragStart={noSave}
-    />
-  );
+  return <HlsVideoPlayer src={src} poster={poster} title={title} guid={guid} />;
 }

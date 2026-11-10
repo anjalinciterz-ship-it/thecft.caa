@@ -36,9 +36,24 @@ export default function CoursePlayer({ courseId, initialLessonId }) {
   const [error, setError] = useState('');
   const [saveError, setSaveError] = useState('');
   const [position, setPosition] = useState(0);
+  const [ccEnabled, setCcEnabled] = useState(false);
+  const [cues, setCues] = useState([]);
+  const [activeCue, setActiveCue] = useState('');
+  const [ccNote, setCcNote] = useState('');
   const lifecycle = useRef(null);
   const frame = useRef(null);
   const iframe = useRef(null);
+  const playerRef = useRef(null);
+  const cuesRef = useRef([]);
+  const ccEnabledRef = useRef(false);
+
+  useEffect(() => { cuesRef.current = cues; }, [cues]);
+  useEffect(() => { ccEnabledRef.current = ccEnabled; if (!ccEnabled) setActiveCue(''); }, [ccEnabled]);
+  useEffect(() => {
+    if (!ccNote) return undefined;
+    const timer = window.setTimeout(() => setCcNote(''), 4000);
+    return () => window.clearTimeout(timer);
+  }, [ccNote]);
 
   useEffect(() => {
     const current = { active: true };
@@ -115,6 +130,9 @@ export default function CoursePlayer({ courseId, initialLessonId }) {
       }
       lastSeconds = seconds;
       lastTick = now;
+      const cue = ccEnabledRef.current ? cuesRef.current.find((c) => seconds >= c.start && seconds < c.end) : null;
+      const text = cue ? cue.text : '';
+      setActiveCue((prev) => (prev === text ? prev : text));
     };
     const pause = () => { playing = false; lastTick = performance.now(); void save(); };
     const resetSample = () => { lastTick = performance.now(); playing = false; };
@@ -150,6 +168,7 @@ export default function CoursePlayer({ courseId, initialLessonId }) {
     };
     try {
       player = new window.playerjs.Player(iframe.current);
+      playerRef.current = player;
       for (const [event, handler] of Object.entries(events)) player.on(event, handler);
     } catch { fail('The video controls are unavailable. Please try again.'); }
     const heartbeat = window.setInterval(async () => {
@@ -176,8 +195,22 @@ export default function CoursePlayer({ courseId, initialLessonId }) {
         // Player.js unsubscribes locally before messaging an iframe React may have detached.
         try { player.off(event); } catch {}
       }
+      playerRef.current = null;
       void save(true).finally(() => apiRequest(sessionPath, { method: 'DELETE' }).catch(() => {}));
     };
+  }, [playback]);
+
+  useEffect(() => {
+    setCues([]);
+    setActiveCue('');
+    setCcEnabled(false);
+    setCcNote('');
+    if (!playback) return undefined;
+    const current = { active: true };
+    apiRequest(`/video/lessons/${encodeURIComponent(playback.lesson.id)}/captions`)
+      .then((data) => { if (current.active) setCues(Array.isArray(data.cues) ? data.cues : []); })
+      .catch(() => { /* No caption file for this video yet; CC reports availability. */ });
+    return () => { current.active = false; };
   }, [playback]);
 
   const start = async () => {
@@ -214,7 +247,54 @@ export default function CoursePlayer({ courseId, initialLessonId }) {
   };
 
   const selected = lessons.find((lesson) => lesson.id === lessonId);
+  // A bundle lists the teachings of every course inside it, and lesson titles repeat
+  // across those courses, so the picker names the course each video belongs to.
+  const lessonGroups = [];
+  for (const lesson of lessons) {
+    const key = lesson.courseTitle || '';
+    const last = lessonGroups[lessonGroups.length - 1];
+    if (last && last.key === key) last.items.push(lesson);
+    else lessonGroups.push({ key, items: [lesson] });
+  }
+  const lessonOptions = (items) => items.map((lesson) => <option key={lesson.id} value={lesson.id} disabled={!lesson.hasVideo || lesson.locked}>{lesson.title}{!lesson.hasVideo ? ', no video attached' : ''}</option>);
   const marks = [{ top: '12%', left: '5%' }, { top: '12%', right: '5%' }, { bottom: '18%', right: '5%' }, { bottom: '18%', left: '5%' }];
+  const controlButtonStyle = { background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', color: '#fff', padding: '10px 18px', borderRadius: 24, cursor: 'pointer', fontSize: 14, fontWeight: 500, backdropFilter: 'blur(8px)', pointerEvents: 'auto' };
+
+  const skipBackward = () => {
+    const player = playerRef.current;
+    if (!player) return;
+    player.getCurrentTime((seconds) => {
+      if (Number.isFinite(seconds)) player.setCurrentTime(Math.max(0, seconds - 10));
+    });
+  };
+
+  const skipForward = () => {
+    const player = playerRef.current;
+    if (!player) return;
+    player.getCurrentTime((seconds) => {
+      if (Number.isFinite(seconds)) player.setCurrentTime(seconds + 10);
+    });
+  };
+
+  const toggleCC = () => {
+    if (!playback) return;
+    if (!cues.length) {
+      setCcNote('English captions are not available for this lesson yet.');
+      return;
+    }
+    setCcNote('');
+    setCcEnabled((value) => !value);
+  };
+
+  const toggleFullscreen = () => {
+    const el = frame.current;
+    if (!el) return;
+    if (document.fullscreenElement) {
+      document.exitFullscreen?.();
+    } else {
+      el.requestFullscreen?.().catch(() => setError('Fullscreen is unavailable in this browser.'));
+    }
+  };
 
   return (
     <section className="cq-band cq-plum cq-player" aria-label="Course lessons">
@@ -227,15 +307,25 @@ export default function CoursePlayer({ courseId, initialLessonId }) {
                 Select lesson
                 <select value={lessonId} disabled={starting} onChange={(event) => { setPlayback(null); setLessonId(event.target.value); setProgress(null); setError(''); setSaveError(''); }} style={{ display: 'block', width: '100%', maxWidth: 600, padding: 12, marginTop: 8 }}>
                   {!lessonId && <option value="">Choose a video lesson</option>}
-                  {lessons.map((lesson) => <option key={lesson.id} value={lesson.id} disabled={!lesson.hasVideo || lesson.locked}>{lesson.title}{!lesson.hasVideo ? ', no video attached' : ''}</option>)}
+                  {lessonGroups.flatMap((group) => (group.key
+                    ? [<optgroup key={`group-${group.items[0].id}`} label={group.key}>{lessonOptions(group.items)}</optgroup>]
+                    : lessonOptions(group.items)))}
                 </select>
               </label>
             ) : <p>No lessons have been published yet.</p>}
             <div ref={frame} style={{ position: 'relative', aspectRatio: '16 / 9', width: '100%', background: '#120a24', border: '1px solid #e8b95f', borderRadius: 12, overflow: 'hidden' }}>
               {playback ? (
                 <>
-                  <iframe ref={iframe} title={selected?.title || 'Course video'} src={playback.playbackUrl} allow="autoplay; encrypted-media" referrerPolicy="no-referrer" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', border: 0 }} />
+                  <iframe ref={iframe} title={selected?.title || 'Course video'} src={playback.playbackUrl} allow="autoplay; encrypted-media; fullscreen" referrerPolicy="no-referrer" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', border: 0 }} />
                   {playback.watermark.enabled && <span aria-hidden="true" style={{ position: 'absolute', ...marks[position], maxWidth: '85%', pointerEvents: 'none', zIndex: 2, color: '#fff', background: '#120a24', padding: '4px 8px', opacity: playback.watermark.opacity, fontSize: 'clamp(10px, 1.3vw, 16px)' }}>{playback.watermark.text}</span>}
+                  {ccEnabled && activeCue && <div style={{ position: 'absolute', bottom: 64, left: 0, right: 0, zIndex: 2, display: 'flex', justifyContent: 'center', padding: '0 16px', pointerEvents: 'none' }}><span style={{ background: 'rgba(18,10,36,0.85)', color: '#fff', padding: '6px 14px', borderRadius: 8, fontSize: 'clamp(14px, 2vw, 20px)', lineHeight: 1.4, textAlign: 'center', maxWidth: '92%', whiteSpace: 'pre-wrap' }}>{activeCue}</span></div>}
+                  <div style={{ position: 'absolute', top: 0, left: 0, right: 0, zIndex: 3, padding: '12px 16px', background: 'linear-gradient(to bottom, rgba(18,10,36,0.9) 0%, rgba(18,10,36,0.55) 60%, transparent 100%)', display: 'flex', flexWrap: 'wrap', gap: 10, alignItems: 'center', pointerEvents: 'none' }}>
+                    <button type="button" onClick={() => setPlayback(null)} style={controlButtonStyle}>Close video</button>
+                    <button type="button" onClick={skipBackward} title="Skip back 10 seconds" style={controlButtonStyle}>⏪ 10s</button>
+                    <button type="button" onClick={skipForward} title="Skip forward 10 seconds" style={controlButtonStyle}>10s ⏩</button>
+                    <button type="button" onClick={toggleCC} title="Toggle English captions" aria-pressed={ccEnabled} style={controlButtonStyle}>CC {ccEnabled ? 'ON' : 'OFF'}</button>
+                    <button type="button" onClick={toggleFullscreen} title="Toggle fullscreen" style={controlButtonStyle}>⛶ Fullscreen</button>
+                  </div>
                 </>
               ) : (
                 <div style={{ position: 'absolute', inset: 0, display: 'grid', placeContent: 'center', textAlign: 'center', padding: 24 }}>
@@ -247,10 +337,7 @@ export default function CoursePlayer({ courseId, initialLessonId }) {
             {progress && <p role="status" style={{ marginTop: 16 }}>{progress.status === 'completed' ? 'Lesson complete' : `${progress.watchedPercent || 0}% watched, saved to your account`}</p>}
             {error && <p role="alert" style={{ color: '#e8b95f', marginTop: 16 }}>{error}</p>}
             {saveError && <p role="alert" style={{ color: '#e8b95f', marginTop: 16 }}>{saveError}</p>}
-            {playback && <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12, marginTop: 16 }}>
-              <button type="button" className="btn btn-ghost" onClick={() => setPlayback(null)}>Close video</button>
-              <button type="button" className="btn btn-ghost" onClick={() => frame.current?.requestFullscreen?.().catch(() => setError('Fullscreen is unavailable in this browser.'))}>Fullscreen</button>
-            </div>}
+            {ccNote && <p role="status" style={{ color: '#e8b95f', marginTop: 16 }}>{ccNote}</p>}
             <p style={{ opacity: 0.75, fontSize: 13, marginTop: 16 }}>Access is checked by the server. {playback?.drm.active ? 'DRM is active for this session.' : 'Enterprise DRM has not been verified.'}</p>
           </>
         )}

@@ -1,7 +1,11 @@
 // The three Zalah books, in the order the client specified (2026-10-13).
 // Copy is transcribed verbatim from the client's own books-page document.
-// `src` values are media ids resolved by src/media/protected.js — the files
-// themselves live in the repo-root media/ folder, outside the web bundle.
+// Audio `src` values are paths inside the Bunny "audioforbooks" storage zone,
+// resolved by mediaUrl in components/ProtectedMedia.jsx.
+
+// Folder and file names exactly as the client stored them in that zone.
+const SECRET_OF_CREATION = 'Book 1- Secret of creation';
+const CAUGHT_IN_THE_ACT = 'Book 2 – CAUGHT in the ACT';
 
 export const books = [
   {
@@ -59,14 +63,14 @@ export const books = [
           label: 'Part One',
           tracks: [1, 2, 3, 4, 5, 6].map((n) => ({
             label: `Part One · Track ${n}`,
-            src: `audio/secret-of-creation/part-one-track-${String(n).padStart(2, '0')}.m4a`,
+            src: `${SECRET_OF_CREATION}/Audio Track ${n}.mp3`,
           })),
         },
         {
           label: 'Part Two',
           tracks: [1, 2].map((n) => ({
             label: `Part Two · Track ${n}`,
-            src: `audio/secret-of-creation/part-two-track-${String(n).padStart(2, '0')}.m4a`,
+            src: `${SECRET_OF_CREATION}/Audio Track ${n + 6}.mp3`,
           })),
         },
       ],
@@ -122,15 +126,14 @@ export const books = [
         ],
       },
     ],
-    // Track 5 was never supplied — the numbering keeps the gap visible.
     audio: {
       heading: 'The Audiobook',
       groups: [
         {
           label: null,
-          tracks: [1, 2, 3, 4, 6, 7, 8, 9].map((n) => ({
+          tracks: [1, 2, 3, 4, 5, 6, 7, 8, 9].map((n) => ({
             label: `Track ${n}`,
-            src: `audio/caught-in-the-act/track-${String(n).padStart(2, '0')}.mp3`,
+            src: `${CAUGHT_IN_THE_ACT}/${n}-Audio-Track.mp3`,
           })),
         },
       ],
@@ -201,22 +204,24 @@ export const books = [
 ];
 
 // The children's meditation on the books page, in the two-part shape he laid
-// out on 2026-11-06. He has not sent the video files yet, so `src` stays null
-// and the page paints a placeholder in each slot; filling one in is a one-line
-// change per part. The old "Walk in the Woods" audio is gone by his request.
+// out on 2026-11-06. Videos stream directly from Bunny's referrer-locked CDN;
+// hls.js handles MSE browsers, Safari falls back to native HLS.
+const BUNNY_CDN = 'https://vz-57d01783-2a4.b-cdn.net';
+
 export const meditation = {
   kind: 'A Special Meditation Experience',
   title: 'A Kids Meditation by Zalah',
   intro:
-    'For the best experience, watch Part 1 first, then continue to Part 2. Both videos can be played directly on this page. Take a peaceful moment to relax, explore your imagination, and enjoy this children’s meditation experience with Zalah.',
+    'For the best experience, watch Part 1 first, then continue to Part 2. Both videos can be played directly on this page. Take a peaceful moment to relax, explore your imagination, and enjoy this children\'s meditation experience with Zalah.',
   parts: [
     {
       num: '01',
       tag: 'Must watch before meditating',
       heading: 'Part 1: Introduction to the Meditation',
       body: 'Please watch this introduction before starting the meditation. It will help you understand the experience and get ready for the guided meditation in Part 2.',
-      src: null,
-      poster: null,
+      guid: '6a6924de-19e6-470c-8d71-c6ce922b523e',
+      src: `${BUNNY_CDN}/6a6924de-19e6-470c-8d71-c6ce922b523e/playlist.m3u8`,
+      poster: `${BUNNY_CDN}/6a6924de-19e6-470c-8d71-c6ce922b523e/thumbnail.jpg`,
     },
     {
       num: '02',
@@ -224,8 +229,9 @@ export const meditation = {
       tag: null,
       heading: 'Part 2: Start Your Meditation',
       body: 'Once you have watched the introduction, you are ready to begin. Find a comfortable, quiet place, press play, and enjoy the full guided kids meditation with Zalah.',
-      src: null,
-      poster: null,
+      guid: 'e8467df1-b602-497b-a0cd-ceb5f4023a4a',
+      src: `${BUNNY_CDN}/e8467df1-b602-497b-a0cd-ceb5f4023a4a/playlist.m3u8`,
+      poster: `${BUNNY_CDN}/e8467df1-b602-497b-a0cd-ceb5f4023a4a/thumbnail.jpg`,
     },
   ],
 };
@@ -247,7 +253,7 @@ export const resources = [
     price: 29,
     tagline: 'A shift in perception that changes how you meet every day.',
     description:
-      'Zalah’s teachings on moving out of social consciousness and into a higher, more loving way of seeing yourself and the world around you.',
+      'Zalah\'s teachings on moving out of social consciousness and into a higher, more loving way of seeing yourself and the world around you.',
     grad: 'linear-gradient(135deg,#3a2a63,#7a5cd6)',
   },
   {
@@ -286,7 +292,7 @@ export const resources = [
   {
     id: 'level-1-meditation-course',
     image: '/images/books/level-1-meditation-course.webp',
-    title: 'The CFT’s Level 1 Meditation Course',
+    title: 'The CFT\'s Level 1 Meditation Course',
     type: 'course',
     price: 29,
     tagline: 'The foundation every CFT student begins with.',
@@ -297,7 +303,7 @@ export const resources = [
   {
     id: 'valentines',
     image: '/images/books/valentines-day-webinar.jpg',
-    title: 'A Spiritual Message of Valentine’s Day',
+    title: 'A Spiritual Message of Valentine\'s Day',
     type: 'webinar',
     price: null,
     tagline: 'A webinar on love, freedom and connection.',
