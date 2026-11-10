@@ -75,7 +75,9 @@ export async function signIn(page, user, secret = password) {
   await page.locator('#au-password').fill(secret);
   await page.locator('.au-submit').click();
   await expect(page).toHaveURL(/\/dashboard(?:\?|$)/);
-  await expect(page.locator('.db-content h1')).toBeVisible();
+  // Students land on a heading-two panel and admins on a heading-one page, so the
+  // wait is on the first settled heading rather than a specific level.
+  await expect(page.locator('.db-content h1, .db-content h2').first()).toBeVisible();
 }
 
 export async function api(page, path, options = {}) {

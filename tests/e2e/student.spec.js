@@ -6,8 +6,8 @@ const pages = [['courses', 'My Courses'], ['library', 'Free Books'], ['calls', '
 
 test('Registration asks for a verified channel instead of a password, and the dashboard stays behind sign-in', async ({ page, accounts }) => {
   await page.goto('/signup');
-  await expect(page.getByRole('button', { name: 'Email code', exact: true })).toBeVisible();
-  await expect(page.getByRole('button', { name: 'Mobile code', exact: true })).toBeVisible();
+  await expect(page.getByLabel('Email address', { exact: true })).toBeVisible();
+  expect(await page.locator('.au-methods button').count()).toBe(0);
   expect(await page.locator('input[type="password"]').count()).toBe(0);
   expect(await page.locator('input[type="date"]').count()).toBe(0);
 
@@ -15,19 +15,21 @@ test('Registration asks for a verified channel instead of a password, and the da
   await expect(page).toHaveURL(/\/login\?next=/);
   await signIn(page, accounts.student);
   await expect(page).toHaveURL(/\/dashboard$/);
-  await expect(page.locator('.db-content h1')).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'My Purchased Courses' })).toBeVisible();
   await expect(page.locator('.site-header')).toHaveCount(0);
-  await expect(page.locator('.db-sidebar nav a')).toHaveCount(4);
+  await expect(page.locator('.db-nav a')).toHaveCount(2);
 });
 
-test('The sidebar holds four sections and the account menu keeps the rest reachable', async ({ page, accounts }) => {
+test('The navbar holds the two program sections and the account menu keeps the rest reachable', async ({ page, accounts }) => {
   await signIn(page, accounts.student);
-  await expect(page.locator('.db-sidebar nav a')).toHaveText(['Home', 'My Courses', 'Free Books', 'Calls & Bookings']);
+  await expect(page.locator('.db-nav a')).toHaveText(['My Program', 'All Programs']);
+  // The side navigation is retired; nothing may still render it.
+  await expect(page.locator('.db-sidebar')).toHaveCount(0);
 
   await page.getByRole('button', { name: 'Student Browser Member', exact: true }).click();
   const menu = page.locator('#dashboard-account');
   await expect(menu).toBeVisible();
-  for (const label of ['Orders & receipts', 'Certificates', 'Wishlist', 'Community', 'All programs', 'Account settings', 'Visit website']) {
+  for (const label of ['Orders & receipts', 'Certificates', 'Wishlist', 'Community', 'Account settings', 'Visit website']) {
     await expect(menu.getByRole('link', { name: label, exact: true })).toBeVisible();
   }
   await expect(menu.getByRole('button', { name: 'Sign out' })).toBeVisible();
@@ -57,15 +59,21 @@ for (const [width, height] of [[320, 568], [375, 812], [430, 932], [768, 1024], 
     await page.setViewportSize({ width, height }); await signIn(page, accounts.student);
     // Measure the settled dashboard: under load the panels are still arriving
     // when sign-in lands, and a half-painted grid is not a layout defect.
-    await expect(page.locator('.db-content h1')).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'My Purchased Courses' })).toBeVisible();
     await expect(page.locator('.db-loading')).toHaveCount(0);
     await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(true);
-    if (width < 900) {
-      const trigger = page.getByRole('button', { name: 'Open navigation' }); await trigger.click();
-      const drawer = page.locator('.db-sidebar'); await expect(drawer).toHaveAttribute('aria-modal', 'true');
-      for (let index = 0; index < 16; index += 1) { await page.keyboard.press('Tab'); expect(await page.evaluate(() => Boolean(document.activeElement.closest('.db-sidebar')))).toBe(true); }
-      await page.keyboard.press('Escape'); await expect(trigger).toBeFocused();
+    const links = page.locator('.db-nav a');
+    await expect(links).toHaveCount(2);
+    for (const link of await links.all()) {
+      const box = await link.boundingBox();
+      expect(box, `navbar link "${await link.textContent()}" is laid out`).not.toBeNull();
+      expect(box.height).toBeGreaterThanOrEqual(32);
+      expect(box.x).toBeGreaterThanOrEqual(0);
+      expect(box.x + box.width).toBeLessThanOrEqual(width + 1);
     }
+    await expect(page.locator('.db-visit')).toBeVisible();
+    await expect(page.locator('.db-notification')).toBeVisible();
+    await expect(page.locator('.db-profile-trigger')).toBeVisible();
   });
 }
 
@@ -166,11 +174,13 @@ for (const outcome of ['success', 'failed', 'pending', 'cancelled']) {
   });
 }
 
-test('Summary outage shows retry and recovers without losing session', async ({ page, accounts }) => {
-  await signIn(page, accounts.student); await page.route('**/api/v1/student/dashboard', (route) => route.fulfill({ status: 503, json: { error: { message: 'Temporary browser test outage' } } }));
+test('Library outage shows retry and recovers without losing session', async ({ page, accounts }) => {
+  // The home is one panel now, so the outage has to land on the library call it
+  // actually makes — not on the old summary endpoint it no longer asks for.
+  await signIn(page, accounts.student); await page.route('**/api/v1/student/courses*', (route) => route.fulfill({ status: 503, json: { error: { message: 'Temporary browser test outage' } } }));
   await page.goto('/dashboard'); await expect(page.getByRole('alert').first()).toContainText('Temporary browser test outage');
-  await page.unroute('**/api/v1/student/dashboard'); await page.getByRole('button', { name: 'Try again', exact: true }).first().click();
-  await expect(page.getByRole('alert')).toHaveCount(0); await expect(page.locator('.db-content h1')).toContainText(accounts.student.name);
+  await page.unroute('**/api/v1/student/courses*'); await page.getByRole('button', { name: 'Try again', exact: true }).first().click();
+  await expect(page.getByRole('alert')).toHaveCount(0); await expect(page.getByRole('heading', { name: 'My Purchased Courses' })).toBeVisible();
 });
 
 test('Student cannot call admin API or change role', async ({ page, accounts }) => {

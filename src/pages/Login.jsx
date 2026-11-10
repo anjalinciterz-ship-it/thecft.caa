@@ -10,7 +10,7 @@ import MagicLinkForm from '../components/MagicLinkForm';
 import { AuthShell, AuthCardHead, AuthField, AuthOr } from '../components/AuthShell';
 
 export default function Login() {
-  usePageMeta({ title: 'Log In · The Centre for Transformation', description: 'Sign in with a one-click email link, an email code, mobile code, Google, or your password.', path: '/login' });
+  usePageMeta({ title: 'Log In · The Centre for Transformation', description: 'Sign in with a one-click email link, an email code, Google, or your password.', path: '/login' });
   const { login, loading, isAuthed } = useAuth();
   const navigate = useNavigate();
   const { search } = useLocation();
@@ -45,16 +45,16 @@ export default function Login() {
   return <AuthShell image="/images/photos/mountain-sit.webp" eyebrow="Welcome Back" titleLead="Continue Your" titleAccent="Journey" lead="Your courses, books and personal guidance, together in one place. Choose the sign-in method that suits you.">
     <AuthCardHead title="Welcome Back" sub="Sign in securely. Pick up where you left off." />
     {destination !== '/dashboard' && <p className="au-method-notice">Your selection is saved. We’ll take you back after sign-in.</p>}
-    <div className="au-methods au-methods-four" role="group" aria-label="Sign-in method">
-      {[['email', 'Email code', 'mail'], ['magic', 'Sign-in link', 'link'], ['sms', 'Mobile code', 'phone'], ['password', 'Password', 'lock']].map(([value, label, icon]) => <button key={value} type="button" aria-pressed={method === value} disabled={submitting || loading} onClick={() => { setMethod(value); setError(''); }}><Icon name={icon} size={18} /><span>{label}</span></button>)}
+    <div className="au-methods" role="group" aria-label="Sign-in method">
+      {[['email', 'Email code', 'mail'], ['magic', 'Sign-in link', 'link'], ['password', 'Password', 'lock']].map(([value, label, icon]) => <button key={value} type="button" aria-pressed={method === value} disabled={submitting || loading} onClick={() => { setMethod(value); setError(''); }}><Icon name={icon} size={18} /><span>{label}</span></button>)}
     </div>
-    {method === 'magic' ? <MagicLinkForm /> : method !== 'password' ? <OtpForm key={method} channel={method} onDone={land} /> : <form className="au-fields" onSubmit={submit} aria-busy={submitting || loading}>
-      <AuthField id="au-identifier" label="Email, mobile number or username" icon="seeker"><input id="au-identifier" type="text" autoComplete="username" placeholder="Email, +country code number, or username" maxLength={254} required value={identifier} disabled={submitting || loading} onChange={(event) => setIdentifier(event.target.value)} /></AuthField>
+    {method === 'magic' ? <MagicLinkForm /> : method === 'email' ? <OtpForm purpose="login" onDone={land} /> : <form className="au-fields" onSubmit={submit} aria-busy={submitting || loading}>
+      <AuthField id="au-identifier" label="Email address" icon="seeker"><input id="au-identifier" type="email" autoComplete="username" placeholder="you@example.com" maxLength={254} required value={identifier} disabled={submitting || loading} onChange={(event) => setIdentifier(event.target.value)} /></AuthField>
       <AuthField id="au-password" label="Password" icon="lock">
         <input id="au-password" type={show ? 'text' : 'password'} autoComplete="current-password" placeholder="Enter your password" maxLength={200} required value={password} disabled={submitting || loading} onChange={(event) => setPassword(event.target.value)} />
         <button type="button" className="au-eye" onClick={() => setShow(!show)} aria-label={show ? 'Hide password' : 'Show password'} aria-pressed={show}><Icon name={show ? 'eyeOff' : 'eye'} size={17} /></button>
       </AuthField>
-      <p className="au-session">Use a verified mobile number with its country code. You can set an optional password and username in account settings.</p>
+      <p className="au-session">Use the email address you signed up with. You can set an optional password in account settings.</p>
       <div className="au-rowline"><Link className="au-forgot" to={authLink('/forgot-password', search)}>Forgot password?</Link></div>
       {error && <p className="au-err" role="alert">{error}</p>}
       <button className="au-submit" disabled={submitting || loading}>{submitting ? 'Signing In…' : loading ? 'Please wait…' : 'Sign In'}</button>

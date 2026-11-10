@@ -1,13 +1,13 @@
 import { test as base, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 
-const member = { id: 'otp-ui-member', name: 'Browser Member', email: 'member@payments.test', emailVerified: true, phoneVerified: false, hasPassword: false, role: 'student', timeZone: 'UTC' };
+const member = { id: 'otp-ui-member', name: 'Browser Member', email: 'member@payments.test', emailVerified: true, hasPassword: false, role: 'student', timeZone: 'UTC' };
 const test = base.extend({
   authMock: async ({ page }, use, testInfo) => {
     const state = {
       user: null, requests: [], verifyError: null, sendError: null,
       ttl: 300000, cooldown: 60000,
-      config: { google: { configured: false }, password: { configured: true }, otp: { email: { enabled: true }, sms: { enabled: true, countries: ['CA', 'IN', 'GB'] }, codeLength: 6 } },
+      config: { google: { configured: false }, password: { configured: true }, otp: { email: { enabled: true }, codeLength: 6 } },
       offering: {
         id: 'accelerator', productId: 'mock-offering-id', productKind: 'course', slug: 'accelerator', name: 'Accelerator',
         short: 'A twelve-week accelerator.', currency: 'CAD', priceMinor: 19900, price: 199, isFree: false, level: 'Intermediate',
@@ -30,7 +30,7 @@ const test = base.extend({
       if (path === '/student/courses') return ok({ enrollments: [] });
       if (path === '/auth/otp/request') {
         if (state.sendError) return fail(...state.sendError);
-        return ok({ challengeId: `ui-challenge-${state.requests.length}`, maskedDestination: body.channel === 'sms' ? '+91••••••3210' : 'm•••@payments.test', expiresAt: new Date(Date.now() + state.ttl).toISOString(), resendAt: new Date(Date.now() + state.cooldown).toISOString() });
+        return ok({ challengeId: `ui-challenge-${state.requests.length}`, maskedDestination: 'm•••@payments.test', expiresAt: new Date(Date.now() + state.ttl).toISOString(), resendAt: new Date(Date.now() + state.cooldown).toISOString() });
       }
       if (path === '/auth/otp/verify' || path === '/auth/login' || path === '/auth/google') {
         if (state.verifyError) return fail(...state.verifyError);
@@ -77,23 +77,7 @@ test('mocked email OTP returns to the selected course without a password', async
   await verifyCode(page);
   await expect(page).toHaveURL(/\/checkout\?course=accelerator$/);
   await expect(page.locator('h1')).toBeVisible();
-  expect(authMock.requests.find((request) => request.path === '/auth/otp/request').body).toEqual({ channel: 'email', purpose: 'login', destination: member.email });
-});
-
-test('international SMS normalizes local entry and rejects invalid numbers', async ({ page, authMock }) => {
-  await page.goto('/login?course=accelerator');
-  await page.getByRole('button', { name: 'Mobile code', exact: true }).click();
-  await page.getByLabel('Country / region').selectOption('IN');
-  await page.getByLabel('Mobile number', { exact: true }).fill('123');
-  await page.getByRole('button', { name: 'Send SMS code' }).click();
-  await expect(page.locator('.au-otp [role="alert"]')).toContainText('valid mobile number');
-  expect(authMock.requests.filter((request) => request.path === '/auth/otp/request')).toHaveLength(0);
-  await page.getByLabel('Mobile number', { exact: true }).fill('9876543210');
-  await page.getByRole('button', { name: 'Send SMS code' }).click();
-  await expect(page.getByLabel('Verification code')).toBeVisible();
-  expect(authMock.requests.find((request) => request.path === '/auth/otp/request').body.destination).toBe('+919876543210');
-  await verifyCode(page);
-  await expect(page).toHaveURL(/\/checkout\?course=accelerator$/);
+  expect(authMock.requests.find((request) => request.path === '/auth/otp/request').body).toEqual({ purpose: 'login', destination: member.email });
 });
 
 test('signup requires consent and sends no password or date of birth', async ({ page, authMock }) => {
@@ -138,31 +122,29 @@ test('expired codes cannot submit and can be replaced after the cooldown', async
   expect(authMock.requests.filter((request) => request.path === '/auth/otp/request')).toHaveLength(2);
 });
 
-test('provider unavailable and send failures never claim that a code was sent', async ({ page, authMock }) => {
-  authMock.config.otp.sms.enabled = false;
+test('email codes off and send failures never claim that a code was sent', async ({ page, authMock }) => {
+  authMock.config.otp.email.enabled = false;
   await page.goto('/login');
-  await page.getByRole('button', { name: 'Mobile code', exact: true }).click();
-  await expect(page.getByText(/Mobile verification is not available yet/)).toBeVisible();
-  await expect(page.getByRole('button', { name: 'Send SMS code' })).toBeDisabled();
-  await page.getByRole('button', { name: 'Email code', exact: true }).click();
+  await expect(page.getByText(/Email verification is not available yet/)).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Send email code' })).toBeDisabled();
+  authMock.config.otp.email.enabled = true;
   authMock.sendError = ['otp_delivery_failed', 'The code could not be sent.'];
+  await page.reload();
   await page.getByLabel('Email address', { exact: true }).fill(member.email);
   await page.getByRole('button', { name: 'Send email code' }).click();
   await expect(page.locator('.au-otp [role="alert"]')).toHaveText('The code could not be sent.');
   await expect(page.getByLabel('Verification code')).toHaveCount(0);
 });
 
-for (const identifier of [member.email, '+14165550123', 'browser_member']) {
-  test(`optional password supports ${identifier} and keeps course intent`, async ({ page, authMock }) => {
-    await page.goto('/login?course=accelerator');
-    await page.getByRole('button', { name: 'Password', exact: true }).click();
-    await page.getByLabel('Email, mobile number or username').fill(identifier);
-    await page.getByLabel('Password', { exact: true }).fill('Existing-Password-123!');
-    await page.getByRole('button', { name: 'Sign In', exact: true }).click();
-    await expect(page).toHaveURL(/\/checkout\?course=accelerator$/);
-    expect(authMock.requests.find((request) => request.path === '/auth/login').body).toEqual({ identifier, password: 'Existing-Password-123!' });
-  });
-}
+test('the optional password signs in by email and keeps course intent', async ({ page, authMock }) => {
+  await page.goto('/login?course=accelerator');
+  await page.getByRole('button', { name: 'Password', exact: true }).click();
+  await page.getByLabel('Email address', { exact: true }).fill(member.email);
+  await page.getByLabel('Password', { exact: true }).fill('Existing-Password-123!');
+  await page.getByRole('button', { name: 'Sign In', exact: true }).click();
+  await expect(page).toHaveURL(/\/checkout\?course=accelerator$/);
+  expect(authMock.requests.find((request) => request.path === '/auth/login').body).toEqual({ identifier: member.email, password: 'Existing-Password-123!' });
+});
 
 test('login, signup and recovery navigation retains the course without retaining reset tokens', async ({ page, authMock }) => {
   await page.goto('/signup?course=accelerator');
@@ -187,8 +169,8 @@ for (const path of ['/dashboard/courses', '/admin/courses']) {
   });
 }
 
-test('phone-only settings can add an email and set an optional password', async ({ page, authMock }) => {
-  authMock.user = { ...member, email: undefined, emailVerified: false, phone: '+14165550123', phoneVerified: true };
+test('an account with no email can add one and set an optional password', async ({ page, authMock }) => {
+  authMock.user = { ...member, email: undefined, emailVerified: false };
   await page.goto('/dashboard/settings?verifyEmail=1&next=%2Fcheckout%3Fcourse%3Daccelerator');
   await expect(page.getByText('No email added', { exact: false })).toBeVisible();
   await expect(page.getByRole('link', { name: 'Return to your selection' })).toHaveAttribute('href', '/checkout?course=accelerator');
@@ -209,8 +191,8 @@ test('phone-only settings can add an email and set an optional password', async 
   await expect(page.getByRole('heading', { name: 'Change password', exact: true })).toBeVisible();
 });
 
-test('phone-only checkout states the email rule and returns to the same review page', async ({ page, authMock }) => {
-  authMock.user = { ...member, email: undefined, emailVerified: false, phone: '+14165550123', phoneVerified: true };
+test('checkout without an email states the rule and returns to the same review page', async ({ page, authMock }) => {
+  authMock.user = { ...member, email: undefined, emailVerified: false };
   await page.goto('/course/accelerator');
   await page.getByRole('link', { name: 'Enroll Now' }).first().click();
   await expect(page).toHaveURL(/\/checkout\?course=accelerator$/);
@@ -224,7 +206,7 @@ test('phone-only checkout states the email rule and returns to the same review p
 });
 
 test('paid appointments request email verification before collecting booking details', async ({ page, authMock }) => {
-  authMock.user = { ...member, email: undefined, emailVerified: false, phone: '+14165550123', phoneVerified: true };
+  authMock.user = { ...member, email: undefined, emailVerified: false };
   authMock.sessionTypes = [{ id: 'paid-call', name: 'Personal guidance', description: 'A private appointment.', durationMinutes: 30, priceMinor: 5000, currency: 'CAD', isFree: false, intakeQuestions: [] }];
   await page.goto('/dashboard/bookings?sessionType=paid-call');
   await expect(page.getByLabel('Choose a date', { exact: true })).toHaveCount(0);
@@ -310,15 +292,14 @@ test('Google button uses its credential callback and retains the selected course
 });
 
 for (const width of [1440, 768, 390, 320]) {
-  test(`mobile OTP signup is accessible without overflow at ${width}px`, async ({ page, authMock }, testInfo) => {
+  test(`email signup is accessible without overflow at ${width}px`, async ({ page, authMock }, testInfo) => {
     await page.setViewportSize({ width, height: 900 });
     await page.goto('/signup?course=accelerator');
-    await page.getByRole('button', { name: 'Mobile code', exact: true }).click();
-    await expect(page.getByLabel('Country / region')).toBeVisible();
+    await expect(page.getByLabel('Email address', { exact: true })).toBeVisible();
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
     expect(overflow).toBe(0);
     const result = await new AxeBuilder({ page }).analyze();
     expect(result.violations.filter((item) => ['serious', 'critical'].includes(item.impact))).toEqual([]);
-    await page.screenshot({ path: testInfo.outputPath(`signup-mobile-${width}.png`), fullPage: true });
+    await page.screenshot({ path: testInfo.outputPath(`signup-email-${width}.png`), fullPage: true });
   });
 }
