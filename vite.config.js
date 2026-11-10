@@ -4,7 +4,10 @@ import react from '@vitejs/plugin-react';
 import { mediaStream } from './dev/media-stream.js';
 
 export default defineConfig({
-  plugins: [react(), mediaStream(fileURLToPath(new URL('../media', import.meta.url)))],
+  // One copy of the audiobooks, in public/media: the dev plugin reads it and the
+  // build publishes it, so a track that plays locally is the same file visitors
+  // get on the deployed site.
+  plugins: [react(), mediaStream(fileURLToPath(new URL('./public/media', import.meta.url)))],
   server: {
     port: 5173,
     proxy: {

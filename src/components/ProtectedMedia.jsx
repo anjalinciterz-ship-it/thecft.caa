@@ -2,10 +2,11 @@ import { useEffect, useRef, useState } from 'react';
 import { Icon } from './icons';
 import HlsVideoPlayer from './HlsVideoPlayer';
 
-// The single seam between the players and wherever the bytes come from. Audiobook
-// paths are the ones inside the Bunny storage zone; the dev server reads the same
-// paths from the repo-root media/ folder, so this base is the only line that
-// changes when the pull zone hostname exists. Absolute urls pass through untouched.
+// The single seam between the players and wherever the bytes come from. The
+// audiobooks are published as static files from public/media, so '/media' is a
+// real path on the deployed site and in the dev server alike. Point this at a
+// CDN hostname instead if the files ever move to Bunny's delivery network.
+// Absolute urls pass through untouched.
 const AUDIO_BASE = '/media';
 
 export const mediaUrl = (src) => (/^https?:/.test(src) ? src : `${AUDIO_BASE}/${encodeURI(src)}`);

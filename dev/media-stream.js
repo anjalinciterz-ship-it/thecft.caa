@@ -58,9 +58,9 @@ function respond(file, type, size, req, res) {
 }
 
 /**
- * Dev stand-in for the streaming route the Express backend will own. Serves the
- * repo-root media/ folder over /media with byte-range support, so nothing
- * playable is ever copied into client/public or the Vite build.
+ * Serves client/public/media over /media in the dev server with byte-range
+ * support, so seeking behaves exactly as it does on the deployed site, where the
+ * same folder is published as ordinary static files.
  */
 export function mediaStream(mediaRoot) {
   const root = path.resolve(mediaRoot);

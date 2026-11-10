@@ -18,3 +18,7 @@ yarn-error.log*
 
 # Screenshots the browser harnesses write on every run
 tests/browser/shots/
+
+# Vite repeats public/media into dist on every build, and Netlify rebuilds from
+# source anyway, so the 321MB of audiobooks belongs in git exactly once.
+dist/media/
