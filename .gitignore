@@ -13,4 +13,8 @@ node_modules/
 Thumbs.db
 npm-debug.log*
 yarn-error.log*
+*.log
 .eslintcache
+
+# Screenshots the browser harnesses write on every run
+tests/browser/shots/
