@@ -45,7 +45,7 @@ export function FreeBooks() {
       </div>
     </article>)}
 
-    <section className="db-panel db-stack">
+    <section className="db-panel db-stack db-panel-narrow">
       <div><span className="db-eyebrow">{meditation.kind}</span><h2>{meditation.title}</h2></div>
       <p className="db-muted">{meditation.intro}</p>
       {meditation.parts.map((part) => <div className="db-stack" key={part.num}>

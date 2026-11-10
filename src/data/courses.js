@@ -300,7 +300,7 @@ export const courses = [
       'Perfect for those who are ready to expand their awareness, gain clarity, and step into a more aligned and purposeful life.',
     bonus:
       'Includes 4 free 1-on-1 sessions with Zalah for personalized guidance and direction.',
-    bundleIncludes: ['accelerator', 'mindlife', 'sa1', 'sa2'],
+    bundleIncludes: ['accelerator', 'sa1', 'sa2'],
     bannerW: 1671,
     bannerH: 941,
     outcomes: [
@@ -317,7 +317,7 @@ export const courses = [
     faqs: [
       {
         q: 'What is inside the program?',
-        a: 'It bundles the 10-Part Consciousness Accelerator, The Mind & Life Transformation Collection, Spiritual Awakening 1 and Spiritual Awakening 2 into a single enrolment.',
+        a: 'It bundles the 10-Part Consciousness Accelerator, Spiritual Awakening 1 and Spiritual Awakening 2 into a single enrolment, 35 video teachings in all.',
       },
       {
         q: 'How do I enrol and pay?',

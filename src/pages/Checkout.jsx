@@ -159,6 +159,48 @@ export default function Checkout() {
     return () => clearInterval(timer);
   }, [order?.id, order?.paymentStatus, resumeOrder]);
 
+  // With no Stripe key the server runs the mock provider, which returns a pending
+  // order and no checkout page, so nothing in the funnel can be tested end to end.
+  // The provider is read from the server rather than assumed from the build.
+  const [mockProvider, setMockProvider] = useState(false);
+  useEffect(() => {
+    let active = true;
+    apiRequest('/health/integrations')
+      .then((data) => { if (active) setMockProvider(data?.payments?.provider === 'mock'); })
+      .catch(() => {});
+    return () => { active = false; };
+  }, []);
+
+  const completeMockPayment = useCallback(async (id) => {
+    setPaying(true);
+    try {
+      await apiRequest('/webhooks/mock', {
+        method: 'POST',
+        body: {
+          id: `mock_evt_${crypto.randomUUID()}`,
+          type: 'checkout.session.completed',
+          created: Math.floor(Date.now() / 1000),
+          data: { object: {
+            id: `mock_cs_${id}`,
+            object: 'checkout.session',
+            payment_status: 'paid',
+            payment_intent: `mock_pi_${id}`,
+            metadata: { orderId: String(id) },
+            client_reference_id: String(id),
+          } },
+        },
+      });
+      await refreshEnrollments().catch(() => {});
+      await resumeOrder(id);
+      setMessage('Test payment recorded. Your lessons are open.');
+    } catch (failure) {
+      setMessage(failure.message || 'The test payment could not be recorded.');
+      setFailed(true);
+    } finally {
+      setPaying(false);
+    }
+  }, [refreshEnrollments, resumeOrder]);
+
   const alreadyOwns = Boolean(offering) && (ownedNow
     || (offering.productKind === 'course' && owns(offering.id))
     || (offering.productKind === 'program' && (offering.includedOfferings || []).length > 0
@@ -196,7 +238,9 @@ export default function Checkout() {
       if (result.order?.id) {
         setOrder(result.order);
         keepSearch({ order: result.order.id });
-        setMessage('This order is waiting for payment. You can continue whenever you are ready.');
+        setMessage(mockProvider
+          ? 'Your order is created. Nothing has been charged, this server has no card page.'
+          : 'This order is waiting for payment. You can continue whenever you are ready.');
         return;
       }
       setMessage('Payment has not been confirmed. Check your orders before trying again.');
@@ -289,6 +333,9 @@ export default function Checkout() {
             {message && <StatusLine tone={failed ? 'error' : 'info'}>{message}</StatusLine>}
             {errorCode === 'email_required' && <StatusLine>Checkout needs a verified email, <Link to={settingsReturn}>add and verify it</Link>.</StatusLine>}
             {order && order.paymentStatus === 'pending' && <p className="cq-enrol-note">Order {order.orderNumber} is awaiting payment. <button type="button" className="btn btn-ghost" onClick={() => resumeOrder(order.id)}>Refresh status</button></p>}
+            {order && order.paymentStatus === 'pending' && mockProvider && !stripeUrl(order.checkoutUrl, 'checkout.stripe.com') && (
+              <p className="cq-enrol-note">This server runs the test payment provider, so there is no card page to visit. <button type="button" className="btn btn-gold" disabled={paying} onClick={() => completeMockPayment(order.id)}>Record test payment</button></p>
+            )}
             {order && order.paymentStatus !== 'pending' && !alreadyOwns && <p className="cq-enrol-note">Payment recorded for order {order.orderNumber}, but your access has not been issued yet, it appears the moment the provider confirmation is verified. <button type="button" className="btn btn-ghost" onClick={() => resumeOrder(order.id)}>Refresh status</button></p>}
 
             <div className="cq-show-cta">
