@@ -174,22 +174,7 @@ export default function Checkout() {
   const completeMockPayment = useCallback(async (id) => {
     setPaying(true);
     try {
-      await apiRequest('/webhooks/mock', {
-        method: 'POST',
-        body: {
-          id: `mock_evt_${crypto.randomUUID()}`,
-          type: 'checkout.session.completed',
-          created: Math.floor(Date.now() / 1000),
-          data: { object: {
-            id: `mock_cs_${id}`,
-            object: 'checkout.session',
-            payment_status: 'paid',
-            payment_intent: `mock_pi_${id}`,
-            metadata: { orderId: String(id) },
-            client_reference_id: String(id),
-          } },
-        },
-      });
+      await apiRequest(`/orders/${id}/test-payment`, { method: 'POST' });
       await refreshEnrollments().catch(() => {});
       await resumeOrder(id);
       setMessage('Test payment recorded. Your lessons are open.');
