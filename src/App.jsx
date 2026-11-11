@@ -41,11 +41,15 @@ export default function App() {
   const { pathname } = useLocation();
   const authPages = new Set(['/login', '/signup', '/forgot-password', '/reset-password', '/magic-link']);
   const bare = authPages.has(pathname) || pathname.startsWith('/dashboard') || pathname.startsWith('/admin');
+  /* The client's readability lift covers every public page. Home is signed off
+     exactly as it is, and the member and admin apps have their own type system,
+     so those stay out of it. See .type-lift in global.css. */
+  const liftType = pathname !== '/' && !pathname.startsWith('/dashboard') && !pathname.startsWith('/admin');
   return (
     <>
       <ScrollToTop />
       {!bare && <Header />}
-      <main>
+      <main className={liftType ? 'type-lift' : undefined}>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
