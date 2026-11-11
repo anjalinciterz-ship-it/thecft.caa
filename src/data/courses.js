@@ -44,6 +44,18 @@ const makeCommunity = (courseName) => ({
   note: `By joining ${courseName}, you're also a member of The Centre for Transformation, our overarching community. You'll be able to keep up with our ${courseName} activity both here, but also in your main The Centre for Transformation Activity Feed (think about it as our own Facebook newsfeed with Course and other activity all in one place).`,
 });
 
+// Public intro films, one per course, streamed straight from Bunny's
+// referrer-locked pull zone so a visitor can watch before signing in or paying.
+// Member lessons are separate: those still go through the signed, watermarked
+// playback session in the dashboard. The guid doubles as the caption file name
+// under public/captions when transcripts arrive.
+const INTRO_CDN = 'https://vz-a25c3a97-92c.b-cdn.net';
+const introVideo = (guid) => ({
+  guid,
+  src: `${INTRO_CDN}/${guid}/playlist.m3u8`,
+  poster: `${INTRO_CDN}/${guid}/thumbnail.jpg`,
+});
+
 // Prices verified against the live Mighty Networks checkout on 2026-10-13.
 // The WooCommerce product prices on thecft.ca are stale (e.g. Accelerator $33).
 export const courses = [
@@ -61,6 +73,7 @@ export const courses = [
     categories: ['consciousness', 'life-transformation'],
     image: '/images/courses/accelerator.png',
     banner: '/images/courses/accelerator-banner.webp',
+    introVideo: introVideo('4d259eb2-4d10-4f1c-9202-47c90fba7ac4'),
     grad: 'linear-gradient(135deg,#3a2a63,#7a5cd6)',
     description:
       'Join this accelerator course to form a deeper and more meaningful understanding of our world and increase your consciousness by opening the doors to your heart to the love that is waiting for you.',
@@ -128,6 +141,7 @@ export const courses = [
     categories: ['mindfulness', 'life-transformation'],
     image: '/images/courses/mind-life-collection.webp',
     banner: '/images/courses/mindlife-banner.webp',
+    introVideo: introVideo('f6017cb5-1a8c-42c6-ac7b-2cf42e56f887'),
     grad: 'linear-gradient(135deg,#c9973e,#5b3fa6)',
     description:
       'Explore a unique combination of emotional insight, life philosophy and meditation psychology. This collection is designed to help you better understand yourself, your thoughts, and your connection with the world around you.',
@@ -181,6 +195,7 @@ export const courses = [
     categories: ['spiritual-growth'],
     image: '/images/courses/spiritual-awakening-series.png',
     banner: '/images/courses/sa1-banner.webp',
+    introVideo: introVideo('981721b9-ca89-43c5-8e89-c723d281fe4d'),
     grad: 'linear-gradient(135deg,#5b3fa6,#c9973e)',
     description:
       'The first stage of the Spiritual Awakening pathway. These teachings are designed to help you build a stable meditation practice, understand the mechanics of consciousness, and begin living from a place of greater awareness.',
@@ -237,6 +252,7 @@ export const courses = [
     categories: ['spiritual-growth'],
     image: '/images/courses/spiritual-awakening-series.png',
     banner: '/images/courses/sa2-banner.webp',
+    introVideo: introVideo('e3562118-c57a-47ae-8115-4c939dc79f1e'),
     grad: 'linear-gradient(135deg,#2f2258,#5b3fa6)',
     description:
       'The second stage of the pathway. SA2 deepens the work begun in SA1: detachment, stillness, worthiness, self-love and sacredness, taught in the live School class format.',
@@ -293,6 +309,7 @@ export const courses = [
     categories: ['consciousness', 'spiritual-growth', 'life-transformation'],
     image: '/images/courses/complete-program.png',
     banner: '/images/courses/complete-banner.webp',
+    introVideo: introVideo('a407fe46-51b1-49fb-a851-2f3c24ae6bce'),
     grad: 'linear-gradient(135deg,#1a1033,#7a5cd6)',
     description:
       'An all-in-one transformation system designed for deep personal growth. This bundle integrates step-by-step consciousness acceleration with spiritual awakening practices to help you reach your highest potential.',

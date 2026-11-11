@@ -7,6 +7,7 @@ import { Icon } from '../components/icons';
 import CourseBanner from '../components/CourseBanner';
 import CourseCard from '../components/CourseCard';
 import CourseFaqs from '../components/CourseFaqs';
+import { VideoSlot } from '../components/ProtectedMedia';
 import { usePageMeta, courseJsonLd } from '../lib/seo';
 import NotFound from './NotFound';
 
@@ -123,6 +124,29 @@ export default function CourseDetail() {
           {course.outcome && <p className="cq-body">{course.outcome}</p>}
         </div>
       </section>
+
+      {course.introVideo ? (
+        <section className="cq-band cq-lav">
+          <div className="container cq-col">
+            <span className="cq-eyebrow">
+              Meet the Program
+            </span>
+            <h2 className="cq-h2">Watch the Introduction</h2>
+            <p className="cq-lead">
+              A short look at what {course.name} covers, so you know what you're signing up for.
+              It plays right here, no sign-in needed.
+            </p>
+            <div className="cq-intro-video">
+              <VideoSlot
+                src={course.introVideo.src}
+                poster={course.introVideo.poster}
+                guid={course.introVideo.guid}
+                title={`${course.name} introduction`}
+              />
+            </div>
+          </div>
+        </section>
+      ) : null}
 
       <section className="cq-band cq-ivory">
         <div className="container cq-col">
