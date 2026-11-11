@@ -10,8 +10,8 @@ import { chromium } from '@playwright/test';
 const WEB = process.env.CFT_CARDS_WEB || 'http://127.0.0.1:5180';
 const shots = fileURLToPath(new URL('./shots/', import.meta.url));
 const BOOKS = [
-  { slug: 'the-secret-of-creation', cards: 8 },
-  { slug: 'caught-in-the-act', cards: 9 },
+  { slug: 'the-secret-of-creation', cards: 8, labels: ['Book 1', 'Book 2'] },
+  { slug: 'caught-in-the-act', cards: 9, labels: [] },
 ];
 
 const results = [];
@@ -30,7 +30,7 @@ const playing = (page, i) => page.waitForFunction((index) => {
   return a && !a.paused && a.currentTime > 0.4;
 }, i, { timeout: 15000 }).catch(() => {});
 
-async function auditBook(browser, { slug, cards }) {
+async function auditBook(browser, { slug, cards, labels }) {
   const ctx = await browser.newContext({ viewport: { width: 1280, height: 900 } });
   const page = await ctx.newPage();
   const errors = [];
@@ -40,6 +40,8 @@ async function auditBook(browser, { slug, cards }) {
   await page.goto(`${WEB}/books/${slug}`, { waitUntil: 'networkidle' });
   await page.waitForSelector('.audio-card', { timeout: 15000 });
   check(`${slug}: ${cards} track cards`, (await page.locator('.audio-card').count()) === cards);
+  const foundLabels = await page.locator('.audio-group-label').allTextContents();
+  check(`${slug}: group labels read ${labels.join(' + ') || 'nothing'}`, JSON.stringify(foundLabels) === JSON.stringify(labels), JSON.stringify(foundLabels));
 
   const look = await page.evaluate(() => {
     const card = document.querySelector('.audio-card');

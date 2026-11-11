@@ -60,16 +60,16 @@ export const books = [
       heading: 'The Audiobook',
       groups: [
         {
-          label: 'Part One',
+          label: 'Book 1',
           tracks: [1, 2, 3, 4, 5, 6].map((n) => ({
-            label: `Part One · Track ${n}`,
+            label: `Book 1 · Track ${n}`,
             src: `${SECRET_OF_CREATION}/Audio Track ${n}.mp3`,
           })),
         },
         {
-          label: 'Part Two',
+          label: 'Book 2',
           tracks: [1, 2].map((n) => ({
-            label: `Part Two · Track ${n}`,
+            label: `Book 2 · Track ${n}`,
             src: `${SECRET_OF_CREATION}/Audio Track ${n + 6}.mp3`,
           })),
         },
