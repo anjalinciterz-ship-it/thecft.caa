@@ -98,7 +98,7 @@ export default function JourneyShowcase() {
               </span>
               <h3>{j.title}</h3>
               <span className="jy-text">{j.text}</span>
-              <span className="jy-more">Learn more →</span>
+              <span className="jy-more">Learn more <Icon name="arrow" size={15} /></span>
               <span className="jy-go" aria-hidden="true">
                 <Icon name="arrow" size={16} />
               </span>

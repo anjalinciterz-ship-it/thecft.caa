@@ -2129,6 +2129,21 @@ section{padding:var(--section-py) 0;}
 .jy-more{color:var(--gold-ink);}
 .jy-doodle{color:rgba(18,10,36,.2);}
 
+/* "Learn more" is the only affordance on the desktop collage, so it takes the
+   same gold pill as the hero CTA. Below 760px the approved row card already
+   carries a gold circle arrow, so there the script text stays. */
+@media (min-width:761px){
+  .jy-more{
+    display:inline-flex;align-items:center;gap:8px;margin-top:12px;
+    padding:10px 20px;border-radius:999px;background:var(--gold-grad);
+    color:var(--ink-on-gold);font-family:var(--font-body);font-weight:800;
+    font-size:13.5px;letter-spacing:.02em;line-height:1.2;
+    box-shadow:0 10px 24px rgba(201,151,62,.28);
+    transition:box-shadow .3s ease, filter .3s ease;
+  }
+  .jy-card:hover .jy-more{box-shadow:0 14px 30px rgba(201,151,62,.4);filter:brightness(1.04);}
+}
+
 /* ---------- C. Wisdom Call: cosmic-plum feature band, solid panels ---------- */
 .wc-band{background:linear-gradient(180deg,var(--ink-950) 0%,var(--ink-900) 44%,var(--ink-950) 100%);}
 .wc-band .stars{display:none;}
@@ -3507,21 +3522,43 @@ img.touch-f-ico{width:16px;height:16px;object-fit:contain;}
 
 /* Readability trial on /wisdom-call only, until the client signs it off. Body
    copy on the light bands was rgba(18,10,36,.68), which measures 6.6:1 on ivory
-   and reads as grey, so here it is near-black, a step larger and a step heavier.
-   Rolling this out means moving the two tokens onto :root and deleting the block. */
+   and reads as grey, so here it is near-black and a step heavier, and every
+   level is promoted one step up the scale: paragraphs take the h3 size, h3
+   takes the h2 size, h2 takes the h1 size. Rolling this out means moving the
+   two tokens onto :root and deleting the block.
+   Headings: Cormorant Garamond has no weight above 700 (Google returns 400 for
+   800), so the section titles take the 600->700 step that exists, and the card
+   and FAQ titles — already at that ceiling as serif — take Manrope 800 instead.
+   To keep them serif, delete the second rule below. */
 .type-trial{
   --plum-muted:#1b1526;
   --plum-text:#140f1e;
 }
-.type-trial .cq-lead{font-size:clamp(16px,1.5vw,19px);line-height:1.7;}
-.type-trial .wp-step h3{font-size:19.5px;}
-.type-trial .wp-step p{font-size:15.5px;font-weight:500;line-height:1.62;}
-.type-trial .wp-why-card h3{font-size:20px;}
-.type-trial .wp-why-card p{font-size:16px;font-weight:500;line-height:1.62;}
-.type-trial .wp-checks li{font-size:16.5px;}
-.type-trial .wp-aud-card li{font-size:16px;}
-.type-trial .wp-count-note{font-size:13.5px;}
-.type-trial .faq-a p{font-size:15.5px;font-weight:500;}
+.type-trial .cq-title,
+.type-trial .cq-h2{font-weight:700;}
+.type-trial .cq-h2{font-size:clamp(30px,4vw,48px);line-height:1.12;}
+.type-trial .cq-lead{font-size:clamp(18px,1.7vw,21px);line-height:1.62;}
+.type-trial .wp-step h3,
+.type-trial .wp-why-card h3,
+.type-trial .wp-aud-card h3,
+.type-trial .wp-expect-row h3,
+.type-trial .faq-q{font-family:var(--font-body);font-weight:800;line-height:1.25;}
+.type-trial .wp-step h3{font-size:22px;}
+.type-trial .wp-step p{font-size:18px;font-weight:500;line-height:1.6;}
+.type-trial .wp-why-card h3{font-size:22.5px;}
+.type-trial .wp-why-card p{font-size:18px;font-weight:500;line-height:1.6;}
+.type-trial .wp-checks li{font-size:18px;}
+.type-trial .wp-aud-card h3{font-size:26px;}
+.type-trial .wp-aud-card li{font-size:17.5px;}
+.type-trial .wp-expect-row h3{font-size:22.5px;}
+.type-trial .wp-expect-row p{font-size:17px;line-height:1.65;}
+.type-trial .wp-detail b{font-size:20px;}
+.type-trial .wp-detail em{font-size:12.5px;}
+.type-trial .wp-count-note{font-size:14.5px;}
+.type-trial .wp-hero-fine{font-size:13.5px;}
+.type-trial .wp-close-fine{font-size:14px;}
+.type-trial .faq-q{font-size:26px;}
+.type-trial .faq-a p{font-size:18px;font-weight:500;line-height:1.62;}
 
 @media (max-width:1020px){
   .wp-hero-grid{grid-template-columns:1fr;}
