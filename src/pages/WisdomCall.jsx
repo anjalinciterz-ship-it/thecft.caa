@@ -16,7 +16,7 @@ export default function WisdomCall() {
   });
 
   return (
-    <>
+    <div className="type-trial">
       {/* 1 — editorial introduction */}
       <section className="cq-band cq-plum wp-hero">
         <div className="container wp-hero-grid">
@@ -196,6 +196,6 @@ export default function WisdomCall() {
           <p className="wp-close-fine">{c.closing.reassurance}</p>
         </div>
       </section>
-    </>
+    </div>
   );
 }
