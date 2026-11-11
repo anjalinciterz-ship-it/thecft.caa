@@ -40,12 +40,15 @@ export default function CoursePlayer({ courseId, initialLessonId }) {
   const [cues, setCues] = useState([]);
   const [activeCue, setActiveCue] = useState('');
   const [ccNote, setCcNote] = useState('');
+  const [autoplayMuted, setAutoplayMuted] = useState(false);
+  const [dismissed, setDismissed] = useState(false);
   const lifecycle = useRef(null);
   const frame = useRef(null);
   const iframe = useRef(null);
   const playerRef = useRef(null);
   const cuesRef = useRef([]);
   const ccEnabledRef = useRef(false);
+  const autoStartFor = useRef('');
 
   useEffect(() => { cuesRef.current = cues; }, [cues]);
   useEffect(() => { ccEnabledRef.current = ccEnabled; if (!ccEnabled) setActiveCue(''); }, [ccEnabled]);
@@ -67,6 +70,9 @@ export default function CoursePlayer({ courseId, initialLessonId }) {
     setStarting(false);
     setError('');
     setSaveError('');
+    setAutoplayMuted(false);
+    setDismissed(false);
+    autoStartFor.current = '';
     apiRequest(`/student/courses/${encodeURIComponent(courseId)}`, { signal: controller.signal })
       .then((data) => {
         if (!current.active) return;
@@ -136,6 +142,22 @@ export default function CoursePlayer({ courseId, initialLessonId }) {
     };
     const pause = () => { playing = false; lastTick = performance.now(); void save(); };
     const resetSample = () => { lastTick = performance.now(); playing = false; };
+    let mutedRetry;
+    const beginPlayback = () => {
+      player.play();
+      // Browsers only allow audible autoplay once the domain has media
+      // engagement, and Safari never allows it unmuted. When the first attempt
+      // is blocked, replay muted and hand the viewer an Unmute button.
+      mutedRetry = window.setTimeout(() => {
+        if (!isCurrent()) return;
+        player.getPaused((paused) => {
+          if (!isCurrent() || !paused) return;
+          player.mute?.();
+          player.play();
+          setAutoplayMuted(true);
+        });
+      }, 1500);
+    };
     const onReady = async () => {
       if (!isCurrent()) return;
       ready = true;
@@ -143,6 +165,7 @@ export default function CoursePlayer({ courseId, initialLessonId }) {
       await save();
       if (!isCurrent()) return;
       player.getPaused((paused) => { if (isCurrent()) { playing = !paused; lastTick = performance.now(); } });
+      beginPlayback();
     };
     const seeked = () => {
       resetSample();
@@ -179,12 +202,13 @@ export default function CoursePlayer({ courseId, initialLessonId }) {
       finally { pendingHeartbeat = false; }
     }, 20000);
     const saveInterval = window.setInterval(() => { void save(); }, 10000);
-    const readiness = window.setTimeout(() => { if (!ready) fail('The video player did not respond. Check your connection and try again.'); }, 15000);
+    const readiness = window.setTimeout(() => { if (!ready) fail('The video player did not respond. Check your connection and try again.'); }, 30000);
     const expiry = window.setTimeout(() => fail('Playback authorization expired. Select Start video to authorize again.'), Math.max(0, new Date(playback.expiresAt).getTime() - Date.now()));
     const move = window.setInterval(() => setPosition((value) => (value + 1) % 4), playback.watermark.moveSeconds * 1000);
     document.addEventListener('visibilitychange', visibility);
     return () => {
       closed = true;
+      window.clearTimeout(mutedRetry);
       window.clearInterval(heartbeat);
       window.clearInterval(saveInterval);
       window.clearInterval(move);
@@ -237,6 +261,7 @@ export default function CoursePlayer({ courseId, initialLessonId }) {
       if (!supported) throw new Error('The video provider returned an unsupported player.');
       setProgress(detail.progress);
       setPosition(0);
+      setAutoplayMuted(false);
       setPlayback({ ...result, resumePosition: detail.progress?.lastPositionSeconds || 0 });
       adopted = true;
     } catch (err) { if (isCurrent()) setError(err.message); }
@@ -245,6 +270,31 @@ export default function CoursePlayer({ courseId, initialLessonId }) {
       if (isCurrent()) setStarting(false);
     }
   };
+
+  // Bunny's embed page only wires up its player API inside a requestAnimationFrame
+  // callback, and Chrome stops driving rAF for a cross-origin iframe that is not
+  // on screen, so an autoplay that starts below the fold never begins. The auto
+  // path therefore brings the frame into view first; a clicked Start video is
+  // already being looked at.
+  const revealPlayer = () => {
+    const el = frame.current;
+    if (!el) return;
+    const box = el.getBoundingClientRect();
+    const onScreen = box.height > 0 && box.top < window.innerHeight * 0.8 && box.bottom > window.innerHeight * 0.2;
+    if (!onScreen) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  };
+
+  // The curriculum effect selects the first playable lesson, which in every
+  // course is the intro, so a course opened from My Learning authorizes and
+  // starts it without a click. "Close video" opts out until another lesson is
+  // chosen; autoStartFor keeps a failed authorization from looping.
+  useEffect(() => {
+    if (dismissed || playback || starting || error || !lessonId) return;
+    if (autoStartFor.current === lessonId) return;
+    autoStartFor.current = lessonId;
+    revealPlayer();
+    void start();
+  }, [lessonId, playback, starting, error, dismissed]);
 
   const selected = lessons.find((lesson) => lesson.id === lessonId);
   // A bundle lists the teachings of every course inside it, and lesson titles repeat
@@ -286,6 +336,14 @@ export default function CoursePlayer({ courseId, initialLessonId }) {
     setCcEnabled((value) => !value);
   };
 
+  const unmute = () => {
+    const player = playerRef.current;
+    if (!player) return;
+    player.unmute?.();
+    player.play();
+    setAutoplayMuted(false);
+  };
+
   const toggleFullscreen = () => {
     const el = frame.current;
     if (!el) return;
@@ -305,7 +363,7 @@ export default function CoursePlayer({ courseId, initialLessonId }) {
             {lessons.length ? (
               <label style={{ display: 'block', marginBottom: 20 }}>
                 Select lesson
-                <select value={lessonId} disabled={starting} onChange={(event) => { setPlayback(null); setLessonId(event.target.value); setProgress(null); setError(''); setSaveError(''); }} style={{ display: 'block', width: '100%', maxWidth: 600, padding: 12, marginTop: 8 }}>
+                <select value={lessonId} disabled={starting} onChange={(event) => { setPlayback(null); setLessonId(event.target.value); setProgress(null); setError(''); setSaveError(''); setDismissed(false); autoStartFor.current = ''; }} style={{ display: 'block', width: '100%', maxWidth: 600, padding: 12, marginTop: 8 }}>
                   {!lessonId && <option value="">Choose a video lesson</option>}
                   {lessonGroups.flatMap((group) => (group.key
                     ? [<optgroup key={`group-${group.items[0].id}`} label={group.key}>{lessonOptions(group.items)}</optgroup>]
@@ -316,11 +374,12 @@ export default function CoursePlayer({ courseId, initialLessonId }) {
             <div ref={frame} style={{ position: 'relative', aspectRatio: '16 / 9', width: '100%', background: '#120a24', border: '1px solid #e8b95f', borderRadius: 12, overflow: 'hidden' }}>
               {playback ? (
                 <>
-                  <iframe ref={iframe} title={selected?.title || 'Course video'} src={playback.playbackUrl} allow="autoplay; encrypted-media; fullscreen" referrerPolicy="no-referrer" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', border: 0 }} />
+                  <iframe ref={iframe} title={selected?.title || 'Course video'} src={playback.playbackUrl} allow="autoplay; encrypted-media; fullscreen" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', border: 0 }} />
                   {playback.watermark.enabled && <span aria-hidden="true" style={{ position: 'absolute', ...marks[position], maxWidth: '85%', pointerEvents: 'none', zIndex: 2, color: '#fff', background: '#120a24', padding: '4px 8px', opacity: playback.watermark.opacity, fontSize: 'clamp(10px, 1.3vw, 16px)' }}>{playback.watermark.text}</span>}
                   {ccEnabled && activeCue && <div style={{ position: 'absolute', bottom: 64, left: 0, right: 0, zIndex: 2, display: 'flex', justifyContent: 'center', padding: '0 16px', pointerEvents: 'none' }}><span style={{ background: 'rgba(18,10,36,0.85)', color: '#fff', padding: '6px 14px', borderRadius: 8, fontSize: 'clamp(14px, 2vw, 20px)', lineHeight: 1.4, textAlign: 'center', maxWidth: '92%', whiteSpace: 'pre-wrap' }}>{activeCue}</span></div>}
                   <div style={{ position: 'absolute', top: 0, left: 0, right: 0, zIndex: 3, padding: '12px 16px', background: 'linear-gradient(to bottom, rgba(18,10,36,0.9) 0%, rgba(18,10,36,0.55) 60%, transparent 100%)', display: 'flex', flexWrap: 'wrap', gap: 10, alignItems: 'center', pointerEvents: 'none' }}>
-                    <button type="button" onClick={() => setPlayback(null)} style={controlButtonStyle}>Close video</button>
+                    <button type="button" onClick={() => { setDismissed(true); autoStartFor.current = ''; setPlayback(null); }} style={controlButtonStyle}>Close video</button>
+                    {autoplayMuted && <button type="button" onClick={unmute} title="Turn the sound on" style={{ ...controlButtonStyle, background: 'linear-gradient(98deg,#fbe7bc 0%,#e8b95f 42%,#ce9c42 100%)', border: '1px solid #e8b95f', color: '#120a24', fontWeight: 700 }}>🔊 Unmute</button>}
                     <button type="button" onClick={skipBackward} title="Skip back 10 seconds" style={controlButtonStyle}>⏪ 10s</button>
                     <button type="button" onClick={skipForward} title="Skip forward 10 seconds" style={controlButtonStyle}>10s ⏩</button>
                     <button type="button" onClick={toggleCC} title="Toggle English captions" aria-pressed={ccEnabled} style={controlButtonStyle}>CC {ccEnabled ? 'ON' : 'OFF'}</button>
