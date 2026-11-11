@@ -187,7 +187,10 @@ export const wisdomCall = {
     {
       icon: 'clock',
       q: 'What if I cannot attend one week?',
-      a: ['Refer to the official CFT registration or communication channels for information about upcoming sessions.'],
+      a: [
+        "It's okay, no worries, you can join the next Wisdom Call on the upcoming Wednesday.",
+        'You are more than welcome to join the class on the next Wednesday.',
+      ],
     },
   ],
 
