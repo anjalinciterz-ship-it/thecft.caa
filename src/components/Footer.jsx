@@ -94,11 +94,17 @@ export default function Footer() {
 
       <div className="ft-bottom">
         <div className="ft-bottom-in">
-          <img className="ft-logo" src={site.logoColor} alt={site.name} />
+          <img className="ft-feather" src="/images/logo/peacock-feather.png" alt="" />
+          <div className="ft-legal">
+            <span className="ft-copy">{site.name} &copy; {new Date().getFullYear()}</span>
+            <span className="ft-sep" aria-hidden="true" />
+            <Link to="/privacy">Privacy Policy</Link>
+            <span className="ft-sep" aria-hidden="true" />
+            <Link to="/terms">Terms &amp; Conditions</Link>
+          </div>
           <a className="ft-made" href="https://vaibhavbuilds.space/" target="_blank" rel="noreferrer">
             Developed by Vaibhav
           </a>
-          <span className="ft-copy">© {new Date().getFullYear()}. All rights reserved.</span>
         </div>
       </div>
     </footer>

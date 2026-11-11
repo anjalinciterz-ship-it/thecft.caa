@@ -773,13 +773,39 @@ section{padding:var(--section-py) 0;}
 .ft-socials a{color:#120a24;}
 .ft-socials a:hover{color:var(--violet-500);}
 .ft-bottom{border-top:1px solid rgba(18,10,36,.18);}
-.ft-bottom-in{max-width:var(--maxw);margin:0 auto;padding:20px 28px;display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;}
-.ft-logo{height:30px;width:auto;display:block;}
-.ft-copy{font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:rgba(18,10,36,.65);}
-.ft-made{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--gold-ink);text-decoration:none;border-bottom:1px solid transparent;padding-bottom:1px;transition:color .2s,border-color .2s;}
+/* Emblem left, the legal line dead centre, the developer credit right. A
+   three-column grid rather than space-between, so the centre stays centred no
+   matter how wide the two sides are. */
+.ft-bottom-in{
+  max-width:var(--maxw);margin:0 auto;padding:18px 28px;
+  display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:18px;
+}
+.ft-feather{justify-self:start;height:56px;width:auto;display:block;}
+.ft-legal{justify-self:center;display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap;}
+.ft-copy{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--plum-text);}
+.ft-legal a{
+  font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--plum-text);
+  text-decoration:none;border-bottom:1px solid transparent;padding-bottom:1px;transition:color .2s,border-color .2s;
+}
+.ft-legal a:hover,.ft-legal a:focus-visible{color:var(--violet-500);border-bottom-color:currentColor;}
+.ft-legal a:focus-visible{outline:2px solid var(--color-champagne-gold);outline-offset:3px;}
+.ft-sep{width:1px;height:16px;background:rgba(18,10,36,.22);flex:none;}
+.ft-made{justify-self:end;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--gold-ink);text-decoration:none;border-bottom:1px solid transparent;padding-bottom:1px;transition:color .2s,border-color .2s;}
 .ft-made:hover,.ft-made:focus-visible{color:#6d5115;border-bottom-color:currentColor;}
 .ft-made:focus-visible{outline:2px solid var(--color-champagne-gold);outline-offset:3px;}
-@media(max-width:640px){.ft-made{padding:12px 2px;}}
+@media(max-width:900px){
+  /* Three columns stop fitting; the feather leads, then the legal line, then
+     the credit, all centred against each other. */
+  .ft-bottom-in{grid-template-columns:1fr;justify-items:center;gap:14px;padding:22px 28px;}
+  .ft-feather{justify-self:center;height:46px;}
+  .ft-made{justify-self:center;}
+  /* The legal line wraps here, and a hairline left at the end of a wrapped row
+     reads as a stray mark, so the gaps carry the separation instead. */
+  .ft-legal{gap:12px 22px;}
+  .ft-sep{display:none;}
+  .ft-legal a{display:inline-flex;align-items:center;min-height:44px;}
+}
+@media(max-width:640px){.ft-made{padding:12px 2px;}.ft-legal a{padding:12px 6px;margin:-12px -6px;}}
 @media(max-width:1080px){.ft-cols{grid-template-columns:repeat(3,1fr);}.ft-follow{border-left:0;padding-left:0;}}
 @media(max-width:640px){.ft-cols{grid-template-columns:repeat(2,minmax(0,1fr));gap:26px;}}
 .social-row{display:flex;gap:10px;}
