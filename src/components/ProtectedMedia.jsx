@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { Icon } from './icons';
 import HlsVideoPlayer from './HlsVideoPlayer';
 
@@ -13,90 +13,51 @@ export const mediaUrl = (src) => (/^https?:/.test(src) ? src : `${AUDIO_BASE}/${
 
 const noSave = (e) => e.preventDefault();
 
-const clock = (s) => {
-  if (!Number.isFinite(s) || s <= 0) return null;
-  const h = Math.floor(s / 3600);
-  const m = Math.floor((s % 3600) / 60);
-  const sec = Math.floor(s % 60);
-  const pad = (n) => String(n).padStart(2, '0');
-  return h ? `${h}:${pad(m)}:${pad(sec)}` : `${m}:${pad(sec)}`;
-};
+const TRACK_NOTE = 'Listen to this teaching from The Centre for Transformation';
 
-export function AudioPlaylist({ audio }) {
-  const [active, setActive] = useState(audio.groups[0].tracks[0].src);
-  const [playing, setPlaying] = useState(false);
-  const [length, setLength] = useState(null);
+// One card per recording: his own play button for the glance, the browser's
+// transport bar under it for scrubbing and volume. Starting a track silences
+// the others so two recordings can never talk over each other.
+function AudioTrackCard({ track, note, players }) {
   const ref = useRef(null);
-  const mounted = useRef(false);
+  const [playing, setPlaying] = useState(false);
 
-  useEffect(() => {
-    if (!mounted.current) {
-      mounted.current = true;
-      return undefined;
+  const toggle = () => {
+    const el = ref.current;
+    if (!el) return;
+    if (el.paused) {
+      players.current.forEach((other) => { if (other !== el) other.pause(); });
+      el.play().catch(() => {});
+    } else {
+      el.pause();
     }
-    const el = ref.current;
-    setLength(null);
-    el.load();
-    el.play().catch(() => {});
-    return () => el.pause();
-  }, [active]);
-
-  const pick = (src) => {
-    if (src !== active) return setActive(src);
-    const el = ref.current;
-    if (el.paused) el.play().catch(() => {});
-    else el.pause();
   };
 
-  const rows = [];
-  audio.groups.forEach((g) => {
-    if (g.label) rows.push({ kind: 'group', label: g.label });
-    g.tracks.forEach((t) => rows.push({ kind: 'track', label: t.label, src: t.src }));
-  });
-
   return (
-    <div className="glass media-card">
-      <div className="media-head">
-        <span className="media-mark">
-          <Icon name="headphones" size={20} />
-        </span>
-        <div>
-          <h3>{audio.heading}</h3>
+    <li className="audio-card">
+      <div className="audio-card-top">
+        <button
+          type="button"
+          className="audio-card-btn"
+          onClick={toggle}
+          aria-label={`${playing ? 'Pause' : 'Play'} ${track.title}`}
+        >
+          <Icon name={playing ? 'pause' : 'play'} size={16} style={{ fill: 'currentColor' }} />
+        </button>
+        <div className="audio-card-copy">
+          <h3>{track.title}</h3>
+          <p>{note}</p>
         </div>
       </div>
-
-      <ul className="track-list">
-        {rows.map((r) =>
-          r.kind === 'group' ? (
-            <li key={`group-${r.label}`} className="track-group">
-              {r.label}
-            </li>
-          ) : (
-            <li key={r.src}>
-              <button
-                type="button"
-                className={`track${r.src === active ? ' is-active' : ''}`}
-                onClick={() => pick(r.src)}
-              >
-                <span className="track-glyph">
-                  <Icon name={r.src === active && playing ? 'pause' : 'play'} size={14} />
-                </span>
-                <span className="track-label">{r.label}</span>
-                <span className="track-len">
-                  {r.src === active && length ? clock(length) : ''}
-                </span>
-              </button>
-            </li>
-          )
-        )}
-      </ul>
-
       <audio
-        ref={ref}
-        className="media-audio"
-        src={mediaUrl(active)}
+        ref={(el) => {
+          ref.current = el;
+          if (el) players.current.set(track.src, el);
+          else players.current.delete(track.src);
+        }}
+        src={mediaUrl(track.src)}
         controls
-        preload="none"
+        preload="metadata"
         controlsList="nodownload noremoteplayback"
         disablePictureInPicture
         disableRemotePlayback
@@ -105,8 +66,32 @@ export function AudioPlaylist({ audio }) {
         onPlay={() => setPlaying(true)}
         onPause={() => setPlaying(false)}
         onEnded={() => setPlaying(false)}
-        onLoadedMetadata={(e) => setLength(e.currentTarget.duration)}
       />
+    </li>
+  );
+}
+
+export function AudioPlaylist({ audio }) {
+  const players = useRef(new Map());
+  const note = audio.note || TRACK_NOTE;
+  let n = 0;
+  const groups = audio.groups.map((g) => ({
+    label: g.label,
+    tracks: g.tracks.map((t) => ({ ...t, title: `Audio Track ${++n}` })),
+  }));
+
+  return (
+    <div className="audio-stack">
+      {groups.map((g) => (
+        <div className="audio-group" key={g.label || g.tracks[0].src}>
+          {g.label ? <p className="audio-group-label">{g.label}</p> : null}
+          <ul className="audio-list">
+            {g.tracks.map((t) => (
+              <AudioTrackCard key={t.src} track={t} note={note} players={players} />
+            ))}
+          </ul>
+        </div>
+      ))}
     </div>
   );
 }
