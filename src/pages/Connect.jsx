@@ -392,7 +392,7 @@ export default function Connect() {
             <Link to="/courses" className="btn btn-gold">
               Explore CFT
             </Link>
-            <Link to="/wisdom-call" className="btn cn-ghost">
+            <Link to="/wisdom-call" className="btn btn-ghost">
               Wednesday Wisdom Class
             </Link>
           </div>

@@ -2909,6 +2909,12 @@ img.touch-f-ico{width:16px;height:16px;object-fit:contain;}
 .cn-cta h2 span{color:var(--gold-300);}
 .cn-cta p{color:rgba(248,245,239,.75);font-size:calc(16px * var(--ts,1));line-height:1.7;max-width:600px;margin:0 auto 26px;}
 .cn-cta-row{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;}
+/* .cn-ghost is built for the lavender hero, so it goes plum-on-plum here. This
+   band gets the same light outline the testimonials closer uses. */
+.cn-cta .btn-ghost{
+  background:transparent;border:1px solid rgba(248,245,239,.35);color:var(--text);
+}
+.cn-cta .btn-ghost:hover{border-color:var(--gold-300);color:var(--gold-300);}
 
 /* Responsive */
 @media (max-width:1020px){
