@@ -100,7 +100,7 @@ export function AudioPlaylist({ audio }) {
 // frame, same transport affordance, with a note instead of a broken player.
 // When the HLS source is set, it hands off to the custom HlsVideoPlayer so
 // every control (play/pause, skip, CC, volume, fullscreen) lives inside the frame.
-export function VideoSlot({ src, poster, title, guid }) {
+export function VideoSlot({ src, poster, title, guid, autoPlay }) {
   if (!src) {
     return (
       <figure className="video-slot is-empty">
@@ -114,5 +114,5 @@ export function VideoSlot({ src, poster, title, guid }) {
       </figure>
     );
   }
-  return <HlsVideoPlayer src={src} poster={poster} title={title} guid={guid} />;
+  return <HlsVideoPlayer src={src} poster={poster} title={title} guid={guid} autoPlay={autoPlay} />;
 }

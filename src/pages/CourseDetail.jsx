@@ -1,5 +1,6 @@
+import { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { getCourse, includeLabel, includeLink } from '../data/courses';
+import { getCourse, includeLabel, includeLink, courses as shippedCourses } from '../data/courses';
 import { OfferingPrice, findOffering, useCatalog } from '../lib/catalog';
 import { useAuth } from '../lib/auth';
 import CoursePlayer from '../components/CoursePlayer';
@@ -7,6 +8,7 @@ import { Icon } from '../components/icons';
 import CourseBanner from '../components/CourseBanner';
 import CourseCard from '../components/CourseCard';
 import CourseFaqs from '../components/CourseFaqs';
+import CourseIntroDialog from '../components/CourseIntroDialog';
 import { VideoSlot } from '../components/ProtectedMedia';
 import { usePageMeta, courseJsonLd } from '../lib/seo';
 import NotFound from './NotFound';
@@ -18,6 +20,7 @@ export default function CourseDetail() {
      content still renders the page when the catalog API is unreachable. */
   const course = findOffering(offerings, id) || getCourse(id);
   const { user, owns } = useAuth();
+  const [detailOpen, setDetailOpen] = useState(false);
 
   usePageMeta(
     course
@@ -36,9 +39,10 @@ export default function CourseDetail() {
   const modules = course.curriculum || [];
   const lessons = modules.flatMap((m) => m.items);
   const included = course.includedOfferings || course.bundleIncludes || [];
-  const related = offerings
-    .filter((c) => c.id !== course.id && (c.categories || []).some((k) => (course.categories || []).includes(k)))
-    .slice(0, 3);
+  // He wants every other program under the FAQs rather than the three that
+  // happen to share a category, and the shipped catalogue stands in for the
+  // related cards when the catalog API is unreachable.
+  const related = (offerings.length ? offerings : shippedCourses).filter((c) => c.id !== course.id);
 
   // Counts come from what is actually published once the offering lives in the
   // database; marketing copy keeps its own outline until then.
@@ -85,6 +89,9 @@ export default function CourseDetail() {
               </div>
               <h1 className="cq-post-title">{course.name}</h1>
               <p className="cq-post-dek">{course.short}</p>
+              {/* Parked on 2026-11-16 when he took price and enrolment off the
+                  course pages. The member still reaches the lessons through the
+                  player below, or My Courses.
               <p className="cq-price cq-price-lg">
                 <OfferingPrice offering={course} className="" />
               </p>
@@ -104,9 +111,21 @@ export default function CourseDetail() {
                   Explore the Program
                 </a>
               </div>
+              */}
+              <button type="button" className="cq-detail-btn" onClick={() => setDetailOpen(true)}>
+                Tap for Detailed Description
+                <Icon name="arrow" size={20} />
+              </button>
             </div>
             <div className="cq-post-art">
-              <CourseBanner course={course} loading="eager" />
+              <button
+                type="button"
+                className="cq-post-art-btn"
+                aria-label={`Open the detailed description of ${course.name}`}
+                onClick={() => setDetailOpen(true)}
+              >
+                <CourseBanner course={course} src={course.pageBanner} loading="eager" />
+              </button>
             </div>
           </div>
         </div>
@@ -114,6 +133,10 @@ export default function CourseDetail() {
 
       {unlocked && user && <CoursePlayer courseId={course.id} />}
 
+      {/* Parked on 2026-11-16 at his request. Everything from The Purpose up to
+          the FAQs is off the course pages for now; uncomment to bring it back.
+          The introduction film it carried now opens from the banner or the
+          button above, inside CourseIntroDialog.
       <section id="purpose" className="cq-band cq-white">
         <div className="container cq-col">
           <span className="cq-eyebrow">
@@ -337,6 +360,7 @@ export default function CourseDetail() {
           </div>
         </section>
       )}
+      */}
 
       <section className="cq-band cq-ivory">
         <div className="container cq-col">
@@ -355,7 +379,7 @@ export default function CourseDetail() {
               Keep Exploring
             </span>
             <h2 className="cq-h2">Related Programs</h2>
-            <div className="cq-grid">
+            <div className="cq-grid cq-grid-2">
               {related.map((c) => (
                 <CourseCard key={c.id} course={c} />
               ))}
@@ -364,6 +388,8 @@ export default function CourseDetail() {
         </section>
       )}
 
+      {/* Parked with the rest of the enrolment copy on 2026-11-16: this band is
+          the price and the Enroll Now button at the foot of the page.
       <section className="cq-band cq-plum cq-enrol">
         <div className="container cq-enrol-box">
           <div>
@@ -388,6 +414,9 @@ export default function CourseDetail() {
           </div>
         </div>
       </section>
+      */}
+
+      <CourseIntroDialog open={detailOpen} onClose={() => setDetailOpen(false)} course={course} />
     </>
   );
 }

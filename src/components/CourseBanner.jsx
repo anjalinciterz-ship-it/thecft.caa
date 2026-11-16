@@ -1,6 +1,6 @@
-export default function CourseBanner({ course, loading = 'lazy', className = '' }) {
-  const src = course.banner || course.image;
-  if (!src) {
+export default function CourseBanner({ course, src, loading = 'lazy', className = '' }) {
+  const url = src || course.banner || course.image;
+  if (!url) {
     /* A newly published offering may not have artwork yet; the layout must hold
        instead of showing a broken image on the public site. */
     return <div className={`cq-art cq-art-ph${className ? ' ' + className : ''}`} role="img" aria-label={`${course.name}, artwork to be added`} />;
@@ -8,7 +8,7 @@ export default function CourseBanner({ course, loading = 'lazy', className = '' 
   return (
     <img
       className={`cq-art${className ? ' ' + className : ''}`}
-      src={src}
+      src={url}
       alt={`${course.name}, official program banner`}
       width={course.bannerW}
       height={course.bannerH}

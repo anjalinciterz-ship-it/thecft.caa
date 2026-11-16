@@ -73,6 +73,9 @@ export const courses = [
     categories: ['consciousness', 'life-transformation'],
     image: '/images/courses/accelerator.png',
     banner: '/images/courses/accelerator-banner.webp',
+    // pageBanner is the client's own artwork for the course page only; the
+    // listing cards and the Home showcase keep `banner`.
+    pageBanner: '/images/courses/accelerator-page-banner.webp',
     introVideo: introVideo('4d259eb2-4d10-4f1c-9202-47c90fba7ac4'),
     grad: 'linear-gradient(135deg,#3a2a63,#7a5cd6)',
     description:
@@ -141,6 +144,7 @@ export const courses = [
     categories: ['mindfulness', 'life-transformation'],
     image: '/images/courses/mind-life-collection.webp',
     banner: '/images/courses/mindlife-banner.webp',
+    pageBanner: '/images/courses/mindlife-page-banner.webp',
     introVideo: introVideo('f6017cb5-1a8c-42c6-ac7b-2cf42e56f887'),
     grad: 'linear-gradient(135deg,#c9973e,#5b3fa6)',
     description:
@@ -195,6 +199,7 @@ export const courses = [
     categories: ['spiritual-growth'],
     image: '/images/courses/spiritual-awakening-series.png',
     banner: '/images/courses/sa1-banner.webp',
+    pageBanner: '/images/courses/sa1-page-banner.webp',
     introVideo: introVideo('981721b9-ca89-43c5-8e89-c723d281fe4d'),
     grad: 'linear-gradient(135deg,#5b3fa6,#c9973e)',
     description:
@@ -252,6 +257,7 @@ export const courses = [
     categories: ['spiritual-growth'],
     image: '/images/courses/spiritual-awakening-series.png',
     banner: '/images/courses/sa2-banner.webp',
+    pageBanner: '/images/courses/sa2-page-banner.webp',
     introVideo: introVideo('e3562118-c57a-47ae-8115-4c939dc79f1e'),
     grad: 'linear-gradient(135deg,#2f2258,#5b3fa6)',
     description:
@@ -309,6 +315,7 @@ export const courses = [
     categories: ['consciousness', 'spiritual-growth', 'life-transformation'],
     image: '/images/courses/complete-program.png',
     banner: '/images/courses/complete-banner.webp',
+    pageBanner: '/images/courses/complete-page-banner.webp',
     introVideo: introVideo('a407fe46-51b1-49fb-a851-2f3c24ae6bce'),
     grad: 'linear-gradient(135deg,#1a1033,#7a5cd6)',
     description:

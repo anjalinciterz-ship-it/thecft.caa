@@ -29,7 +29,7 @@ const SkipIcon = ({ back = false }) => (
 // A self-contained HLS player for the public meditation films. The bytes come
 // straight from Bunny's referrer-locked CDN (any browser referrer is allowed),
 // hls.js bridges MSE browsers, and every control lives inside the frame.
-export default function HlsVideoPlayer({ src, poster, title, guid }) {
+export default function HlsVideoPlayer({ src, poster, title, guid, autoPlay }) {
   const videoRef = useRef(null);
   const frameRef = useRef(null);
   const hlsRef = useRef(null);
@@ -128,6 +128,23 @@ export default function HlsVideoPlayer({ src, poster, title, guid }) {
     const v = videoRef.current;
     if (v) v.play().catch(() => setError('The video could not start. Please press play again.'));
   };
+
+  // The course pages start this film from a click on the banner, so the browser
+  // still counts it as a gesture. If autoplay is ever blocked, the poster stays
+  // up and his own play button takes over.
+  useEffect(() => {
+    if (!autoPlay) return undefined;
+    const v = videoRef.current;
+    if (!v) return undefined;
+    const start = () => {
+      setStarted(true);
+      setEnded(false);
+      v.play().catch(() => setStarted(false));
+    };
+    if (v.readyState >= 2) start();
+    else v.addEventListener('loadeddata', start, { once: true });
+    return () => v.removeEventListener('loadeddata', start);
+  }, [autoPlay]);
 
   const togglePlay = () => {
     const v = videoRef.current;
