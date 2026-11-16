@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Link, useLocation, useParams, useSearchParams } from 'react-router-dom';
 import { apiRequest } from '../lib/api';
 import { useAuth } from '../lib/auth';
@@ -228,6 +228,22 @@ function LessonContent({ lessonId, courseId }) {
   return <RequestState resource={resource}>{resource.data && <div className="db-panel db-stack"><h2>{resource.data.lesson.title}</h2><p className="db-muted">{resource.data.lesson.description}</p>{resource.data.lesson.hasVideo ? <CoursePlayer key={lessonId} courseId={courseId} initialLessonId={lessonId} /> : <>{resource.data.lesson.textContent && <div style={{ whiteSpace: 'pre-wrap' }}>{resource.data.lesson.textContent}</div>}{!resource.data.lesson.textContent && <p className="db-muted">No text content is published for this lesson.</p>}</>}<p className="db-muted">Status: {resource.data.progress.status.replaceAll('_', ' ')}</p>{resource.data.progress.status !== 'completed' && <button className="db-button-secondary" disabled={busy} onClick={complete}>{busy ? 'Checking completion…' : 'Mark lesson complete'}</button>}{error && <p className="db-error" role="alert">{error}</p>}</div>}</RequestState>;
 }
 
+const ONES = ['Zero', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten',
+  'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'];
+const TENS = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
+
+// The classes are titled "Class 1", "Lesson 10", and so on. He wants the number
+// read as a word, so the label is spelled out wherever a lesson or module title
+// carries one.
+function numberAsWord(digits) {
+  const value = Number(digits);
+  if (!Number.isInteger(value) || value < 0 || value > 99) return digits;
+  if (value < 20) return ONES[value];
+  const rest = value % 10;
+  return TENS[Math.floor(value / 10)] + (rest ? ` ${ONES[rest].toLowerCase()}` : '');
+}
+const spellNumbers = (title) => String(title || '').replace(/\d+/g, numberAsWord);
+
 function CurriculumList({ curriculum, courseSlug, enrolledRoute }) {
   if (!curriculum?.length) return <div className="db-panel"><EmptyState icon="book" title="Curriculum is being prepared">Published modules will appear here when available.</EmptyState></div>;
   // A bundle lists the modules of every course inside it, so each set is labelled
@@ -241,7 +257,20 @@ function CurriculumList({ curriculum, courseSlug, enrolledRoute }) {
   }
   return <section className="db-stack"><h2>Course curriculum</h2>{groups.map((group) => <div className="db-stack" key={`course-${group.items[0].id}`}>
     {group.key && <h3 className="db-curriculum-course">{group.key}</h3>}
-    {group.items.map((module) => <div className="db-panel" key={module.id}><h3>{module.title}</h3>{module.lessons.map((lesson) => <div className="db-actions" key={lesson.id} style={{ padding: '10px 0', justifyContent: 'space-between' }}><span>{lesson.title}</span>{enrolledRoute && !lesson.locked ? <Link className="db-text-link" to={`/dashboard/courses/${encodeURIComponent(courseSlug)}/lesson/${encodeURIComponent(lesson.id)}`}>Open lesson<DashIcon name="arrow" size={15} /></Link> : <span className="db-muted">{lesson.isPreview ? 'Preview lesson' : 'Included with enrollment'}</span>}</div>)}</div>)}
+    {group.items.map((module) => {
+      // Seeded modules carry a single lesson named after themselves, so naming
+      // both the module and its lesson reads as the same line twice.
+      const only = module.lessons.length === 1 && module.lessons[0].title === module.title;
+      return <div className="db-panel db-class" key={module.id}>
+        {!only && <h3 className="db-class-head">{spellNumbers(module.title)}</h3>}
+        {module.lessons.map((lesson) => <div className="db-class-row" key={lesson.id}>
+          <h3 className="db-class-head">{only ? spellNumbers(module.title) : spellNumbers(lesson.title)}</h3>
+          {enrolledRoute && !lesson.locked
+            ? <Link className="db-open-lesson" to={`/dashboard/courses/${encodeURIComponent(courseSlug)}/lesson/${encodeURIComponent(lesson.id)}`}>Open lesson<DashIcon name="arrow" size={17} /></Link>
+            : <span className="db-class-note">{lesson.isPreview ? 'Preview lesson' : 'Included with enrollment'}</span>}
+        </div>)}
+      </div>;
+    })}
   </div>)}</section>;
 }
 
@@ -255,6 +284,7 @@ export function DashboardCourse() {
   const [wishError, setWishError] = useState('');
   const [saving, setSaving] = useState(false);
   const course = resource.data?.course;
+  const lessons = useMemo(() => resource.data?.curriculum?.flatMap((module) => module.lessons) || [], [resource.data]);
   const saveWish = async () => {
     if (saving) return;
     setSaving(true); setWishError(''); setWishMessage('');
@@ -262,5 +292,5 @@ export function DashboardCourse() {
     catch (failure) { setWishError(failure.message); }
     finally { setSaving(false); }
   };
-  return <div className="db-stack"><Link className="db-text-link" to={enrolledRoute ? '/dashboard/courses' : '/dashboard/explore'}>Back to {enrolledRoute ? 'my courses' : 'all programs'}</Link><RequestState resource={resource}>{course && <><PageHeading eyebrow={enrolledRoute ? 'Your course' : 'Explore a new path'} title={course.title}>{course.short}</PageHeading>{!enrolledRoute && <div className="db-panel db-stack"><p className="db-price">{course.isFree ? 'Free' : money(course.priceMinor, course.currency)}</p>{owns(course.id) ? <Link className="db-button" to={`/dashboard/courses/${encodeURIComponent(course.slug)}`}>Open my course</Link> : <CheckoutButton product={course} />}<button className="db-button-secondary" disabled={saving} onClick={saveWish}>{saving ? 'Saving…' : 'Save to wishlist'}</button>{wishMessage && <p role="status">{wishMessage}</p>}{wishError && <p className="db-error" role="alert">{wishError}</p>}</div>}{lessonId ? <LessonContent key={lessonId} lessonId={lessonId} courseId={course.id} /> : <>{course.description && <div className="db-panel" style={{ whiteSpace: 'pre-wrap' }}>{course.description}</div>}{enrolledRoute && resource.data.access === 'full' && resource.data.curriculum?.some((module) => module.lessons.some((lesson) => lesson.hasVideo)) && <><CommunityWelcomeSection courseSlug={course.slug} /><CoursePlayer courseId={course.id} /></>}{enrolledRoute && resource.data.access === 'full' && !resource.data.curriculum?.some((module) => module.lessons.some((lesson) => lesson.hasVideo)) && <><CommunityWelcomeSection courseSlug={course.slug} /><IntroVideoPlaceholder /></>}</>}<CurriculumList curriculum={resource.data.curriculum} courseSlug={course.slug} enrolledRoute={enrolledRoute} /></>}</RequestState></div>;
+  return <div className="db-stack"><Link className="db-back" to={enrolledRoute ? '/dashboard/courses' : '/dashboard/explore'}><DashIcon name="arrow" size={17} />Back to {enrolledRoute ? 'my courses' : 'all programs'}</Link><RequestState resource={resource}>{course && <><PageHeading eyebrow={enrolledRoute ? 'Your course' : 'Explore a new path'} title={course.title}>{course.short}</PageHeading>{!enrolledRoute && <div className="db-panel db-stack"><p className="db-price">{course.isFree ? 'Free' : money(course.priceMinor, course.currency)}</p>{owns(course.id) ? <Link className="db-button" to={`/dashboard/courses/${encodeURIComponent(course.slug)}`}>Open my course</Link> : <CheckoutButton product={course} />}<button className="db-button-secondary" disabled={saving} onClick={saveWish}>{saving ? 'Saving…' : 'Save to wishlist'}</button>{wishMessage && <p role="status">{wishMessage}</p>}{wishError && <p className="db-error" role="alert">{wishError}</p>}</div>}{lessonId ? <LessonContent key={lessonId} lessonId={lessonId} courseId={course.id} /> : <>{course.description && <div className="db-panel" style={{ whiteSpace: 'pre-wrap' }}>{course.description}</div>}{enrolledRoute && resource.data.access === 'full' && resource.data.curriculum?.some((module) => module.lessons.some((lesson) => lesson.hasVideo)) && <><CommunityWelcomeSection courseSlug={course.slug} /><CoursePlayer courseId={course.id} initialLessons={lessons} /></>}{enrolledRoute && resource.data.access === 'full' && !resource.data.curriculum?.some((module) => module.lessons.some((lesson) => lesson.hasVideo)) && <><CommunityWelcomeSection courseSlug={course.slug} /><IntroVideoPlaceholder /></>}</>}<CurriculumList curriculum={resource.data.curriculum} courseSlug={course.slug} enrolledRoute={enrolledRoute} /></>}</RequestState></div>;
 }

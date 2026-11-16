@@ -234,3 +234,59 @@
 .db-app.db-light .db-nav a{font-size:11px}
 .db-app.db-light .db-visit{min-width:44px}
 .db-app .db-next-link{padding:12px 8px;margin:-12px -8px}
+
+/* ==========================================================
+   2026-11-16 COURSE PAGE PASS
+   The breadcrumb becomes a real button, the class rows say their
+   number once and in words, the three welcome cards share one
+   height, and the cosmic feather joins the shell. Kept at the end
+   of the file so these win over the component rules and the
+   breakpoint overrides above rather than each being edited twice.
+========================================================== */
+.db-app .db-brand>.db-crest{display:block;flex:none;width:auto;height:52px;border-radius:14px;box-shadow:0 0 0 1px rgba(232,185,95,.5),0 8px 22px rgba(18,10,36,.18)}
+.db-app .db-footer>.db-crest{display:block;flex:none;width:auto;height:44px;border-radius:12px;box-shadow:0 0 0 1px rgba(232,185,95,.5)}
+
+.db-app .db-back{align-self:flex-start;display:inline-flex;align-items:center;gap:11px;min-height:48px;padding:12px 26px;border-radius:999px;border:1px solid var(--db-gold-line);background:rgba(255,255,255,.7);color:var(--gold-ink);font-family:var(--font-head);font-size:16px;font-weight:700;line-height:1.3;text-decoration:none;transition:background .2s,border-color .2s}
+.db-app .db-back:hover{background:var(--db-badge-bg);border-color:var(--db-gold)}
+.db-app .db-back>svg{flex:none;transform:rotate(180deg)}
+
+.db-app .db-class>.db-class-head:first-child{margin:0 0 6px}
+.db-app .db-class-row{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:14px 0;border-top:1px solid var(--db-line-soft)}
+.db-app .db-class-head+ .db-class-row{border-top:0;padding-top:8px}
+.db-app .db-class-row:last-child{padding-bottom:0}
+.db-app .db-class-head{margin:0;font-family:var(--font-head);font-size:24px;font-weight:700;line-height:1.2;letter-spacing:.005em;color:var(--db-ink)}
+.db-app .db-class-note{font-size:13px;line-height:1.4;color:var(--db-muted);text-align:right}
+.db-app .db-open-lesson{flex:none;display:inline-flex;align-items:center;gap:10px;min-height:48px;padding:11px 22px;border-radius:999px;border:1px solid var(--db-gold-line);background:rgba(255,255,255,.7);color:var(--gold-ink);font-size:15px;font-weight:700;line-height:1.3;text-decoration:none;transition:background .2s,border-color .2s}
+.db-app .db-open-lesson:hover{background:var(--db-badge-bg);border-color:var(--db-gold)}
+
+.db-app .db-community{align-items:stretch}
+.db-app .db-community-card{display:flex;flex-direction:column}
+.db-app .db-community-card h3{font-size:27px;font-weight:700;line-height:1.15;margin:0 0 14px}
+.db-app .db-community-card>p,.db-app .db-community-items p{font-size:15px;line-height:1.72;font-weight:500;color:var(--db-body)}
+.db-app .db-community-items{flex:1 1 auto}
+.db-app .db-community-items strong{color:var(--db-ink);font-weight:700}
+.db-app .db-community-closing{font-size:15px;font-weight:600}
+
+.db-app .db-footer{flex-wrap:wrap;row-gap:14px}
+.db-app .db-footer>.db-footer-legal{flex:1 0 100%;max-width:none;margin:0;font-size:11.5px;letter-spacing:normal;line-height:1.7;text-transform:none;color:var(--db-muted)}
+.db-app .db-footer>.db-footer-legal>span{color:var(--db-gold-text);margin:0 4px}
+.db-app .db-footer .db-made{font-weight:600;color:var(--gold-ink)}
+
+@media(max-width:1180px){.db-app .db-brand>.db-crest{height:46px}}
+@media(max-width:900px){.db-app .db-brand>.db-crest{height:42px}.db-app .db-footer>.db-crest{height:40px}}
+@media(max-width:650px){
+  .db-app .db-brand>.db-crest{height:36px}
+  .db-app .db-footer>.db-crest{height:36px}
+  .db-app .db-back{font-size:15px;min-height:46px;padding:11px 20px}
+  .db-app .db-class-head{font-size:21px}
+  .db-app .db-class-row{gap:14px}
+  .db-app .db-open-lesson{font-size:14px;padding:10px 17px}
+  .db-app .db-community-card h3{font-size:23px}
+  .db-app .db-community-card>p,.db-app .db-community-items p{font-size:14px}
+}
+@media(max-width:420px){
+  /* A class row cannot keep its label and its button on one line at this
+     width, so the button drops underneath and takes the full tap width. */
+  .db-app .db-class-row{flex-wrap:wrap}
+  .db-app .db-open-lesson{width:100%;justify-content:center}
+}

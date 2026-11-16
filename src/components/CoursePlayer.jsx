@@ -26,7 +26,7 @@ function loadPlayerApi() {
   return playerApiRequest;
 }
 
-export default function CoursePlayer({ courseId, initialLessonId }) {
+export default function CoursePlayer({ courseId, initialLessonId, initialLessons }) {
   const [lessons, setLessons] = useState([]);
   const [lessonId, setLessonId] = useState('');
   const [playback, setPlayback] = useState(null);
@@ -62,31 +62,45 @@ export default function CoursePlayer({ courseId, initialLessonId }) {
     const current = { active: true };
     lifecycle.current = current;
     const controller = new AbortController();
-    setLoading(true);
-    setLessons([]);
-    setLessonId('');
-    setPlayback(null);
-    setProgress(null);
-    setStarting(false);
-    setError('');
-    setSaveError('');
-    setAutoplayMuted(false);
-    setDismissed(false);
-    autoStartFor.current = '';
+    const isReady = () => current.active && lifecycle.current === current;
+    if (!initialLessons?.length) {
+      setLoading(true);
+      setLessons([]);
+      setLessonId('');
+      setPlayback(null);
+      setProgress(null);
+      setStarting(false);
+      setError('');
+      setSaveError('');
+      setAutoplayMuted(false);
+      setDismissed(false);
+      autoStartFor.current = '';
+    }
+    const pick = (rows) => {
+      if (!isReady()) return;
+      const playable = rows.filter((lesson) => lesson.hasVideo && !lesson.locked);
+      setLessons(rows);
+      setLessonId(initialLessonId
+        ? playable.find((lesson) => String(lesson.id) === String(initialLessonId))?.id || ''
+        : playable[0]?.id || '');
+      setLoading(false);
+    };
+    // The course page already holds this exact curriculum, so handing it down
+    // starts the intro video one round trip sooner.
+    if (initialLessons?.length) {
+      pick(initialLessons);
+      return () => { current.active = false; controller.abort(); };
+    }
     apiRequest(`/student/courses/${encodeURIComponent(courseId)}`, { signal: controller.signal })
-      .then((data) => {
-        if (!current.active) return;
-        const rows = data.curriculum.flatMap((module) => module.lessons);
-        const playable = rows.filter((lesson) => lesson.hasVideo && !lesson.locked);
-        setLessons(rows);
-        setLessonId(initialLessonId
-          ? playable.find((lesson) => String(lesson.id) === String(initialLessonId))?.id || ''
-          : playable[0]?.id || '');
-      })
-      .catch((err) => { if (current.active) setError(err.message); })
-      .finally(() => { if (current.active) setLoading(false); });
+      .then((data) => pick(data.curriculum.flatMap((module) => module.lessons)))
+      .catch((err) => { if (isReady()) setError(err.message); })
+      .finally(() => { if (isReady()) setLoading(false); });
     return () => { current.active = false; controller.abort(); };
-  }, [courseId, initialLessonId]);
+  }, [courseId, initialLessonId, initialLessons]);
+
+  // The controls script is ~100 KB and is only needed once a lesson is chosen,
+  // so it starts downloading on mount instead of inside the Start click.
+  useEffect(() => { loadPlayerApi().catch(() => {}); }, []);
 
   useEffect(() => {
     if (!playback) return undefined;
@@ -158,12 +172,13 @@ export default function CoursePlayer({ courseId, initialLessonId }) {
         });
       }, 1500);
     };
-    const onReady = async () => {
+    const onReady = () => {
       if (!isCurrent()) return;
       ready = true;
       if (playback.resumePosition > 0) player.setCurrentTime(playback.resumePosition);
-      await save();
-      if (!isCurrent()) return;
+      // Saving the resume point and starting the picture are independent, and
+      // waiting for the round trip used to delay the first frame by a second.
+      void save();
       player.getPaused((paused) => { if (isCurrent()) { playing = !paused; lastTick = performance.now(); } });
       beginPlayback();
     };
@@ -241,16 +256,20 @@ export default function CoursePlayer({ courseId, initialLessonId }) {
     if (!lessonId || starting) return;
     const current = lifecycle.current;
     const isCurrent = () => current.active && lifecycle.current === current;
-    let issued;
     let adopted = false;
     setStarting(true);
     setError('');
     setSaveError('');
+    // The lesson detail, the signed playback token and the controls script are
+    // three independent waits, so they run together instead of one after another.
+    const playbackRequest = apiRequest(`/video/lessons/${encodeURIComponent(lessonId)}/playback`, { method: 'POST' })
+      .then((data) => data.playback);
     try {
-      const [detail] = await Promise.all([apiRequest(`/student/lessons/${lessonId}`), loadPlayerApi()]);
-      if (!isCurrent()) return;
-      const { playback: result } = await apiRequest(`/video/lessons/${lessonId}/playback`, { method: 'POST' });
-      issued = result;
+      const [detail, result] = await Promise.all([
+        apiRequest(`/student/lessons/${encodeURIComponent(lessonId)}`),
+        playbackRequest,
+        loadPlayerApi(),
+      ]);
       if (!isCurrent()) return;
       let supported = false;
       try {
@@ -266,7 +285,8 @@ export default function CoursePlayer({ courseId, initialLessonId }) {
       adopted = true;
     } catch (err) { if (isCurrent()) setError(err.message); }
     finally {
-      if (issued && !adopted) await apiRequest(`/video/playback/${encodeURIComponent(issued.sessionId)}`, { method: 'DELETE' }).catch(() => {});
+      // A token that lands after another request failed still has to be closed.
+      if (!adopted) await playbackRequest.then((result) => apiRequest(`/video/playback/${encodeURIComponent(result.sessionId)}`, { method: 'DELETE' }).catch(() => {}), () => {});
       if (isCurrent()) setStarting(false);
     }
   };
