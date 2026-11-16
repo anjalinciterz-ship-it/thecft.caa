@@ -302,10 +302,10 @@ p{margin:0 0 1em;}
 
 /* ---------- Navbar dropdown panels ---------- */
 /* These were full-bleed mega menus: 600px tall from edge to edge, carrying
-   photographs and course tiles, with the header turned solid plum behind them,
-   so opening one hid the page the visitor was reading. Each panel is now a
-   dropdown anchored under the word that opened it, held to about a third of the
-   viewport in both directions, which leaves the site visible around it. */
+   photographs and course tiles, so opening one hid the page the visitor was
+   reading. Each panel is now a dropdown anchored under the word that opened it,
+   held to about a third of the viewport in both directions, which leaves the
+   site visible around it. The header keeps its translucent bar behind it. */
 .mm-panel{
   --mm-w:clamp(300px,34vw,620px);
   position:absolute;top:100%;z-index:99;
@@ -341,7 +341,8 @@ p{margin:0 0 1em;}
 .mm-all:hover{filter:brightness(1.06);}
 .mm-all svg{transform:rotate(-45deg);}
 /* A short laptop gives the panel fewer pixels than the list needs, so the
-   padding and type tighten instead of pushing the last row behind a scrollbar. */
+   padding and type tighten first; whatever is still over the cap scrolls
+   inside the list rather than taking the heading and the action with it. */
 @media (max-height:800px){
   .mm-compact{padding:14px 16px 15px;}
   .mm-title{margin-bottom:9px;font-size:calc(16px * var(--ts-h,1));}
