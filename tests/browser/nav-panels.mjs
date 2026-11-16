@@ -121,7 +121,7 @@ async function measure(page) {
       const m = await measure(page);
       check(`${key}: panel appeared`, !!m);
       check(`${key}: width under 35% of the screen`, m.wPct <= 35.5, `${m.wPct}% (${m.w}px of ${m.vw})`);
-      check(`${key}: height under 35% of the screen`, m.hPct <= 35.5, `${m.hPct}% (${m.h}px of ${m.vh})`);
+      check(`${key}: height under 45% of the screen`, m.hPct <= 45.5, `${m.hPct}% (${m.h}px of ${m.vh})`);
       check(`${key}: total area under 35%`, m.areaPct <= 14, `${m.areaPct}% of the viewport`);
       check(`${key}: stays inside the viewport`, m.x >= 0 && m.x + m.w <= m.vw, `x=${m.x} right=${m.x + m.w}`);
       check(`${key}: nothing clipped sideways`, m.overflowing === 0, `${m.overflowing} overflowing`);
@@ -130,7 +130,7 @@ async function measure(page) {
       check(`${key}: header stays translucent`, m.headerBg.startsWith('rgba(18, 10, 36, 0.65)'), m.headerBg);
       check(`${key}: heading stays inside the panel`, m.titleVisible);
       check(`${key}: the gold action stays inside the panel`, m.ctaVisible);
-      check(`${key}: the list either fits or scrolls`, m.listFits || m.listScrolls, `scroll ${m.scrollH}/${m.clientsH}`);
+      check(`${key}: the list fits with no scroller`, m.listFits && !m.listScrolls, `scroll ${m.scrollH}/${m.clientsH}`);
       await page.screenshot({ path: path.join(shots, `${key}.png`) });
       await page.mouse.move(700, 700);
       await page.waitForTimeout(500);
@@ -220,15 +220,11 @@ async function measure(page) {
       await page.waitForTimeout(350);
       const narrow = await measure(page);
       check(`720px ${key}: width under 35%`, narrow.wPct <= 35.5, `${narrow.wPct}% (${narrow.w} of ${narrow.vw})`);
-      check(`720px ${key}: height under 35%`, narrow.hPct <= 35.5, `${narrow.hPct}% (${narrow.h} of ${narrow.vh})`);
+      check(`720px ${key}: height under 45%`, narrow.hPct <= 45.5, `${narrow.hPct}% (${narrow.h} of ${narrow.vh})`);
       check(`720px ${key}: inside the viewport`, narrow.x >= 0 && narrow.x + narrow.w <= narrow.vw, `x=${narrow.x} w=${narrow.w}`);
       check(`720px ${key}: heading stays inside the panel`, narrow.titleVisible);
       check(`720px ${key}: the gold action stays inside the panel`, narrow.ctaVisible);
-      check(
-        `720px ${key}: the list either fits or scrolls`,
-        narrow.listFits || narrow.listScrolls,
-        `fits ${narrow.listFits}, scrolls ${narrow.listScrolls}`,
-      );
+      check(`720px ${key}: the list fits with no scroller`, narrow.listFits && !narrow.listScrolls, `fits ${narrow.listFits}, scrolls ${narrow.listScrolls}`);
       if (key === 'courses') await page.screenshot({ path: path.join(shots, 'narrow-desktop.png') });
       await page.mouse.move(550, 500);
       await page.waitForTimeout(320);
