@@ -5,3 +5,9 @@
    where the sidebar stops being a column and becomes an off-canvas drawer. */
 @media(min-width:901px){.ad-app .db-main{margin-left:var(--db-sidebar)}}
 @media(max-width:900px){.ad-header-label{display:none}}@media(max-width:650px){.ad-app .db-topbar{display:flex;flex-wrap:wrap;min-height:84px}.ad-app .db-topbar-actions{width:100%;justify-content:space-between}.ad-app .db-topbar-actions .db-button-secondary{font-size:11px;padding:7px 12px}.ad-user{font-size:11px;max-width:42%}.ad-columns{grid-template-columns:1fr}}
+/* The cosmic feather he wants the admin to carry. The artwork is a square with
+   its own night sky in the pixels, so it is never masked or cropped; a gold ring
+   and a soft glow hold it, and the near-black corners melt into the plum. */
+.ad-app .ad-crest{display:block;flex:none;width:auto;height:46px;border-radius:12px;box-shadow:0 0 0 1px rgba(232,185,95,.45),0 0 22px rgba(11,182,207,.16)}
+.ad-app .ad-side-crest{display:block;width:100%;max-width:132px;aspect-ratio:1;height:auto;margin:2px auto 22px;border-radius:16px;box-shadow:0 0 0 1px rgba(232,185,95,.45),0 0 30px rgba(11,182,207,.18)}
+@media(max-width:650px){.ad-app .ad-crest{height:40px}}

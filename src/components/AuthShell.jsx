@@ -10,6 +10,7 @@ export function AuthShell({ image, eyebrow, titleLead, titleAccent, lead, featur
         <div className="au-hero">
           <img className="au-hero-img" src={image} alt="" aria-hidden="true" />
           <Link to="/" className="au-brand" aria-label={`${site.name} home`}>
+            <img className="au-crest" src={site.crest} alt="" aria-hidden="true" />
             <img src={site.logo} alt={site.name} />
           </Link>
           <div className="au-hero-copy">

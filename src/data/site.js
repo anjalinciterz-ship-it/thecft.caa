@@ -17,6 +17,7 @@ export const site = {
   tedTalk: 'https://youtu.be/wdoNDS54yGw',
   logo: '/images/logo/logo-white.png',
   logoColor: '/images/logo/logo-color.png',
+  crest: '/images/logo/peacock-feather-cosmic.webp',
   portrait: '/images/site/zalah-facilitator.jpg',
   hero: {
     eyebrow: 'Welcome to The Centre for Transformation',

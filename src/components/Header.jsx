@@ -399,6 +399,7 @@ export default function Header() {
     <header className="site-header" onMouseLeave={closeMenu}>
       <div className="nav-wrap">
         <Link to="/" className="brand" aria-label={`${site.name} home`} onMouseEnter={closeMenu}>
+          <img className="brand-crest" src={site.crest} alt="" aria-hidden="true" width="720" height="720" />
           <img className="brand-logo" src={site.logo} alt={site.name} width="320" height="110" />
         </Link>
 
