@@ -302,8 +302,16 @@ p{margin:0 0 1em;}
 
 /* ---------- Mega menu panels ---------- */
 .site-header:has(.mm-panel:not(.is-exiting)){background:rgba(21,12,41,.94);}
+/* One standard drop for every panel. They used to size to their own content, so
+   Books fell 285px short of Testimonials' 594px and the navbar visibly jumped
+   between hovers. 600px clears the tallest content any menu needs, so nothing
+   is cut; the shorter menus keep their spare room below rather than at the top,
+   which is what keeps them attached to the navbar. */
 .mm-panel{
+  --mm-h:600px;
   position:absolute;left:0;right:0;top:100%;z-index:99;
+  height:var(--mm-h);max-height:calc(100dvh - 92px);
+  overflow:hidden;
   background:#150c29;
   border-bottom:1px solid rgba(255,255,255,.08);
   box-shadow:0 34px 70px rgba(0,0,0,.5);
