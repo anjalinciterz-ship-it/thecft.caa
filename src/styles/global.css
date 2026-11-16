@@ -308,7 +308,7 @@ p{margin:0 0 1em;}
    screen on its own; a percentage cap only ever cut into that and produced a
    scrollbar. The header keeps its translucent bar behind it. */
 .mm-panel{
-  --mm-w:clamp(300px,34vw,620px);
+  --mm-w:clamp(340px,36vw,760px);
   position:absolute;top:100%;z-index:99;
   display:flex;flex-direction:column;
   left:clamp(24px,var(--mm-x,24px),calc(100% - var(--mm-w) - 24px));
@@ -326,33 +326,32 @@ p{margin:0 0 1em;}
 .mm-panel.is-exiting{animation:mm-out .2s ease forwards;pointer-events:none;}
 @keyframes mm-in{from{opacity:0;transform:translateY(-8px);}to{opacity:1;transform:none;}}
 @keyframes mm-out{from{opacity:1;}to{opacity:0;transform:translateY(-6px);}}
-.mm-compact{display:flex;flex-direction:column;min-height:0;padding:18px 20px 20px;}
-.mm-title{flex:none;margin:0 0 12px;font-family:var(--font-head);font-weight:700;font-size:calc(17px * var(--ts-h,1));letter-spacing:.02em;color:var(--gold-300);}
-.mm-note{flex:none;margin:0 0 12px;font-size:calc(13px * var(--ts,1));line-height:1.6;color:var(--cream-dim);}
-.mm-note-by{display:block;margin-top:6px;font:800 10px/1 var(--font-body);letter-spacing:.16em;text-transform:uppercase;color:var(--gold-300);}
+.mm-compact{display:flex;flex-direction:column;min-height:0;padding:24px 26px 26px;}
+.mm-title{flex:none;margin:0 0 14px;font-family:var(--font-head);font-weight:700;font-size:calc(21px * var(--ts-h,1));letter-spacing:.02em;color:var(--gold-300);}
+.mm-note{flex:none;margin:0 0 14px;font-size:calc(15px * var(--ts,1));line-height:1.6;color:var(--cream-dim);}
+.mm-note-by{display:block;margin-top:8px;font:800 11px/1 var(--font-body);letter-spacing:.16em;text-transform:uppercase;color:var(--gold-300);}
 /* Every list fits its panel, so nothing here scrolls: the heading, the items
    and the gold action are all visible at once, fixed. */
 .mm-list{flex:0 0 auto;display:flex;flex-direction:column;}
-.mm-list-two{display:grid;grid-template-columns:1fr 1fr;gap:0 18px;}
-.mm-item{position:relative;display:flex;align-items:center;gap:10px;padding:7px 22px 7px 8px;border-radius:8px;font-family:var(--font-head);font-weight:600;font-size:calc(15px * var(--ts,1));line-height:1.3;color:var(--cream-dim);transition:color .2s,background .2s;}
+.mm-list-two{display:grid;grid-template-columns:1fr 1fr;gap:0 22px;}
+.mm-item{position:relative;display:flex;align-items:center;gap:12px;padding:11px 28px 11px 10px;border-radius:9px;font-family:var(--font-head);font-weight:600;font-size:calc(19px * var(--ts,1));line-height:1.3;color:var(--cream-dim);transition:color .2s,background .2s;}
 .mm-item:hover{color:var(--text-on-dark);background:rgba(255,255,255,.05);}
 /* The arrow only appears on hover, so it is parked in the padding instead of
    stealing a few characters of width from every label. */
-.mm-item-arrow{position:absolute;right:8px;top:50%;opacity:0;transform:translateY(-50%) translateX(-6px);transition:.2s;font-family:var(--font-body);}
+.mm-item-arrow{position:absolute;right:10px;top:50%;opacity:0;transform:translateY(-50%) translateX(-6px);transition:.2s;font-family:var(--font-body);}
 .mm-item:hover .mm-item-arrow{opacity:1;transform:translateY(-50%);}
-.mm-all{flex:none;align-self:flex-start;display:inline-flex;align-items:center;gap:9px;margin-top:14px;padding:10px 17px;border-radius:999px;background:linear-gradient(100deg,#f6dfa8,var(--color-champagne-gold) 60%,#d99f3e);color:#241543;font:800 11px/1 var(--font-body);letter-spacing:.09em;text-transform:uppercase;box-shadow:0 8px 20px rgba(232,185,95,.28);transition:filter .2s;}
+.mm-all{flex:none;align-self:flex-start;display:inline-flex;align-items:center;gap:10px;margin-top:18px;padding:12px 21px;border-radius:999px;background:linear-gradient(100deg,#f6dfa8,var(--color-champagne-gold) 60%,#d99f3e);color:#241543;font:800 12px/1 var(--font-body);letter-spacing:.09em;text-transform:uppercase;box-shadow:0 8px 20px rgba(232,185,95,.28);transition:filter .2s;}
 .mm-all:hover{filter:brightness(1.06);}
 .mm-all svg{transform:rotate(-45deg);}
-/* A short laptop gives the panel fewer pixels than the list needs, so the
-   padding and type tighten first; whatever is still over the cap scrolls
-   inside the list rather than taking the heading and the action with it. */
+/* A short laptop cannot give the panel as many rows, so the padding and type
+   tighten here. They still sit a step above the old size. */
 @media (max-height:800px){
-  .mm-compact{padding:14px 16px 15px;}
-  .mm-title{margin-bottom:9px;font-size:calc(16px * var(--ts-h,1));}
-  .mm-note{margin-bottom:9px;font-size:calc(12.5px * var(--ts,1));line-height:1.5;}
-  .mm-item{padding:5px 20px 5px 7px;font-size:calc(14px * var(--ts,1));}
-  .mm-list-two{gap:0 14px;}
-  .mm-all{margin-top:11px;padding:9px 15px;}
+  .mm-compact{padding:16px 18px 18px;}
+  .mm-title{margin-bottom:10px;font-size:calc(17px * var(--ts-h,1));}
+  .mm-note{margin-bottom:10px;font-size:calc(13px * var(--ts,1));line-height:1.5;}
+  .mm-item{padding:7px 22px 7px 8px;font-size:calc(15.5px * var(--ts,1));}
+  .mm-list-two{gap:0 16px;}
+  .mm-all{margin-top:12px;padding:10px 17px;}
 }
 @media (max-width:1080px){
   .mm-panel{display:none;}
