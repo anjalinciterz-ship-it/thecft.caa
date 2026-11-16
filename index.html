@@ -15,12 +15,34 @@
       property="og:description"
       content="Spiritual growth, consciousness and self-discovery programs led by Zalah, practical wisdom for a kinder world."
     />
-    <meta property="og:image" content="/images/site/zalah-facilitator.jpg" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <!-- Social crawlers resolve og:image against their own request, not against
+         this document, so it has to be a full url rather than a site path. -->
+    <meta property="og:image" content="https://thecft.ca/images/site/zalah-facilitator.jpg" />
+    <!-- The three faces the first screen is drawn in, and nothing else. They are
+         served from this origin now (see src/styles/fonts.css), so the two
+         preconnects and the render-blocking Google stylesheet they replaced are
+         gone. Preloading them is what keeps the swap from moving the layout:
+         they are in hand before the hero text is laid out. Caveat, used for one
+         handwritten accent further down the page, is deliberately not preloaded. -->
+    <link rel="preload" as="font" type="font/woff2" crossorigin href="/fonts/manrope-normal-latin.woff2" />
+    <link rel="preload" as="font" type="font/woff2" crossorigin href="/fonts/cormorant-garamond-normal-latin.woff2" />
+    <!-- The first hero slide is the largest thing above the fold, so it is the
+         LCP. The two rules below are the same two the slide itself offers, split
+         on the same 1000px break: below it the slide shows a window of the full
+         resolution picture, above it the usual width candidates. -->
     <link
-      href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600&family=Manrope:wght@400;500;600;700;800&display=swap"
-      rel="stylesheet"
+      rel="preload"
+      as="image"
+      href="/images/site/hero-bg-guidance.webp"
+      media="(max-width: 1000px)"
+      fetchpriority="high"
+    />
+    <link
+      rel="preload"
+      as="image"
+      media="(min-width: 1001px)"
+      imagesrcset="/images/site/hero-bg-guidance-900.webp 900w, /images/site/hero-bg-guidance.webp 1824w"
+      imagesizes="100vw"
     />
   </head>
   <body>

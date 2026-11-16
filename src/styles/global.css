@@ -377,8 +377,12 @@ p{margin:0 0 1em;}
   background:var(--ink-950);
   overflow:hidden;
 }
-.hero-art{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
-.hero-art-cosmic{object-position:50% 0;}
+.hero-art{position:absolute;inset:0;display:block;z-index:0;}
+.hero-art img{display:block;width:100%;height:100%;object-fit:cover;object-position:50% 50%;}
+.hero-art-cosmic img{object-position:50% 0;}
+/* L1b: his portrait as its own layer. Absent on desktop, where the artwork
+   already paints him into the scene; see the compact block below. */
+.hero-portrait{display:none;}
 .hero-slide{position:absolute;inset:0;opacity:0;visibility:hidden;transition:opacity .9s ease;}
 .hero-slide.is-active{opacity:1;visibility:visible;}
 .hero-dots{position:absolute;right:2.6%;bottom:3%;z-index:5;padding:6px 9px;border-radius:999px;background:rgba(16,8,34,.34);}
@@ -448,9 +452,13 @@ p{margin:0 0 1em;}
    photograph keeps its own light where the person stands. */
 @container (min-width:1001px){
   .hero-slide-photo .hero-veil{
+    /* Deepened on the copy side, and only there. The desert and the grass are
+       bright enough that the tagline and the lead paragraph fell to 2.5:1 and
+       2.9:1 over them at desktop widths; this holds the subject's own light
+       from 58% onward exactly as before. */
     background:
-      linear-gradient(97deg, rgba(9,7,18,.85) 0%, rgba(9,7,18,.72) 22%, rgba(9,7,18,.56) 40%, rgba(9,7,18,.30) 58%, rgba(9,7,18,.06) 72%, rgba(9,7,18,0) 82%),
-      linear-gradient(to top, rgba(9,7,18,.5) 0%, rgba(9,7,18,0) 30%);
+      linear-gradient(97deg, rgba(9,7,18,.88) 0%, rgba(9,7,18,.80) 22%, rgba(9,7,18,.66) 40%, rgba(9,7,18,.44) 58%, rgba(9,7,18,.12) 72%, rgba(9,7,18,0) 82%),
+      linear-gradient(to top, rgba(9,7,18,.62) 0%, rgba(9,7,18,0) 32%);
   }
   .hero-slide-photo .hero-copy h1{text-shadow:0 3px 26px rgba(6,3,16,.85),0 1px 3px rgba(6,3,16,.6);}
   /* The gold line is clipped from a gradient, so a text-shadow would show
@@ -458,7 +466,7 @@ p{margin:0 0 1em;}
   .hero-slide-photo .hero-copy h1 .accent .te-t{filter:drop-shadow(0 2px 12px rgba(6,3,16,.9));}
   .hero-slide-photo .hero-lead{text-shadow:0 2px 14px rgba(6,3,16,.7);}
 }
-.hero-lead{font-size:1.45em;line-height:1.45;color:rgba(237,231,245,0.9);max-width:29.5em;margin:0 0 1.9em;}
+.hero-lead{font-size:1.45em;line-height:1.45;color:rgba(237,231,245,1);max-width:29.5em;margin:0 0 1.9em;}
 .hero-actions{display:flex;gap:1.1em;flex-wrap:wrap;margin:0 0 2.1em;}
 .hero-actions .btn{font-size:1.5em;padding:.7em 1.5em;border-radius:100px;line-height:1.35;}
 .hero-actions .btn svg{width:.95em;height:.95em;stroke-width:2;}
@@ -468,7 +476,9 @@ p{margin:0 0 1em;}
 .hero-features svg{width:1.4em;height:1.4em;color:#f3cf8c;flex:none;}
 .hero-footnote{
   margin:0;font-size:.92em;letter-spacing:.32em;text-transform:uppercase;font-weight:600;line-height:1.2;
-  color:rgba(226,214,248,0.55);
+  /* Was 0.55 alpha, which read at 2.5:1 over the bright half of the banners.
+     The compact layouts already used this value. */
+  color:rgba(240,234,248,0.9);
 }
 
 /* Floating glass pieces, placed on the artwork's empty regions. */
@@ -529,7 +539,23 @@ p{margin:0 0 1em;}
     aspect-ratio:auto;
     height:max(760px,calc(100svh - var(--hero-hdr,74px)));
   }
-  .hero-art{object-position:var(--hero-art-pos,50% 50%);}
+  .hero-art img{object-position:var(--hero-art-pos,50% 50%);}
+  /* The box is the photograph's own ratio, so the portrait is never cropped to
+     fit a frame. It holds the lower-right corner of the scene, the region the
+     composite used to fill, at a fraction of the hero's width. */
+  .hero-portrait{
+    display:block;
+    position:absolute;z-index:2;right:5%;bottom:15%;width:33%;
+    aspect-ratio:var(--p-ratio,1086/1448);overflow:hidden;border-radius:1.1em;
+    border:1px solid rgba(232,185,95,.42);
+    box-shadow:0 20px 46px rgba(6,3,16,.55);
+  }
+  .hero-portrait img{display:block;width:100%;height:100%;object-fit:cover;}
+  /* Each slide then places its own portrait where its own window is empty. */
+  .hero-slide[data-slide="guidance"] .hero-portrait{right:auto;left:5%;}
+  /* The cosmic slide carries three cards as well as the portrait, so he sits
+     under them rather than behind them. */
+  .hero-slide[data-slide="cosmic"] .hero-portrait{width:34%;bottom:12%;}
   .hero-slide{padding:16px 20px 52px;}
   /* L2, in the slide's own palette: deepest behind the words, thinnest across
      the subject, closed again at the bottom where the tagline sits on the wave
@@ -596,6 +622,14 @@ p{margin:0 0 1em;}
   .hero-note-lines .v{font-size:1.2em;}
   .hero-cred{text-align:left;}
   .hero-cred .lockup{justify-content:flex-start;}
+  /* The cosmic slide has a portrait to place as well as its three cards, so
+     they close one rank instead of two and leave him the band underneath. */
+  .hero-slide[data-slide="cosmic"] .hero-pieces{grid-template-columns:repeat(3,1fr);gap:6px;font-size:.66em;}
+  .hero-slide[data-slide="cosmic"] .hero-cred,
+  .hero-slide[data-slide="cosmic"] .hero-note,
+  .hero-slide[data-slide="cosmic"] .hero-quote{grid-column:auto;}
+  .hero-slide[data-slide="cosmic"] .hero-note{flex-direction:column;align-items:flex-start;gap:.4em;}
+  .hero-slide[data-slide="cosmic"] .hero-note svg{width:1.6em;height:1.6em;}
   .hero-planks{order:7;padding:0 0 4px;}
   .hero-plank{font-size:.95em;}
   .hero-footnote{order:8;margin-top:auto;padding-top:10px;text-align:center;font-size:.76em;letter-spacing:.17em;line-height:1.6;}
@@ -610,7 +644,7 @@ p{margin:0 0 1em;}
     font-size:calc(clamp(14px,1.95cqw,19px) * var(--ts,1));
     height:max(800px,min(calc(100svh - var(--hero-hdr,74px)),900px));
   }
-  .hero-art{object-position:var(--hero-art-pos-tablet,50% 50%);}
+  .hero-art img{object-position:var(--hero-art-pos-tablet,50% 50%);}
   .hero-slide{display:block;padding:0;}
   .hero-veil{
     background:
@@ -646,6 +680,10 @@ p{margin:0 0 1em;}
   .hero-planks{position:absolute;inset:auto;left:5%;right:5%;top:auto;bottom:13%;justify-content:flex-start;padding:0;}
   .hero-plank{font-size:1em;}
   .hero-dots{left:auto;right:4%;bottom:5%;transform:none;}
+  /* The portrait shares the tablet frame with the card row along the bottom,
+     so it keeps the upper-right of the scene instead of the lower one. */
+  .hero-portrait{width:26%;bottom:auto;top:12%;right:4%;}
+  .hero-slide[data-slide="guidance"] .hero-portrait{right:4%;left:auto;top:12%;}
 }
 
 /* The compressed cascade: the same order as the desktop reveal, over about a
@@ -657,6 +695,13 @@ p{margin:0 0 1em;}
   .hero-slide.is-active .hero-cred,
   .hero-slide.is-active .hero-note,
   .hero-slide.is-active .hero-quote{animation:hero-fade .9s ease both;}
+  /* His portrait is a layer of its own, so it arrives on its own beat: a fade
+     with a few pixels of rise, after the heading has landed. */
+  .hero-slide.is-active .hero-portrait{animation:hero-portrait-in 1s cubic-bezier(.22,.9,.28,1) .34s both;}
+  @keyframes hero-portrait-in{
+    from{opacity:0;transform:translateY(10px);}
+    to{opacity:1;transform:none;}
+  }
   .hero-actions .btn{animation:hero-rise .45s cubic-bezier(.22,.9,.28,1) .55s both;}
   .hero-actions .btn:nth-child(2){animation-delay:.65s;}
   .hero-plank{animation-delay:calc(300ms + var(--pi) * 45ms);}
@@ -665,6 +710,7 @@ p{margin:0 0 1em;}
   .hero-slide.is-active .hero-cred,
   .hero-slide.is-active .hero-note,
   .hero-slide.is-active .hero-quote,
+  .hero-slide.is-active .hero-portrait,
   .hero-actions .btn{animation:none;}
 }
 
@@ -1968,6 +2014,8 @@ section{padding:var(--section-py) 0;}
 @media (prefers-reduced-motion:reduce){
   .sk::after{animation:none;background:rgba(240,226,199,.05);}
 }
+/* The band a route swap shows while its chunk arrives, in the page column. */
+.route-pending{max-width:var(--maxw);margin:0 auto;padding:clamp(84px,12vh,150px) 28px 40px;}
 
 /* ---------- legal pages ---------- */
 .footer-legal{display:flex;gap:18px;}

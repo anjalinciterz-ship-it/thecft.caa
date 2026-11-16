@@ -67,6 +67,10 @@ const measure = (page) =>
       return { x: b.x, y: b.y, w: b.width, h: b.height, top: b.top, bottom: b.bottom, left: b.left, right: b.right };
     };
     const art = active.querySelector('.hero-art');
+    // The frame is a <picture> now, so the file, its fit and its position live
+    // on the img inside it.
+    const artImg = active.querySelector('.hero-art img') || art;
+    const portrait = active.querySelector('.hero-portrait');
     const veil = active.querySelector('.hero-veil');
     const pieces = active.querySelector('.hero-pieces');
     const dots = document.querySelector('.hero-dots');
@@ -78,7 +82,8 @@ const measure = (page) =>
       stage: r(stage),
       stageH: r(stage).h,
       slide: r(active),
-      art: { ...r(art), position: cs.position, fit: cs.objectFit, pos: cs.objectPosition, nw: art.naturalWidth, nh: art.naturalHeight },
+      art: { ...r(art), position: cs.position, fit: getComputedStyle(artImg).objectFit, pos: getComputedStyle(artImg).objectPosition, nw: artImg.naturalWidth, nh: artImg.naturalHeight },
+      portrait: portrait ? r(portrait) : null,
       veil: { display: getComputedStyle(veil).display, bg: getComputedStyle(veil).backgroundImage.slice(0, 60) },
       pieces: pieces ? { ...r(pieces), display: getComputedStyle(pieces).display } : null,
       dots: r(dots),

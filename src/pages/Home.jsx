@@ -94,6 +94,18 @@ const COSMIC_ART = {
   // on a tablet the ring and the glow at its feet as well.
   mobilePos: '70% 50%',
   tabletPos: '68% 50%',
+  /* Every cosmic asset in the library has him painted into it, so there is no
+     separate starfield to put behind a portrait. The picture is wide enough
+     that its left-hand window is pure sky, mountains and the gold ribbons at
+     their feet, with none of him in it: the compact layouts use that window
+     and stand his own cosmic composition, ring and all, beside it. */
+  compactArt: {
+    src: '/images/site/hero-banner.webp',
+    srcSet: '/images/site/hero-banner.webp',
+    pos: '0% 50%',
+    tabletPos: '0% 50%',
+  },
+  compactPortrait: { src: '/images/site/zalah-scene-tall.webp', width: '900', height: '830' },
 };
 
 const cosmicCopy = (h) => ({
@@ -114,21 +126,49 @@ function HeroSlide({ slide, h, eager, active, t }) {
   const cosmic = slide.kind === 'live';
   const art = cosmic ? COSMIC_ART : slide;
   const copy = cosmic ? cosmicCopy(h) : slide.copy;
+  // Below the desktop break the frame is opened on a different window of the
+  // same photograph, one that holds the place and none of the person.
+  const plate = art.compactArt || { pos: art.mobilePos, tabletPos: art.tabletPos };
   return (
     <>
-      <img
+      {/* L1. One frame, two windows: the desktop sees the whole composite the
+          slide was drawn for; a phone sees the quarter of it that has no face
+          in it, because covering a 2.1:1 composite in a 1:2 frame is what
+          magnified Zalah until his head filled the screen. */}
+      <picture
         className={`hero-art${cosmic ? ' hero-art-cosmic' : ' hero-art-photo'}`}
-        src={art.src}
-        srcSet={art.srcSet}
-        sizes="100vw"
-        alt={art.alt}
-        width={art.width}
-        height={art.height}
-        loading={eager ? 'eager' : 'lazy'}
-        fetchpriority={eager ? 'high' : 'auto'}
-        decoding="async"
-        style={{ '--hero-art-pos': art.mobilePos, '--hero-art-pos-tablet': art.tabletPos }}
-      />
+        style={{
+          '--hero-art-pos': plate.pos,
+          '--hero-art-pos-tablet': plate.tabletPos,
+        }}
+      >
+        {art.compactArt ? <source media="(max-width: 1000px)" srcSet={art.compactArt.srcSet} /> : null}
+        <img
+          src={art.src}
+          srcSet={art.srcSet}
+          sizes="100vw"
+          alt={art.alt}
+          width={art.width}
+          height={art.height}
+          loading={eager ? 'eager' : 'lazy'}
+          fetchpriority={eager ? 'high' : 'auto'}
+          decoding="async"
+        />
+      </picture>
+      {/* L1b: his own portrait, as a layer of its own rather than part of the
+          backdrop, so it holds its own scale and fades in on its own beat. */}
+      {art.compactPortrait ? (
+        <span className="hero-portrait" style={{ '--p-ratio': `${art.compactPortrait.width}/${art.compactPortrait.height}` }}>
+          <img
+            src={art.compactPortrait.src}
+            alt="Zalah, smiling, with his head resting on his hand"
+            width={art.compactPortrait.width}
+            height={art.compactPortrait.height}
+            loading={eager ? 'eager' : 'lazy'}
+            decoding="async"
+          />
+        </span>
+      ) : null}
       <div className="hero-veil" aria-hidden="true" />
 
       {slide.planks ? (
@@ -175,10 +215,14 @@ function HeroSlide({ slide, h, eager, active, t }) {
           </TextEffect>
         </p>
         <div className="hero-actions">
-          <Link to="/courses" className="btn btn-gold">
+          {/* An inactive slide is only faded out, so its links are still in the
+              tab order and a keyboard can reach words nobody can see. Dropping
+              them out of the sequence, the same way the book carousel does, is
+              what makes the aria-hidden on the wrapper true. */}
+          <Link to="/courses" className="btn btn-gold" tabIndex={active ? undefined : -1}>
             {copy.ctaPrimary} <Icon name="arrow" />
           </Link>
-          <Link to="/connect#cn-wisdom" className="btn btn-ghost">
+          <Link to="/connect#cn-wisdom" className="btn btn-ghost" tabIndex={active ? undefined : -1}>
             {copy.ctaSecondary}
           </Link>
         </div>
@@ -221,7 +265,7 @@ function HeroSlide({ slide, h, eager, active, t }) {
             <div className="talk">{h.tedx.talk}</div>
           </div>
 
-          <Link to="/connect#cn-wisdom" className="hero-note">
+          <Link to="/connect#cn-wisdom" className="hero-note" tabIndex={active ? undefined : -1}>
             <Icon name="calendar" />
             <span className="hero-note-lines">
               <span className="k">{h.classCard.line1}</span>
@@ -398,7 +442,7 @@ function Programs() {
                 }}
               >
                 <div className="cs-art">
-                  {c.banner ? <img src={c.banner} alt="" loading="lazy" /> : null}
+                  {c.banner ? <img src={c.banner} alt="" width={c.bannerW} height={c.bannerH} loading="lazy" /> : null}
                 </div>
                 <div className="cs-body">
                   <span className="cs-num" aria-hidden="true">
@@ -411,7 +455,11 @@ function Programs() {
                       <b>{price.amount}</b>
                       <i>{price.code}</i>
                     </span>
-                    <Link className="cs-explore" to={`/course/${c.id}`}>
+                    <Link
+                      className="cs-explore"
+                      to={`/course/${c.id}`}
+                      aria-label={`Explore program, ${c.name}`}
+                    >
                       Explore program <Icon name="arrow" size={15} />
                     </Link>
                   </div>
@@ -483,7 +531,7 @@ function InsightRail({ picks, clone = false }) {
           key={p.slug}
           style={{ '--ar': INSIGHT_ASPECTS[i % INSIGHT_ASPECTS.length] }}
         >
-          <PostCard p={p} level={clone ? 3 : 2} />
+          <PostCard p={p} level={clone ? 3 : 2} linkTabIndex={clone ? -1 : undefined} />
         </div>
       ))}
     </div>
@@ -700,7 +748,10 @@ function ClosingConnect() {
 
           <div className="cx-card">
             <span className="cx-badge" aria-hidden="true">
-              <img src="/images/icons/contact-email-v.png" alt="" />
+              {/* These badges are drawn at their own size by the CSS, and the
+                  source crops are inconsistent, so the attributes state the box
+                  they are shown in, which is the box the page reserves. */}
+              <img src="/images/icons/contact-email-v.png" alt="" width="38" height="38" />
             </span>
             <h3 className="cx-card-title">Send Us a Message</h3>
             <p className="cx-card-note">We’d love to hear from you. Fill out the form below and we’ll get back to you soon.</p>
@@ -795,8 +846,10 @@ function ClosingConnect() {
               title={`${s.label} ${s.handle}`}
               aria-label={s.label}
             >
-              <img className="s1" src={`/images/icons/social-${s.icon}-1.png`} alt="" />
-              <img className="s2" src={`/images/icons/social-${s.icon}-2.png`} alt="" />
+              {/* The pair swaps in place inside a 24 px badge, so both frames
+                  are the same box and the file crops never reach the layout. */}
+              <img className="s1" src={`/images/icons/social-${s.icon}-1.png`} alt="" width="24" height="24" />
+              <img className="s2" src={`/images/icons/social-${s.icon}-2.png`} alt="" width="24" height="24" />
             </a>
           ))}
         </div>

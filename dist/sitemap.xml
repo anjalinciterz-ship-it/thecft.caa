@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  The indexable pages of the public site. Individual blog posts are not listed:
+  they are published from the admin area, so a hand-kept list here would be wrong
+  the first time a post goes up. /blog is listed and every post is linked from it.
+-->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://thecft.ca/</loc></url>
+  <url><loc>https://thecft.ca/about</loc></url>
+  <url><loc>https://thecft.ca/courses</loc></url>
+  <url><loc>https://thecft.ca/course/accelerator</loc></url>
+  <url><loc>https://thecft.ca/course/mindlife</loc></url>
+  <url><loc>https://thecft.ca/course/sa1</loc></url>
+  <url><loc>https://thecft.ca/course/sa2</loc></url>
+  <url><loc>https://thecft.ca/course/complete</loc></url>
+  <url><loc>https://thecft.ca/books</loc></url>
+  <url><loc>https://thecft.ca/books/the-secret-of-creation</loc></url>
+  <url><loc>https://thecft.ca/books/caught-in-the-act</loc></url>
+  <url><loc>https://thecft.ca/books/the-big-three</loc></url>
+  <url><loc>https://thecft.ca/journey/consciousness</loc></url>
+  <url><loc>https://thecft.ca/journey/self-discovery</loc></url>
+  <url><loc>https://thecft.ca/journey/inner-peace</loc></url>
+  <url><loc>https://thecft.ca/journey/purpose</loc></url>
+  <url><loc>https://thecft.ca/blog</loc></url>
+  <url><loc>https://thecft.ca/testimonials</loc></url>
+  <url><loc>https://thecft.ca/wisdom-call</loc></url>
+  <url><loc>https://thecft.ca/connect</loc></url>
+  <url><loc>https://thecft.ca/faq</loc></url>
+  <url><loc>https://thecft.ca/privacy</loc></url>
+  <url><loc>https://thecft.ca/terms</loc></url>
+</urlset>

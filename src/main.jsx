@@ -6,6 +6,7 @@ import { AuthProvider } from './lib/auth';
 import { AppearanceProvider } from './lib/appearance';
 import { BlogProvider } from './lib/blog';
 import { CatalogProvider } from './lib/catalog';
+import './styles/fonts.css';
 import './styles/global.css';
 import './styles/appearance.css';
 

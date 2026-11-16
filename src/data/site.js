@@ -47,11 +47,32 @@ export const site = {
       src: '/images/site/hero-bg-guidance.webp',
       srcSet: '/images/site/hero-bg-guidance-900.webp 900w, /images/site/hero-bg-guidance.webp 1824w',
       alt: 'Zalah, smiling with his head resting on his hand, beside a rustic signpost in the desert',
+      // The frame the browser reserves before the file arrives. The picture and
+      // its 900w twin share this ratio, so no candidate can disagree with it.
+      width: '1824',
+      height: '862',
       // Where each photograph is framed once the hero becomes a portrait or a
       // tablet frame, both narrower than the picture: cover keeps the whole
       // height, so these are horizontal windows around the subject.
       mobilePos: '55% 50%',
       tabletPos: '58% 50%',
+      /* The banner is one flat picture: Zalah and the signpost share the same
+         pixels, so a phone frame can only show it by cover-cropping, and that
+         magnifies him until his head is most of the screen. The picture is wide
+         enough that its right-hand window holds the whole signpost and the
+         golden hillside with no part of him in it, so the compact layouts use
+         that window as the background and his own portrait as a layer of its
+         own. Same photograph, nothing retouched. */
+      compactArt: {
+        // One candidate, no width descriptor: a phone only ever sees the
+        // picture's right-hand quarter, so it needs the full-resolution file
+        // even though the frame itself is narrow.
+        src: '/images/site/hero-bg-guidance.webp',
+        srcSet: '/images/site/hero-bg-guidance.webp',
+        pos: '100% 50%',
+        tabletPos: '100% 50%',
+      },
+      compactPortrait: { src: '/images/site/zalah-facilitator.jpg', width: '1086', height: '1448' },
       /* The sentence rides the signpost, one word per plank. The coordinates
          are the plank bands measured out of the photograph itself, as
          percentages of the frame: on the desktop stage the frame and the image
@@ -87,8 +108,12 @@ export const site = {
       src: '/images/site/hero-bg-lake.webp',
       srcSet: '/images/site/hero-bg-lake-900.webp 900w, /images/site/hero-bg-lake.webp 1824w',
       alt: 'A woman sitting on a wooden dock, meditating by a mountain lake',
-      mobilePos: '50% 50%',
-      tabletPos: '50% 50%',
+      width: '1824',
+      height: '862',
+      // She sits a hair left of the picture's centre, so the phone and tablet
+      // windows are pulled to her rather than to the middle of the frame.
+      mobilePos: '47% 50%',
+      tabletPos: '48% 50%',
       copy: {
         eyebrow: 'The Centre for Transformation',
         titleLead: 'Discover Inner Peace',
@@ -107,8 +132,21 @@ export const site = {
       src: '/images/site/hero-bg-path.webp',
       srcSet: '/images/site/hero-bg-path-900.webp 900w, /images/site/hero-bg-path.webp 1824w',
       alt: 'Zalah welcoming you beside a path through grass, with a man walking on it',
+      width: '1824',
+      height: '862',
       mobilePos: '71% 50%',
       tabletPos: '75% 50%',
+      /* Same split as the signpost slide, from the same picture. Its left-hand
+         window is the whole green corridor: the path, the hedges either side
+         and the trees over them, with no part of Zalah in it. His own portrait
+         stands in front of that as a layer of its own. */
+      compactArt: {
+        src: '/images/site/hero-bg-path.webp',
+        srcSet: '/images/site/hero-bg-path.webp',
+        pos: '0% 50%',
+        tabletPos: '0% 50%',
+      },
+      compactPortrait: { src: '/images/site/zalah-facilitator.jpg', width: '1086', height: '1448' },
       copy: {
         eyebrow: 'A path of awareness, growth & transformation',
         titleLead: 'Walk a Clearer Path to a More Conscious,',

@@ -58,7 +58,12 @@ export default function BookShowcase() {
                 <p className="bs-sub">{b.subtitle}</p>
                 <p className="bs-blurb">{b.blurb}</p>
                 {tracks ? <span className="bs-tracks">{tracks} audio tracks</span> : null}
-                <Link to={`/books/${b.slug}`} className="bs-cta" tabIndex={center ? 0 : -1}>
+                <Link
+                  to={`/books/${b.slug}`}
+                  className="bs-cta"
+                  tabIndex={center ? 0 : -1}
+                  aria-label={`Explore The Book, ${b.title}`}
+                >
                   Explore The Book
                   <span className="bs-cta-ico">
                     <Icon name="arrow" size={14} />

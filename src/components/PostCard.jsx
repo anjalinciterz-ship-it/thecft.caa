@@ -4,8 +4,10 @@ import { useBlog } from '../lib/blog';
 import { Icon } from './icons';
 
 /* Editorial library card. The title is the single link (stretched over the
-   card via ::after), so the whole card is clickable without nested controls. */
-export default function PostCard({ p, level = 2 }) {
+   card via ::after), so the whole card is clickable without nested controls.
+   `linkTabIndex` exists for the duplicated marquee on the home page: that copy
+   is aria-hidden, so its link has to leave the tab order with it. */
+export default function PostCard({ p, level = 2, linkTabIndex }) {
   const { hasBody } = useBlog();
   const meta = postMeta(p);
   const internal = hasBody(p);
@@ -19,7 +21,8 @@ export default function PostCard({ p, level = 2 }) {
     <article className="bl-card">
       <div className="bl-media">
         {meta.cover ? (
-          <img src={meta.cover} alt={p.coverAlt || p.title} loading="lazy" />
+          // Every insight cover in the library is the same 1400x800 plate.
+          <img src={meta.cover} alt={p.coverAlt || p.title} width="1400" height="800" loading="lazy" />
         ) : (
           <span className="bl-media-ph" aria-hidden="true">
             <Icon name="lotus" size={30} />
@@ -29,7 +32,7 @@ export default function PostCard({ p, level = 2 }) {
       <div className="bl-card-body">
         <span className="bl-cat">{categoryLabel(p.category)}</span>
         <Heading className="bl-card-head">
-          <Comp className="bl-card-title" {...linkProps}>
+          <Comp className="bl-card-title" {...linkProps} tabIndex={linkTabIndex}>
             {p.title}
           </Comp>
           <span className="bl-tarrow" aria-hidden="true">

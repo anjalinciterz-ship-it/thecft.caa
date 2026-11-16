@@ -1,13 +1,18 @@
-import { useRef, useState } from 'react';
+import { lazy, Suspense, useRef, useState } from 'react';
 import { Icon } from './icons';
-import HlsVideoPlayer from './HlsVideoPlayer';
 
-// The single seam between the players and wherever the bytes come from. The
-// audiobooks are published as static files from public/media, so '/media' is a
-// real path on the deployed site and in the dev server alike. Point this at a
-// CDN hostname instead if the files ever move to Bunny's delivery network.
-// Absolute urls pass through untouched.
-const AUDIO_BASE = '/media';
+/* hls.js is by far the largest thing the players pull in, and it is only ever
+   needed by a video. Loaded here rather than at the top of the module, an
+   audiobook page ships the audio player without the video engine, and a page
+   that never opens a film never asks for it. */
+const HlsVideoPlayer = lazy(() => import('./HlsVideoPlayer'));
+
+/* The single seam between the players and wherever the bytes come from. The
+   audiobooks no longer ship inside the build, so production sets VITE_AUDIO_BASE
+   to the origin that serves them (a Bunny storage/pull zone, or any CDN) and this
+   stays '/media', which the dev and preview servers stream from the repo-root
+   media folder. Absolute urls pass through untouched. */
+const AUDIO_BASE = (import.meta.env.VITE_AUDIO_BASE || '/media').replace(/\/+$/, '');
 
 export const mediaUrl = (src) => (/^https?:/.test(src) ? src : `${AUDIO_BASE}/${encodeURI(src)}`);
 
@@ -114,5 +119,9 @@ export function VideoSlot({ src, poster, title, guid, autoPlay }) {
       </figure>
     );
   }
-  return <HlsVideoPlayer src={src} poster={poster} title={title} guid={guid} autoPlay={autoPlay} />;
+  return (
+    <Suspense fallback={<span className="video-slot" aria-hidden="true" />}>
+      <HlsVideoPlayer src={src} poster={poster} title={title} guid={guid} autoPlay={autoPlay} />
+    </Suspense>
+  );
 }

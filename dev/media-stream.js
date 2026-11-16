@@ -58,27 +58,33 @@ function respond(file, type, size, req, res) {
 }
 
 /**
- * Serves client/public/media over /media in the dev server with byte-range
- * support, so seeking behaves exactly as it does on the deployed site, where the
- * same folder is published as ordinary static files.
+ * Serves the repo-root media folder over /media with byte-range support, in the
+ * dev server and in `vite preview`. The audiobooks sit outside public on purpose,
+ * so they never enter dist; this is what lets a local build play a track exactly
+ * the way the deployed site will once VITE_AUDIO_BASE points at the CDN holding
+ * the same files.
  */
 export function mediaStream(mediaRoot) {
   const root = path.resolve(mediaRoot);
+  const middleware = (req, res) => {
+    if (req.method !== 'GET' && req.method !== 'HEAD') {
+      res.statusCode = 405;
+      return res.end();
+    }
+    return resolveFile(root, req.url)
+      .then(({ file, type, size }) => respond(file, type, size, req, res))
+      .catch((err) => {
+        res.statusCode = err.code === 'EACCES' ? 403 : 404;
+        res.end();
+      });
+  };
   return {
     name: 'cft-media-stream',
     configureServer(server) {
-      server.middlewares.use('/media', (req, res) => {
-        if (req.method !== 'GET' && req.method !== 'HEAD') {
-          res.statusCode = 405;
-          return res.end();
-        }
-        return resolveFile(root, req.url)
-          .then(({ file, type, size }) => respond(file, type, size, req, res))
-          .catch((err) => {
-            res.statusCode = err.code === 'EACCES' ? 403 : 404;
-            res.end();
-          });
-      });
+      server.middlewares.use('/media', middleware);
+    },
+    configurePreviewServer(server) {
+      server.middlewares.use('/media', middleware);
     },
   };
 }

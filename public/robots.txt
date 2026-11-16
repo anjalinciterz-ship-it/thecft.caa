@@ -1,0 +1,16 @@
+# https://www.robotstxt.org/robotstxt.html
+User-agent: *
+Allow: /
+
+# The member app, the checkout and the admin area are not for crawlers: they
+# need a session, and indexing them would expose pages with nothing on them.
+Disallow: /dashboard
+Disallow: /admin
+Disallow: /checkout
+Disallow: /login
+Disallow: /signup
+Disallow: /forgot-password
+Disallow: /reset-password
+Disallow: /magic-link
+
+Sitemap: https://thecft.ca/sitemap.xml

@@ -2,6 +2,12 @@
 # origin is NOT baked here: VITE_API_BASE is set in the Netlify dashboard
 # (Site settings → Environment variables) to the Render URL, so the same commit
 # works whether the API lives on the same host or on Render.
+#
+# VITE_AUDIO_BASE is the other one to set there: the audiobooks no longer ship
+# inside dist, so the deployed players need the origin that serves those bytes
+# (a Bunny storage or pull zone). Left unset the build still asks for /media, and
+# `npm run build && npm run stage:media` is the fallback that keeps publishing the
+# files as Netlify static assets instead.
 [build]
   command = "npm run build"
   publish = "dist"
@@ -13,3 +19,47 @@
   from = "/*"
   to = "/index.html"
   status = 200
+
+# Netlify matches a real file in publish/ before it applies a 200 rewrite, so
+# /robots.txt and /sitemap.xml are served as themselves, not as index.html. These
+# rules only pin down the content type, which is what makes a crawler accept them.
+[[headers]]
+  for = "/robots.txt"
+  [headers.values]
+    Content-Type = "text/plain; charset=utf-8"
+    Cache-Control = "public, max-age=3600"
+
+[[headers]]
+  for = "/sitemap.xml"
+  [headers.values]
+    Content-Type = "application/xml; charset=utf-8"
+    Cache-Control = "public, max-age=3600"
+
+# Vite names every script and stylesheet with its content hash, so a change to
+# one file can never be served from another file's cache entry. One year, and
+# immutable so the browser skips the revalidation request entirely.
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# Images keep their names between deploys, so they get a short life instead of a
+# permanent one: replacing a file in place still reaches visitors within a day.
+[[headers]]
+  for = "/images/*"
+  [headers.values]
+    Cache-Control = "public, max-age=86400"
+
+# The document itself must never be cached, or a deploy would keep handing
+# visitors the old index.html and the old hashed asset names with it.
+[[headers]]
+  for = "/index.html"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+# Only present when the build is followed by `npm run stage:media`. Range
+# requests are served by Netlify's own static file handler.
+[[headers]]
+  for = "/media/*"
+  [headers.values]
+    Cache-Control = "public, max-age=2592000"

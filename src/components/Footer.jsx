@@ -94,7 +94,7 @@ export default function Footer() {
 
       <div className="ft-bottom">
         <div className="ft-bottom-in">
-          <img className="ft-feather" src={site.crest} alt="" />
+          <img className="ft-feather" src={site.crest} alt="" width="720" height="720" loading="lazy" decoding="async" />
           <div className="ft-legal">
             <span className="ft-copy">{site.name} &copy; {new Date().getFullYear()} (copyright)</span>
             <span className="ft-sep" aria-hidden="true" />
