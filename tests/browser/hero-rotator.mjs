@@ -30,6 +30,7 @@ const read = (page) => page.evaluate(() => {
     return r ? { w: Math.round(r.width), h: Math.round(r.height), l: Math.round(r.left), t: Math.round(r.top) } : null;
   };
   const art = box(slide?.querySelector('.hero-art'));
+  const head = box(slide?.querySelector('.hero-copy h1'));
   const sr = box(slide);
   return {
     keys: slides.map((s) => s.querySelector('.hero-art')?.getAttribute('src') || '?'),
@@ -43,6 +44,7 @@ const read = (page) => page.evaluate(() => {
     extrasShown: visible(slide?.querySelector('.hero-cred')),
     headline: (slide?.querySelector('.hero-copy h1')?.textContent || '').trim().slice(0, 46),
     art,
+    head,
     // How much of the slide the photograph actually covers, in %.
     artSpan: art && sr ? { l: +((art.l - sr.l) / sr.w * 100).toFixed(1), r: +((art.l + art.w - sr.l) / sr.w * 100).toFixed(1) } : null,
     stageH: Math.round(document.querySelector('.hero-stage')?.getBoundingClientRect().height || 0),
@@ -113,7 +115,7 @@ await page.waitForTimeout(9000);
 check('hovering the hero pauses the rotation', (await read(page)).active === before, `stayed on slide ${before} for 9s`);
 await context.close();
 
-// Phones: every slide stacks the same way, photograph bleeding behind live copy.
+// Phones: words first, then the whole photograph, then the tagline.
 const phone = await browser.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
 const p = await phone.newPage();
 await p.goto(`${WEB}/`, { waitUntil: 'domcontentloaded' });
@@ -125,7 +127,7 @@ for (let i = 0; i < 4; i += 1) {
   const s = await read(p);
   const name = titles[i];
   check(`phone ${name}: shows live copy in the stacked composition`, s.copyShown && s.headline.length > 8, `"${s.headline}"`);
-  check(`phone ${name}: the artwork stays inside the frame`, s.art && s.art.l >= -2 && s.art.w <= 392, `art ${s.art?.w}x${s.art?.h} at x ${s.art?.l}`);
+  check(`phone ${name}: the headline sits above the whole photograph`, s.head && s.art && s.head.t < s.art.t && s.art.l <= 2 && s.art.w <= 392, `head y ${s.head?.t} · art ${s.art?.w}x${s.art?.h} at x ${s.art?.l}`);
   check(`phone ${name}: no horizontal overflow`, s.overflow === false, `art top y ${s.art?.t}`);
   // Clicking a dot scrolls it into view, so pull the stage back to the top
   // before capturing what the slide actually looks like.
@@ -135,8 +137,8 @@ for (let i = 0; i < 4; i += 1) {
 }
 await phone.close();
 
-// Tablets (<=1000px container) use the same stacked composition as the cosmic
-// slide: whole photograph on top, live words under it.
+// Tablets (<=1000px container) are their own composition: words down the left,
+// the photograph and whatever the slide carries beneath it down the right.
 const pad = await browser.newContext({ viewport: { width: 820, height: 1180 } });
 const t = await pad.newPage();
 await t.goto(`${WEB}/`, { waitUntil: 'domcontentloaded' });
@@ -150,16 +152,28 @@ for (const i of [0, 2, 3]) {
   await t.evaluate(() => window.scrollTo(0, 0));
   await t.waitForTimeout(1200);
   const s = await read(t);
-  check(`tablet ${titles[i]}: whole photograph with live copy beneath it`, s.art && Math.abs(s.art.w / s.art.h - 1.6) < 0.08 && s.copyShown, `art ${s.art?.w}x${s.art?.h} · copy ${s.copyShown}`);
+  check(`tablet ${titles[i]}: words on the left, photograph on the right`, s.head && s.art && s.head.l + s.head.w <= s.art.l + 2 && Math.abs(s.art.w / s.art.h - 1.6) < 0.08 && s.copyShown, `head ends x ${s.head && s.head.l + s.head.w} · art starts x ${s.art?.l} (${s.art?.w}x${s.art?.h})`);
   check(`tablet ${titles[i]}: the CTAs stay tappable`, s.overflow === false && s.art.t >= 0, `art top y ${s.art?.t} · overflow ${s.overflow}`);
   await t.evaluate(() => window.scrollTo(0, 0));
   await t.waitForTimeout(250);
   await t.screenshot({ path: `${shots}98-hero-${titles[i]}-tablet.png`, clip: { x: 0, y: 0, width: 820, height: 900 } });
 }
 await t.locator('.hero-dots .slider-dot').nth(1).click();
+await t.evaluate(() => window.scrollTo(0, 0));
 await t.waitForTimeout(1200);
 const tCosmic = await read(t);
-check('tablet cosmic: keeps its stacked composition', tCosmic.headline.startsWith('Navigate Life'), tCosmic.headline);
+// The three floating pieces are what the desktop hangs over the artwork. Here
+// they follow it down the right column, so nothing can ever sit on the face.
+const pieces = await t.evaluate(() => {
+  const slide = document.querySelector('.hero-slide.is-active');
+  const art = slide.querySelector('.hero-art').getBoundingClientRect();
+  return ['.hero-cred', '.hero-note', '.hero-quote'].map((sel) => {
+    const r = slide.querySelector(sel).getBoundingClientRect();
+    return { sel, shown: r.width > 20 && r.height > 8, belowArt: r.top >= art.bottom - 2, rightCol: r.left >= art.left - 2 };
+  });
+});
+check('tablet cosmic: keeps its two-column composition', tCosmic.headline.startsWith('Navigate Life'), tCosmic.headline);
+check('tablet cosmic: cred, card and quote all stay under the photograph', pieces.every((p) => p.shown && p.belowArt && p.rightCol), pieces.map((p) => `${p.sel} shown ${p.shown} below ${p.belowArt} right ${p.rightCol}`).join(' · '));
 await pad.close();
 
 // Reduced motion: no auto-advance, controls still work.

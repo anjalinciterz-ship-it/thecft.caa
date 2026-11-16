@@ -539,51 +539,111 @@ p{margin:0 0 1em;}
 .hero-cred .role{font-size:1.7em;color:var(--text-on-dark);line-height:1;}
 .hero-cred .talk{margin-top:.3em;font-family:var(--font-head);font-size:1.12em;color:rgba(244,238,226,0.9);}
 
-@container (max-width:1000px){
-  .hero-stage{aspect-ratio:auto;font-size:calc(16px * var(--ts,1));display:flex;flex-direction:column;}
-  .hero-slide{position:static;display:none;opacity:1;visibility:visible;}
-  .hero-slide.is-active{display:flex;flex-direction:column;}
-  .hero-art{position:static;width:100%;height:auto;aspect-ratio:16/10;max-height:35vh;object-fit:cover;}
+/* ---------- Hero: phone and tablet ---------- */
+/* Two compositions below the desktop break, both made of the same pieces.
+
+   A 2.116:1 photograph cannot fill a portrait frame without cutting either
+   Zalah's face or the signpost, and the artwork is never cropped to fit, so
+   neither layout sets the words *on* the picture. Both put the words first and
+   let the photograph close the slide, which is how the four approved mobile
+   comps read: copy, artwork, then the tagline sitting on the wave that is
+   already painted along the bottom edge of every banner.
+
+   Type is sized in `em` off one clamped stage font-size, exactly as on desktop,
+   so the whole composition still follows the reader's own scale setting. */
+
+@keyframes hero-fade{from{opacity:0;}to{opacity:1;}}
+@keyframes hero-rise{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:none;}}
+
+/* Phone: one centred column, tap-sized buttons, the artwork full-width below. */
+@container (max-width:700px){
+  .hero-stage{aspect-ratio:auto;font-size:calc(clamp(13px,3.6cqw,17px) * var(--ts,1));display:flex;flex-direction:column;}
+  .hero-slide{position:relative;display:none;flex-direction:column;align-items:stretch;}
+  .hero-slide.is-active{display:flex;}
   .hero-veil{display:none;}
-  .hero-dots{position:static;order:9;align-self:center;margin:8px 0 12px;padding:0;background:none;}
-  .hero-copy,.hero-note,.hero-quote,.hero-cred{position:static;width:auto;}
-  .hero-copy{order:1;padding:16px 18px 4px;}
-  .hero-cred{order:2;padding:10px 18px 0;text-align:left;}
-  .hero-cred .lockup{justify-content:flex-start;}
-  .hero-note{order:3;margin:12px 18px;padding:.8em 1em;}
-  .hero-quote{order:4;margin:0 18px 12px;padding:1em 1.2em;}
-  .hero-copy h1{font-size:1.7em;line-height:1.2;margin-bottom:.25em;}
+  /* The copy box dissolves so its parts can be re-ordered around the picture. */
+  .hero-copy{display:contents;}
+  .hero-eyebrow{order:1;justify-content:center;margin:0 0 .75em;padding:14px 20px 0;font-size:.8em;letter-spacing:.2em;line-height:1.55;}
+  .hero-copy h1{order:2;margin:0 0 .36em;padding:0 16px;font-size:2.2em;line-height:1.18;}
   .hero-copy h1 .accent{display:inline;}
-  .hero-lead{font-size:.9em;line-height:1.45;margin-bottom:1em;}
-  .hero-actions{margin-bottom:12px;}
-  .hero-actions .btn{font-size:.85em;padding:10px 16px;}
-  .hero-features{font-size:.8em;gap:8px;margin-bottom:10px;}
-  .hero-features li+li{padding-left:8px;}
-  .hero-footnote{font-size:.72em;letter-spacing:.18em;}
-  .hero-quote blockquote{font-size:1.3em;}
+  .hero-lead{order:3;margin:0 auto 1em;padding:0 22px;max-width:32em;font-size:1.05em;line-height:1.55;}
+  .hero-actions{order:4;flex-direction:column;align-items:stretch;gap:.7em;margin:0 0 1em;padding:0 22px;}
+  .hero-actions .btn{width:100%;justify-content:center;min-height:48px;font-size:1.1em;padding:.8em 1.1em;}
+  .hero-features{order:5;display:grid;grid-template-columns:repeat(3,1fr);gap:0;margin:0 0 1em;padding:0 10px;font-size:.86em;}
+  .hero-features li{justify-content:center;min-width:0;}
+  .hero-features li+li{padding-left:0;border-left:1px solid rgba(248,245,239,.16);}
+  .hero-cred{order:6;position:static;width:auto;margin:0 22px 10px;text-align:center;}
+  .hero-cred .lockup{justify-content:center;}
+  /* The two cards keep `left:auto` because they hold desktop scatter offsets,
+     and a relative position would slide the whole card by them. */
+  .hero-note{order:7;position:relative;left:auto;top:auto;width:auto;margin:0 22px 10px;padding:.9em 3.4em .9em 1em;}
+  .hero-quote{order:8;position:relative;left:auto;top:auto;width:auto;margin:0 22px 12px;padding:1em 1.1em;display:grid;grid-template-columns:auto 1fr;column-gap:14px;align-items:start;}
+  .hero-art{order:9;position:static;width:100%;height:auto;aspect-ratio:16/10;object-fit:cover;object-position:var(--hero-art-pos,50% 50%);}
+  .hero-planks{order:10;}
+  .hero-footnote{order:11;margin:0;padding:10px 18px 0;text-align:center;font-size:.78em;letter-spacing:.18em;line-height:1.6;}
+  .hero-dots{position:static;order:9;align-self:center;margin:12px 0 14px;padding:0;background:none;}
+  .hero-quote blockquote{grid-column:2;font-size:1.25em;}
+  .hero-quote figcaption{grid-column:2;}
+  .hero-quote::before{content:"\201D";grid-row:1/span 2;grid-column:1;font-family:var(--font-head);font-size:calc(46px * var(--ts-h,1));line-height:.9;color:var(--gold-400);}
   .hero-note-lines .v{font-size:1.2em;}
+  .hero-note::after{content:"";position:absolute;right:12px;top:50%;transform:translateY(-50%);width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.22);}
+  .hero-note::before{content:"";position:absolute;right:24px;top:50%;width:8px;height:8px;border-top:2px solid #f0d5a0;border-right:2px solid #f0d5a0;transform:translateY(-50%) rotate(45deg);}
 }
 
-/* Tablet: 768-1024px */
-@media(min-width:768px) and (max-width:1024px){
-  .hero-art{max-height:30vh;}
-  .hero-copy{padding:20px 24px 6px;}
-  .hero-copy h1{font-size:1.9em;}
-  .hero-lead{font-size:1em;margin-bottom:1.2em;}
-  .hero-actions .btn{font-size:.95em;padding:12px 20px;}
-  .hero-note{margin:16px 24px;}
-  .hero-quote{margin:0 24px 16px;}
+/* Tablet: two columns. The words take the left, the photograph takes the right
+   with whatever the slide carries beneath it (the signpost sentence, or the
+   three floating pieces). Stacking the band under a full-width column instead
+   is what made this range read as a stretched phone layout, 1200px tall. */
+@container (min-width:701px) and (max-width:1000px){
+  .hero-stage{aspect-ratio:auto;font-size:calc(clamp(15px,2.05cqw,20px) * var(--ts,1));display:flex;flex-direction:column;}
+  .hero-slide{
+    position:relative;display:none;align-items:center;
+    grid-template-columns:minmax(0,.95fr) minmax(0,1.05fr);
+    grid-template-rows:repeat(5,minmax(0,auto));
+    gap:clamp(12px,1.8vw,20px) clamp(18px,3vw,34px);
+    padding:clamp(22px,3.6vw,40px) clamp(20px,3.2vw,34px) 4px;
+  }
+  .hero-slide.is-active{display:grid;}
+  .hero-veil{display:none;}
+  .hero-copy{position:static;width:auto;grid-column:1;grid-row:1/span 5;line-height:1.5;}
+  .hero-eyebrow{font-size:.78em;letter-spacing:.2em;margin-bottom:1em;}
+  .hero-copy h1{font-size:2em;line-height:1.2;margin-bottom:.4em;}
+  .hero-copy h1 .accent{display:inline;}
+  .hero-lead{font-size:.98em;line-height:1.5;max-width:30em;margin-bottom:1.2em;}
+  .hero-actions{flex-direction:column;align-items:stretch;gap:.65em;margin-bottom:1.15em;}
+  .hero-actions .btn{min-height:46px;font-size:1.02em;padding:.72em 1.2em;}
+  .hero-features{flex-direction:column;align-items:flex-start;gap:.5em;font-size:.85em;}
+  .hero-features li+li{padding-left:0;border-left:0;}
+  .hero-footnote{font-size:.72em;letter-spacing:.2em;}
+  .hero-art{grid-column:2;grid-row:1;position:static;width:100%;height:auto;aspect-ratio:16/10;object-fit:cover;object-position:var(--hero-art-pos,50% 50%);}
+  .hero-planks{grid-column:2;grid-row:2;justify-content:flex-start;padding:0;}
+  .hero-cred{grid-column:2;grid-row:3;position:static;width:auto;text-align:right;}
+  .hero-cred .lockup{justify-content:flex-end;}
+  .hero-note{grid-column:2;grid-row:4;position:static;width:auto;}
+  .hero-quote{grid-column:2;grid-row:5;position:static;width:auto;}
+  .hero-quote blockquote{font-size:1.2em;}
+  .hero-dots{position:static;order:9;align-self:center;margin:10px 0 14px;padding:0;background:none;}
 }
 
-@media(max-width:480px){
-  .hero-art{aspect-ratio:4/3;max-height:30vh;}
-  .hero-copy{padding:12px 16px 2px;}
-  .hero-copy h1{font-size:1.5em;}
-  .hero-lead{font-size:.85em;margin-bottom:.8em;}
-  .hero-actions .btn{font-size:.8em;padding:9px 14px;}
-  .hero-features{font-size:.75em;gap:6px;}
-  .hero-note{margin:10px 16px;padding:.7em .9em;}
-  .hero-quote{margin:0 16px 10px;padding:.9em 1em;}
+/* The compressed cascade: the same order as the desktop reveal, over about a
+   second instead of three. The buttons come in on the approved 550/650ms beat,
+   which is early enough that the slide has finished unfolding long before it
+   rotates, and the artwork fades on its own while the words arrive. The hidden
+   slides are `display:none`, so a button's animation only starts the moment its
+   slide takes the stage and a resize can never restart it. */
+@container (max-width:1000px){
+  .hero-slide.is-active .hero-art,
+  .hero-slide.is-active .hero-cred,
+  .hero-slide.is-active .hero-note{animation:hero-fade .9s ease both;}
+  .hero-actions .btn{animation:hero-rise .45s cubic-bezier(.22,.9,.28,1) .55s both;}
+  .hero-actions .btn:nth-child(2){animation-delay:.65s;}
+  .hero-plank{animation-delay:calc(300ms + var(--pi) * 45ms);}
+}
+@media (prefers-reduced-motion:reduce){
+  .hero-slide.is-active .hero-art,
+  .hero-slide.is-active .hero-cred,
+  .hero-slide.is-active .hero-note,
+  .hero-actions .btn{animation:none;}
 }
 
 /* ---------- Generic exact-match image sections ---------- */
@@ -3999,41 +4059,10 @@ img.touch-f-ico{width:16px;height:16px;object-fit:contain;}
 .jy-num,.jy-text,.jy-go,.ts-stars,.ts-arrow,.bs-nav,.fac-talk-ico,.cx-wave{display:none;}
 
 @media (max-width:760px){
-  /* HERO: portrait bleeds behind copy, wisdom card above full-width CTAs,
-     3-col feature row with dividers, quote card last. No TEDx cred/footnote. */
-  .hero-cred,.hero-footnote{display:none;}
-  .hero-stage{display:flex;flex-direction:column;position:relative;padding-top:44px;}
-  .hero-copy{display:contents;}
-  .hero-eyebrow{order:1;}
-  .hero-copy h1{order:2;}
-  .hero-lead{order:3;}
-  .hero-note{order:4;}
-  .hero-actions{order:5;}
-  .hero-features{order:6;}
-  .hero-quote{order:7;}
-  /* One portrait slot for the cosmic artwork; the photographs keep their whole
-     frame across the top instead (see below) because a 1824px-wide scene
-     cropped to that slot shows only a strip of it. */
-  .hero-art{position:absolute;left:auto;bottom:auto;top:300px;right:-6%;width:68%;height:580px;object-fit:cover;object-position:var(--hero-art-pos,75% 20%);z-index:0;-webkit-mask-image:linear-gradient(100deg,transparent 10%,#000 55%);mask-image:linear-gradient(100deg,transparent 10%,#000 55%);}
-  .hero-slide-photo .hero-art{position:static;width:100%;height:auto;aspect-ratio:16/10;object-position:var(--hero-art-pos,50% 50%);-webkit-mask-image:none;mask-image:none;}
-  .hero-slide-photo .hero-veil{display:none;}
-  .hero-veil{display:block;background:linear-gradient(to top,var(--ink-950) 20%,rgba(16,8,34,0) 44%);}
-  .hero-eyebrow,.hero-copy h1,.hero-lead,.hero-actions,.hero-features{position:relative;z-index:1;padding-left:22px;padding-right:22px;}
-  /* Lead narrows to a left column so it stays clear of the portrait's face. */
-  .hero-lead{padding-right:42%;}
-  .hero-eyebrow{font-size:.74em;letter-spacing:.16em;}
-  .hero-actions{flex-direction:column;align-items:stretch;}
-  .hero-actions .btn{width:100%;justify-content:center;}
-  .hero-features{display:grid;grid-template-columns:repeat(3,1fr);gap:0;font-size:.8em;}
-  .hero-features li{border-left:0;min-width:0;}
-  .hero-features li+li{border-left:1px solid rgba(248,245,239,.16);}
-  .hero-note{position:relative;z-index:1;left:auto;top:auto;width:min(72%,320px);margin:0 22px 18px;padding-right:52px;}
-  .hero-note::after{content:"";position:absolute;right:12px;top:50%;transform:translateY(-50%);width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.22);}
-  .hero-note::before{content:"";position:absolute;right:24px;top:50%;width:8px;height:8px;border-top:2px solid #f0d5a0;border-right:2px solid #f0d5a0;transform:translateY(-50%) rotate(45deg);}
-  .hero-quote{position:relative;z-index:1;left:auto;top:auto;width:auto;margin:0 22px 22px;display:grid;grid-template-columns:auto 1fr;column-gap:14px;align-items:start;}
-  .hero-quote::before{content:"\201D";grid-row:1/span 2;grid-column:1;font-family:var(--font-head);font-size:calc(46px * var(--ts-h,1));line-height:.9;color:var(--gold-400);}
-  .hero-quote blockquote{grid-column:2;}
-  .hero-quote figcaption{grid-column:2;}
+  /* The hero is deliberately absent here. It answers to container queries in
+     its own section above, and a viewport-width block that only reached 760px
+     was overriding them between 700 and 760: it hid the cred and the tagline,
+     re-ordered the copy, and hung the cosmic artwork from a fixed 580px slot. */
 
   /* PROGRAMS: stacked promo cards — whole banner on top (no sliced baked-in
      title), price left + gold pill Explore right in the foot row. */

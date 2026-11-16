@@ -37,6 +37,50 @@ function prefersReduced() {
 // animate as it takes the stage instead of once at page load while hidden.
 const runKey = (name, active) => `${name}-${active ? 'run' : 'idle'}`;
 
+// [start, gap] in seconds for each block of the cascade. The wide composition
+// can afford to spend 2.9s unfolding; on a phone the same schedule is still
+// finishing when the slide rotates, so the compact one runs the identical
+// order in a third of the time: eyebrow, heading, lead, buttons, benefits.
+const TIMING = {
+  wide: {
+    eyebrow: [0, 0.055],
+    titleLead: [0.15, 0.028],
+    titleAccent: [0.8, 0.12],
+    lead: [1.15, 0.02],
+    features: [1.7, 0.18],
+    featureStep: 0.055,
+    footnote: [2.15, 0.055],
+    quote: [2.5, 0.055],
+    quoteBy: [2.8, 0.055],
+  },
+  compact: {
+    eyebrow: [0, 0.02],
+    titleLead: [0.15, 0.006],
+    titleAccent: [0.22, 0.05],
+    lead: [0.35, 0.012],
+    features: [0.8, 0.06],
+    featureStep: 0.05,
+    footnote: [0.95, 0.03],
+    quote: [0.9, 0.03],
+    quoteBy: [1, 0.03],
+  },
+};
+
+// The hero band is full-bleed, so its container width is the viewport width and
+// this media query reads the same break as the CSS container queries. Only the
+// schedule moves with it; the layout itself is pure CSS, so resizing never
+// remounts the copy and never restarts an animation.
+function useCompactHero() {
+  const [compact, setCompact] = useState(() => window.matchMedia('(max-width:1000px)').matches);
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width:1000px)');
+    const onChange = (e) => setCompact(e.matches);
+    mq.addEventListener('change', onChange);
+    return () => mq.removeEventListener('change', onChange);
+  }, []);
+  return compact;
+}
+
 // The cosmic artwork keeps its own frame and its own floating pieces; the three
 // photographs only fill the stage. See site.heroSlides.
 const COSMIC_ART = {
@@ -61,7 +105,7 @@ const cosmicCopy = (h) => ({
 // One renderer for all four slides: the photograph fills the frame, a wash
 // keeps the words readable over it, and every word is live HTML that re-types
 // as the slide takes the stage.
-function HeroSlide({ slide, h, eager, active }) {
+function HeroSlide({ slide, h, eager, active, t }) {
   const cosmic = slide.kind === 'live';
   const art = cosmic ? COSMIC_ART : slide;
   const copy = cosmic ? cosmicCopy(h) : slide.copy;
@@ -100,12 +144,12 @@ function HeroSlide({ slide, h, eager, active }) {
 
       <div className="hero-copy" key={runKey('copy', active)}>
         <p className="hero-eyebrow">
-          <TextEffect per="word" preset="spring" delay={0} intensity={0.35}>
+          <TextEffect per="word" preset="spring" delay={t.eyebrow[0]} step={t.eyebrow[1]} intensity={0.35}>
             {copy.eyebrow}
           </TextEffect>
         </p>
         <h1>
-          <TextEffect per="char" preset="fade" delay={0.15}>
+          <TextEffect per="char" preset="fade" delay={t.titleLead[0]} step={t.titleLead[1]}>
             {copy.titleLead}
           </TextEffect>{' '}
           <TextEffect
@@ -113,15 +157,15 @@ function HeroSlide({ slide, h, eager, active }) {
             className="accent"
             per="word"
             preset="spring"
-            delay={0.8}
-            step={0.12}
+            delay={t.titleAccent[0]}
+            step={t.titleAccent[1]}
             intensity={0.5}
           >
             {copy.titleAccent}
           </TextEffect>
         </h1>
         <p className="hero-lead">
-          <TextEffect per="word" preset="fade" delay={1.15} step={0.02}>
+          <TextEffect per="word" preset="fade" delay={t.lead[0]} step={t.lead[1]}>
             {copy.lead}
           </TextEffect>
         </p>
@@ -137,14 +181,20 @@ function HeroSlide({ slide, h, eager, active }) {
           {copy.features.map((label, i) => (
             <li key={label}>
               <span className="gdot" aria-hidden="true" />
-              <TextEffect per="word" preset="spring" delay={1.7 + i * 0.18} intensity={0.3}>
+              <TextEffect
+                per="word"
+                preset="spring"
+                delay={t.features[0] + i * t.features[1]}
+                step={t.featureStep}
+                intensity={0.3}
+              >
                 {label}
               </TextEffect>
             </li>
           ))}
         </ul>
         <p className="hero-footnote">
-          <TextEffect per="word" preset="spring" delay={2.15} intensity={0.25}>
+          <TextEffect per="word" preset="spring" delay={t.footnote[0]} step={t.footnote[1]} intensity={0.25}>
             {copy.footnote}
           </TextEffect>
         </p>
@@ -175,12 +225,12 @@ function HeroSlide({ slide, h, eager, active }) {
 
           <figure className="hero-quote" key={runKey('quote', active)}>
             <blockquote>
-              <TextEffect per="word" preset="spring" delay={2.5} intensity={0.3}>
+              <TextEffect per="word" preset="spring" delay={t.quote[0]} step={t.quote[1]} intensity={0.3}>
                 {`“${site.quote.text}”`}
               </TextEffect>
             </blockquote>
             <figcaption>
-              <TextEffect per="word" preset="spring" delay={2.8} intensity={0.3}>
+              <TextEffect per="word" preset="spring" delay={t.quoteBy[0]} step={t.quoteBy[1]} intensity={0.3}>
                 {site.quote.by}
               </TextEffect>
             </figcaption>
@@ -195,6 +245,8 @@ function Hero() {
   const h = site.hero;
   const slides = site.heroSlides;
   const n = slides.length;
+  const compact = useCompactHero();
+  const t = compact ? TIMING.compact : TIMING.wide;
   const [active, setActive] = useState(0);
   const [paused, setPaused] = useState(false);
 
@@ -224,7 +276,7 @@ function Hero() {
             className={`hero-slide${slide.kind === 'live' ? '' : ' hero-slide-photo'}${i === active ? ' is-active' : ''}`}
             aria-hidden={i !== active}
           >
-            <HeroSlide slide={slide} h={h} eager={i === 0} active={i === active} />
+            <HeroSlide slide={slide} h={h} eager={i === 0} active={i === active} t={t} />
           </div>
         ))}
         <div className="hero-dots slider-dots">

@@ -179,6 +179,41 @@ for (const i of [2, 3]) {
 }
 await phone.close();
 
+// 8b. The compact cascade hands over the buttons on the approved 550/650ms
+// beat and is fully unfolded a second later, so a 4s slide never rotates
+// mid-reveal.
+const phone2 = await browser.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
+const q = await phone2.newPage();
+await q.goto(`${WEB}/`, { waitUntil: 'domcontentloaded' });
+await q.waitForSelector('.hero-slide', { timeout: 20000 });
+await q.waitForTimeout(600);
+await q.locator('.hero-dots .slider-dot').nth(3).click();
+await q.locator('.hero-slide.is-active .hero-actions .btn').first().focus();
+const beat = async () => q.evaluate(() => {
+  const slide = document.querySelector('.hero-slide.is-active');
+  const btns = [...slide.querySelectorAll('.hero-actions .btn')];
+  return {
+    op: btns.map((b) => +(+getComputedStyle(b).opacity).toFixed(2)),
+    timing: btns.map((b) => {
+      const a = b.getAnimations().find((x) => x.animationName === 'hero-rise');
+      if (!a) return 'none';
+      const t = a.effect.getTiming();
+      return `${Math.round(t.delay)}+${Math.round(t.duration)}ms`;
+    }),
+    lastWord: Math.round(Math.max(...[...slide.querySelectorAll('.te-t')]
+      .map((t) => parseFloat(t.style.getPropertyValue('--te-d')) || 0)) * 1000),
+  };
+});
+await q.waitForTimeout(300);
+const at350 = await beat();
+await q.waitForTimeout(600);
+const at900 = await beat();
+check('phone: the CTAs come in on the 550 / 650ms beat', at350.timing.join(' ') === '550+450ms 650+450ms', `delays ${at350.timing.join(' / ')}`);
+check('phone: the buttons are still withheld while the heading lands', at350.op.every((o) => o < 0.6), `opacity ${at350.op.join(' / ')} at 350ms`);
+check('phone: both CTAs are on screen inside the first second', at900.op.every((o) => o > 0.95), `opacity ${at900.op.join(' / ')} at 950ms`);
+check('phone: the whole reveal is done well before the slide rotates', at900.lastWord + 620 < 2400, `last word runs ${at900.lastWord}-${at900.lastWord + 620}ms of a 4000ms slide`);
+await phone2.close();
+
 // 9. Reduced motion: nothing animates and nothing is left invisible.
 const calm = await browser.newContext({ viewport: { width: 1440, height: 900 }, reducedMotion: 'reduce' });
 const c = await calm.newPage();
