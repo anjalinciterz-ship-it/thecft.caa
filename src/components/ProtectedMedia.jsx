@@ -1,5 +1,6 @@
 import { lazy, Suspense, useRef, useState } from 'react';
 import { Icon } from './icons';
+import { bunnyAudioUrl } from '../data/audiobooks';
 
 /* hls.js is by far the largest thing the players pull in, and it is only ever
    needed by a video. Loaded here rather than at the top of the module, an
@@ -7,14 +8,17 @@ import { Icon } from './icons';
    that never opens a film never asks for it. */
 const HlsVideoPlayer = lazy(() => import('./HlsVideoPlayer'));
 
-/* The single seam between the players and wherever the bytes come from. The
-   audiobooks no longer ship inside the build, so production sets VITE_AUDIO_BASE
-   to the origin that serves them (a Bunny storage/pull zone, or any CDN) and this
-   stays '/media', which the dev and preview servers stream from the repo-root
-   media folder. Absolute urls pass through untouched. */
+/* Where a recording comes from. Bunny Stream is the source: data/audiobooks.js
+   holds Stream's own id for each of the 18 files, and that resolves first. The
+   '/media' copy under the repo root is what still plays a row whose Stream id is
+   not recorded yet, so no card is ever left with a dead player. VITE_AUDIO_BASE
+   overrides that fallback for a self-hosted deploy
+   (`npm run build && npm run stage:media`). Absolute urls pass through untouched,
+   which is how the meditation films arrive. */
 const AUDIO_BASE = (import.meta.env.VITE_AUDIO_BASE || '/media').replace(/\/+$/, '');
 
-export const mediaUrl = (src) => (/^https?:/.test(src) ? src : `${AUDIO_BASE}/${encodeURI(src)}`);
+export const mediaUrl = (src) =>
+  bunnyAudioUrl(src) || (/^https?:/.test(src) ? src : `${AUDIO_BASE}/${encodeURI(src)}`);
 
 const noSave = (e) => e.preventDefault();
 
