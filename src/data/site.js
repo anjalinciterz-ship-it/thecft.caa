@@ -47,14 +47,17 @@ export const site = {
       src: '/images/site/hero-bg-guidance.webp',
       srcSet: '/images/site/hero-bg-guidance-900.webp 900w, /images/site/hero-bg-guidance.webp 1824w',
       alt: 'Zalah, smiling with his head resting on his hand, beside a rustic signpost in the desert',
-      // Where each photograph is framed when a phone crops its band to 16:10.
-      mobilePos: '62% 45%',
+      // Where each photograph is framed once the hero becomes a portrait or a
+      // tablet frame, both narrower than the picture: cover keeps the whole
+      // height, so these are horizontal windows around the subject.
+      mobilePos: '55% 50%',
+      tabletPos: '58% 50%',
       /* The sentence rides the signpost, one word per plank. The coordinates
          are the plank bands measured out of the photograph itself, as
          percentages of the frame: on the desktop stage the frame and the image
          share the 1824/862 box, so nothing is cropped and they line up exactly.
-         Below 1080px the photo is cropped to 16:10 and the planks move, so the
-         words fall back to a single line under the picture. */
+         Below 1000px the frame is a slice of the picture, so the words fall
+         back to one line over the artwork. */
       planks: [
         { word: 'YOU', x: 90.1, y: 33.99 },
         { word: 'ARE', x: 86.87, y: 40.89 },
@@ -84,7 +87,8 @@ export const site = {
       src: '/images/site/hero-bg-lake.webp',
       srcSet: '/images/site/hero-bg-lake-900.webp 900w, /images/site/hero-bg-lake.webp 1824w',
       alt: 'A woman sitting on a wooden dock, meditating by a mountain lake',
-      mobilePos: '50% 62%',
+      mobilePos: '50% 50%',
+      tabletPos: '50% 50%',
       copy: {
         eyebrow: 'The Centre for Transformation',
         titleLead: 'Discover Inner Peace',
@@ -103,7 +107,8 @@ export const site = {
       src: '/images/site/hero-bg-path.webp',
       srcSet: '/images/site/hero-bg-path-900.webp 900w, /images/site/hero-bg-path.webp 1824w',
       alt: 'Zalah welcoming you beside a path through grass, with a man walking on it',
-      mobilePos: '70% 45%',
+      mobilePos: '71% 50%',
+      tabletPos: '75% 50%',
       copy: {
         eyebrow: 'A path of awareness, growth & transformation',
         titleLead: 'Walk a Clearer Path to a More Conscious,',

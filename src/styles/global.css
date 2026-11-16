@@ -406,11 +406,11 @@ p{margin:0 0 1em;}
   from{opacity:0;transform:translate(-50%,-52%) scale(.86);}
   to{opacity:1;transform:translate(-50%,-50%) scale(1);}
 }
-/* Below the width where the photographs crop to 16:10 the boards no longer sit
-   where the full picture puts them, so the same eight words read as one line
-   under the photo instead of drifting off the planks. This has to be the same
-   1000 the crop uses: a viewport-based 1080 turned the words into a line while
-   the picture was still full-frame, so the boards showed empty beneath them. */
+/* Below the width where the photographs stop being full-frame the boards no
+   longer sit where the whole picture puts them, so the same eight words read as
+   one line instead of drifting off empty planks. This has to be the same 1000
+   the crop uses: a viewport-based 1080 turned the words into a line while the
+   picture was still full-frame, so the boards showed empty beneath them. */
 @container (max-width:1000px){
   .hero-planks{position:static;inset:auto;display:flex;flex-wrap:wrap;justify-content:center;gap:.3em .62em;padding:14px 20px 2px;}
   .hero-plank{position:static;transform:none;color:#f3e7cf;font-size:1.05em;text-shadow:0 2px 12px rgba(9,7,18,.75);animation-name:hero-plank-line;}
@@ -470,6 +470,9 @@ p{margin:0 0 1em;}
 }
 
 /* Floating glass pieces, placed on the artwork's empty regions. */
+/* On desktop the wrapper is not a box: each piece keeps its own absolute spot.
+   Below the break it becomes the band that holds all three at once. */
+.hero-pieces{display:contents;}
 .hero-note,.hero-quote{
   position:absolute;z-index:3;
   background:linear-gradient(155deg,rgba(72,48,138,0.40),rgba(16,8,34,0.34));
@@ -496,109 +499,170 @@ p{margin:0 0 1em;}
 .hero-cred .talk{margin-top:.3em;font-family:var(--font-head);font-size:1.12em;color:rgba(244,238,226,0.9);}
 
 /* ---------- Hero: phone and tablet ---------- */
-/* Two compositions below the desktop break, both made of the same pieces.
+/* The desktop layer stack, kept whole: the photograph is an absolutely
+   positioned background covering the frame, a scrim tinted with the slide's own
+   colour sits over it, and the words, buttons, benefits and floating cards are
+   layered on top of both. Nothing in the hero is a block in the document flow
+   below the desktop break any more, which is what made the picture read as a
+   separate image section under the copy.
 
-   A 2.116:1 photograph cannot fill a portrait frame without cutting either
-   Zalah's face or the signpost, and the artwork is never cropped to fit, so
-   neither layout sets the words *on* the picture. Both put the words first and
-   let the photograph close the slide, which is how the four approved mobile
-   comps read: copy, artwork, then the tagline sitting on the wave that is
-   already painted along the bottom edge of every banner.
+   The frame is one shared height per breakpoint, set on the stage instead of
+   taken from the slide's content, so all four slides measure identical at the
+   same viewport and the signpost sentence or the three cosmic cards can never
+   make their own slide taller.
 
-   Type is sized in `em` off one clamped stage font-size, exactly as on desktop,
-   so the whole composition still follows the reader's own scale setting. */
+   A portrait frame can only show a vertical slice of a 2.116:1 photograph, and
+   covering it keeps the image's whole height while cropping the width, so each
+   slide names the horizontal window its subject needs: `mobilePos` for phones,
+   `tabletPos` for the wider band. The artwork is never scaled or stretched. */
 
 @keyframes hero-fade{from{opacity:0;}to{opacity:1;}}
 @keyframes hero-rise{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:none;}}
 
-/* Phone: one centred column, tap-sized buttons, the artwork full-width below. */
-@container (max-width:700px){
-  .hero-stage{aspect-ratio:auto;font-size:calc(clamp(13px,3.6cqw,17px) * var(--ts,1));display:flex;flex-direction:column;}
-  .hero-slide{position:relative;display:none;flex-direction:column;align-items:stretch;}
-  .hero-slide.is-active{display:flex;}
-  .hero-veil{display:none;}
-  /* The copy box dissolves so its parts can be re-ordered around the picture. */
-  .hero-copy{display:contents;}
-  .hero-eyebrow{order:1;justify-content:center;margin:0 0 .75em;padding:14px 20px 0;font-size:.8em;letter-spacing:.2em;line-height:1.55;}
-  .hero-copy h1{order:2;margin:0 0 .36em;padding:0 16px;font-size:2.2em;line-height:1.18;}
-  .hero-copy h1 .accent{display:inline;}
-  .hero-lead{order:3;margin:0 auto 1em;padding:0 22px;max-width:32em;font-size:1.05em;line-height:1.55;}
-  .hero-actions{order:4;flex-direction:column;align-items:stretch;gap:.7em;margin:0 0 1em;padding:0 22px;}
-  .hero-actions .btn{width:100%;justify-content:center;min-height:48px;font-size:1.1em;padding:.8em 1.1em;}
-  .hero-features{order:5;display:grid;grid-template-columns:repeat(3,1fr);gap:0;margin:0 0 1em;padding:0 10px;font-size:.86em;}
-  .hero-features li{justify-content:center;min-width:0;}
-  .hero-features li+li{padding-left:0;border-left:1px solid rgba(248,245,239,.16);}
-  .hero-cred{order:6;position:static;width:auto;margin:0 22px 10px;text-align:center;}
-  .hero-cred .lockup{justify-content:center;}
-  /* The two cards keep `left:auto` because they hold desktop scatter offsets,
-     and a relative position would slide the whole card by them. */
-  .hero-note{order:7;position:relative;left:auto;top:auto;width:auto;margin:0 22px 10px;padding:.9em 3.4em .9em 1em;}
-  .hero-quote{order:8;position:relative;left:auto;top:auto;width:auto;margin:0 22px 12px;padding:1em 1.1em;display:grid;grid-template-columns:auto 1fr;column-gap:14px;align-items:start;}
-  .hero-art{order:9;position:static;width:100%;height:auto;aspect-ratio:16/10;object-fit:cover;object-position:var(--hero-art-pos,50% 50%);}
-  .hero-planks{order:10;}
-  .hero-footnote{order:11;margin:0;padding:10px 18px 0;text-align:center;font-size:.78em;letter-spacing:.18em;line-height:1.6;}
-  .hero-dots{position:static;order:9;align-self:center;margin:12px 0 14px;padding:0;background:none;}
-  .hero-quote blockquote{grid-column:2;font-size:1.25em;}
-  .hero-quote figcaption{grid-column:2;}
-  .hero-quote::before{content:"\201D";grid-row:1/span 2;grid-column:1;font-family:var(--font-head);font-size:calc(46px * var(--ts-h,1));line-height:.9;color:var(--gold-400);}
-  .hero-note-lines .v{font-size:1.2em;}
-  .hero-note::after{content:"";position:absolute;right:12px;top:50%;transform:translateY(-50%);width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.22);}
-  .hero-note::before{content:"";position:absolute;right:24px;top:50%;width:8px;height:8px;border-top:2px solid #f0d5a0;border-right:2px solid #f0d5a0;transform:translateY(-50%) rotate(45deg);}
+/* Shared by both compact breakpoints. The header is sticky, so the hero starts
+   beneath it and ends at the bottom edge of the screen; 760px is the floor, for
+   short viewports, where the page scrolls rather than the hero shrinking. */
+@container (max-width:1000px){
+  .hero-stage{
+    aspect-ratio:auto;
+    height:max(760px,calc(100svh - var(--hero-hdr,74px)));
+  }
+  .hero-art{object-position:var(--hero-art-pos,50% 50%);}
+  .hero-slide{padding:16px 20px 52px;}
+  /* L2, in the slide's own palette: deepest behind the words, thinnest across
+     the subject, closed again at the bottom where the tagline sits on the wave
+     that is already painted along the edge of every banner. */
+  .hero-veil{
+    display:block;
+    background:
+      radial-gradient(86% 40% at 50% 33%,rgba(var(--veil-rgb),0.5) 0%,rgba(var(--veil-rgb),0) 76%),
+      linear-gradient(180deg,
+        rgba(var(--veil-rgb),0.88) 0%,
+        rgba(var(--veil-rgb),0.52) 30%,
+        rgba(var(--veil-rgb),0.30) 58%,
+        rgba(var(--veil-rgb),0.74) 100%);
+  }
+  .hero-slide,.hero-slide[data-slide="cosmic"]{--veil-rgb:16,8,34;}
+  .hero-slide[data-slide="lake"]{--veil-rgb:7,26,48;}
+  .hero-slide[data-slide="path"]{--veil-rgb:6,26,18;}
+  .hero-slide[data-slide="guidance"]{--veil-rgb:18,22,26;}
+  /* Over photography the words carry a shadow rather than a panel. */
+  .hero-copy h1{text-shadow:0 3px 26px rgba(6,3,16,.85),0 1px 3px rgba(6,3,16,.6);}
+  .hero-copy h1 .accent .te-t{filter:drop-shadow(0 2px 12px rgba(6,3,16,.9));}
+  .hero-eyebrow,.hero-lead,.hero-features,.hero-footnote{text-shadow:0 2px 14px rgba(6,3,16,.8);}
+  /* The tagline is small uppercase type sitting directly on photography, so it
+     drops the 55% transparency the desktop can afford and keeps the same hue. */
+  .hero-footnote{color:rgba(240,234,248,.94);}
+  /* The reveal paints every word as its own inline-block, so the only thing
+     between them is a raw space advance. At phone sizes that hairline reads as
+     one long word, so give the gaps back as tracking. */
+  .hero-slide{word-spacing:.18em;}
+  /* L5: the three pieces are laid out by the breakpoint, so the desktop
+     scatter offsets must not slide them, and their own positions are the
+     wrapper's to hold. */
+  .hero-pieces{z-index:3;}
+  .hero-cred,.hero-note,.hero-quote{position:static;left:auto;top:auto;width:auto;margin:0;}
+  .hero-dots{left:50%;right:auto;bottom:14px;transform:translateX(-50%);padding:0;background:none;}
 }
 
-/* Tablet: two columns. The words take the left, the photograph takes the right
-   with whatever the slide carries beneath it (the signpost sentence, or the
-   three floating pieces). Stacking the band under a full-width column instead
-   is what made this range read as a stretched phone layout, 1200px tall. */
-@container (min-width:701px) and (max-width:1000px){
-  .hero-stage{aspect-ratio:auto;font-size:calc(clamp(15px,2.05cqw,20px) * var(--ts,1));display:flex;flex-direction:column;}
-  .hero-slide{
-    position:relative;display:none;align-items:center;
-    grid-template-columns:minmax(0,.95fr) minmax(0,1.05fr);
-    grid-template-rows:repeat(5,minmax(0,auto));
-    gap:clamp(12px,1.8vw,20px) clamp(18px,3vw,34px);
-    padding:clamp(22px,3.6vw,40px) clamp(20px,3.2vw,34px) 4px;
-  }
-  .hero-slide.is-active{display:grid;}
-  .hero-veil{display:none;}
-  .hero-copy{position:static;width:auto;grid-column:1;grid-row:1/span 5;line-height:1.5;}
-  .hero-eyebrow{font-size:.78em;letter-spacing:.2em;margin-bottom:1em;}
-  .hero-copy h1{font-size:2em;line-height:1.2;margin-bottom:.4em;}
+/* Phone: one centred column over the photograph, tap-sized buttons. */
+@container (max-width:700px){
+  .hero-stage{font-size:calc(clamp(13px,3.6cqw,17px) * var(--ts,1));}
+  .hero-slide{display:flex;flex-direction:column;align-items:stretch;}
+  /* The copy box dissolves so its parts can share the column with the cards. */
+  .hero-copy{display:contents;}
+  .hero-eyebrow{order:1;justify-content:center;margin:0 0 .7em;padding:0;font-size:.8em;letter-spacing:.18em;line-height:1.55;}
+  .hero-copy h1{order:2;margin:0 0 .4em;font-size:2.05em;line-height:1.14;}
   .hero-copy h1 .accent{display:inline;}
-  .hero-lead{font-size:.98em;line-height:1.5;max-width:30em;margin-bottom:1.2em;}
-  .hero-actions{flex-direction:column;align-items:stretch;gap:.65em;margin-bottom:1.15em;}
-  .hero-actions .btn{min-height:46px;font-size:1.02em;padding:.72em 1.2em;}
-  .hero-features{flex-direction:column;align-items:flex-start;gap:.5em;font-size:.85em;}
+  .hero-lead{order:3;margin:0 auto .95em;max-width:34em;font-size:.97em;line-height:1.5;}
+  .hero-actions{order:4;flex-direction:column;align-items:stretch;gap:.6em;margin:0 0 1em;}
+  .hero-actions .btn{width:100%;justify-content:center;min-height:48px;font-size:1em;padding:.72em 1em;}
+  .hero-features{order:5;display:grid;grid-template-columns:repeat(3,1fr);gap:0;margin:0 0 1em;padding:0;font-size:.84em;}
+  .hero-features li{justify-content:center;min-width:0;}
+  .hero-features li+li{padding-left:0;border-left:1px solid rgba(248,245,239,.16);}
+  /* The cosmic slide's three pieces become two chips side by side over the
+     class card, so they stay inside the shared height instead of stacking a
+     fourth, fifth and sixth band under the buttons. */
+  .hero-pieces{order:6;display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:0 0 1em;font-size:.76em;}
+  .hero-cred{grid-column:1;}
+  .hero-quote{grid-column:2;display:grid;grid-template-columns:1fr;align-items:start;padding:.75em .8em;border-radius:1.2em;}
+  .hero-quote::before{display:none;}
+  .hero-quote blockquote{font-size:1.1em;}
+  .hero-quote figcaption{margin-top:.45em;gap:.45em;}
+  .hero-note{grid-column:1/-1;display:flex;align-items:center;gap:.8em;padding:.6em .8em;border-radius:1.2em;}
+  .hero-note svg{width:1.9em;height:1.9em;}
+  .hero-note-lines .v{font-size:1.2em;}
+  .hero-cred{text-align:left;}
+  .hero-cred .lockup{justify-content:flex-start;}
+  .hero-planks{order:7;padding:0 0 4px;}
+  .hero-plank{font-size:.95em;}
+  .hero-footnote{order:8;margin-top:auto;padding-top:10px;text-align:center;font-size:.76em;letter-spacing:.17em;line-height:1.6;}
+}
+
+/* Tablet: the words keep a left column and the three pieces sit as a row along
+   the bottom, both over the photograph. The wider frame shows a wider slice of
+   the picture, so the subject lands in the right half and the left stays dark
+   enough to read on. */
+@container (min-width:701px) and (max-width:1000px){
+  .hero-stage{
+    font-size:calc(clamp(14px,1.95cqw,19px) * var(--ts,1));
+    height:max(800px,min(calc(100svh - var(--hero-hdr,74px)),900px));
+  }
+  .hero-art{object-position:var(--hero-art-pos-tablet,50% 50%);}
+  .hero-slide{display:block;padding:0;}
+  .hero-veil{
+    background:
+      linear-gradient(100deg,
+        rgba(var(--veil-rgb),0.94) 0%,
+        rgba(var(--veil-rgb),0.86) 28%,
+        rgba(var(--veil-rgb),0.72) 46%,
+        rgba(var(--veil-rgb),0.35) 60%,
+        rgba(var(--veil-rgb),0) 72%),
+      linear-gradient(to top,rgba(var(--veil-rgb),0.8) 0%,rgba(var(--veil-rgb),0) 34%);
+  }
+  .hero-copy{left:5.5%;top:9%;width:47%;}
+  .hero-eyebrow{font-size:.8em;letter-spacing:.2em;margin-bottom:1em;}
+  .hero-copy h1{font-size:2.5em;line-height:1.12;margin-bottom:.42em;}
+  .hero-copy h1 .accent{display:inline;}
+  .hero-lead{font-size:1.02em;line-height:1.5;max-width:30em;margin-bottom:1.2em;}
+  .hero-actions{flex-direction:column;align-items:flex-start;gap:.6em;margin-bottom:1.15em;}
+  .hero-actions .btn{min-height:46px;font-size:1.05em;padding:.7em 1.3em;}
+  .hero-features{flex-direction:column;align-items:flex-start;gap:.45em;font-size:.86em;}
   .hero-features li+li{padding-left:0;border-left:0;}
-  .hero-footnote{font-size:.72em;letter-spacing:.2em;}
-  .hero-art{grid-column:2;grid-row:1;position:static;width:100%;height:auto;aspect-ratio:16/10;object-fit:cover;object-position:var(--hero-art-pos,50% 50%);}
-  .hero-planks{grid-column:2;grid-row:2;justify-content:flex-start;padding:0;}
-  .hero-cred{grid-column:2;grid-row:3;position:static;width:auto;text-align:right;}
-  .hero-cred .lockup{justify-content:flex-end;}
-  .hero-note{grid-column:2;grid-row:4;position:static;width:auto;}
-  .hero-quote{grid-column:2;grid-row:5;position:static;width:auto;}
-  .hero-quote blockquote{font-size:1.2em;}
-  .hero-dots{position:static;order:9;align-self:center;margin:10px 0 14px;padding:0;background:none;}
+  .hero-footnote{font-size:.7em;letter-spacing:.2em;}
+  .hero-pieces{
+    position:absolute;left:5%;right:5%;bottom:12%;z-index:3;
+    display:grid;grid-template-columns:1fr 1.05fr 1.25fr;gap:12px;align-items:stretch;
+    font-size:.78em;
+  }
+  .hero-cred{text-align:left;}
+  .hero-cred .lockup{justify-content:flex-start;}
+  .hero-quote::before{display:none;}
+  .hero-note{display:flex;align-items:center;gap:.8em;}
+  /* The sentence has no planks to sit on inside a cropped slice, so it closes
+     the copy column instead, above the card row. */
+  .hero-planks{position:absolute;inset:auto;left:5%;right:5%;top:auto;bottom:13%;justify-content:flex-start;padding:0;}
+  .hero-plank{font-size:1em;}
+  .hero-dots{left:auto;right:4%;bottom:5%;transform:none;}
 }
 
 /* The compressed cascade: the same order as the desktop reveal, over about a
    second instead of three. The buttons come in on the approved 550/650ms beat,
    which is early enough that the slide has finished unfolding long before it
-   rotates, and the artwork fades on its own while the words arrive. The hidden
-   slides are `display:none`, so a button's animation only starts the moment its
-   slide takes the stage and a resize can never restart it. */
+   rotates. The background layer is deliberately not animated: it is the one
+   piece that must never move while the words arrive. */
 @container (max-width:1000px){
-  .hero-slide.is-active .hero-art,
   .hero-slide.is-active .hero-cred,
-  .hero-slide.is-active .hero-note{animation:hero-fade .9s ease both;}
+  .hero-slide.is-active .hero-note,
+  .hero-slide.is-active .hero-quote{animation:hero-fade .9s ease both;}
   .hero-actions .btn{animation:hero-rise .45s cubic-bezier(.22,.9,.28,1) .55s both;}
   .hero-actions .btn:nth-child(2){animation-delay:.65s;}
   .hero-plank{animation-delay:calc(300ms + var(--pi) * 45ms);}
 }
 @media (prefers-reduced-motion:reduce){
-  .hero-slide.is-active .hero-art,
   .hero-slide.is-active .hero-cred,
   .hero-slide.is-active .hero-note,
+  .hero-slide.is-active .hero-quote,
   .hero-actions .btn{animation:none;}
 }
 

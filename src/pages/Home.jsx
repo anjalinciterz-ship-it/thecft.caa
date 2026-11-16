@@ -89,6 +89,11 @@ const COSMIC_ART = {
   alt: 'Zalah welcoming you to The Centre for Transformation',
   width: '1672',
   height: '941',
+  // Below the desktop break the frame is narrower than the artwork, so cover
+  // keeps the full height and crops the width. This window holds his face, and
+  // on a tablet the ring and the glow at its feet as well.
+  mobilePos: '70% 50%',
+  tabletPos: '68% 50%',
 };
 
 const cosmicCopy = (h) => ({
@@ -122,7 +127,7 @@ function HeroSlide({ slide, h, eager, active, t }) {
         loading={eager ? 'eager' : 'lazy'}
         fetchpriority={eager ? 'high' : 'auto'}
         decoding="async"
-        style={cosmic ? undefined : { '--hero-art-pos': slide.mobilePos }}
+        style={{ '--hero-art-pos': art.mobilePos, '--hero-art-pos-tablet': art.tabletPos }}
       />
       <div className="hero-veil" aria-hidden="true" />
 
@@ -201,9 +206,11 @@ function HeroSlide({ slide, h, eager, active, t }) {
       </div>
 
       {/* The three floating pieces belong to the cosmic composition only. The
-          photographs carry their own words and nothing else. */}
+          photographs carry their own words and nothing else. They are wrapped
+          so the compact layouts can group them into one band; on desktop the
+          wrapper generates no box and each piece keeps its own position. */}
       {cosmic && (
-        <>
+        <div className="hero-pieces">
           <div className="hero-cred">
             <div className="lockup">
               <span className="tedx">
@@ -235,7 +242,7 @@ function HeroSlide({ slide, h, eager, active, t }) {
               </TextEffect>
             </figcaption>
           </figure>
-        </>
+        </div>
       )}
     </>
   );
@@ -273,6 +280,7 @@ function Hero() {
         {slides.map((slide, i) => (
           <div
             key={slide.key}
+            data-slide={slide.key}
             className={`hero-slide${slide.kind === 'live' ? '' : ' hero-slide-photo'}${i === active ? ' is-active' : ''}`}
             aria-hidden={i !== active}
           >
