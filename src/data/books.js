@@ -131,11 +131,16 @@ export const books = [
       groups: [
         {
           label: null,
+          tracks: [1, 2, 3, 4, 5, 6, 7, 8, 9].map((n) => ({
+            label: `Track ${n}`,
+            src: `${CAUGHT_IN_THE_ACT}/${n}-Audio-Track.mp3`,
+          })),
+        },
+        {
+          // He asked for this recording to open under its own heading. Cards
+          // still number by position, so it stays Audio Track 10.
+          label: 'Book 2',
           tracks: [
-            ...[1, 2, 3, 4, 5, 6, 7, 8, 9].map((n) => ({
-              label: `Track ${n}`,
-              src: `${CAUGHT_IN_THE_ACT}/${n}-Audio-Track.mp3`,
-            })),
             // Named the way the client stored it rather than N-Audio-Track.mp3.
             { label: 'Track 10', src: `${CAUGHT_IN_THE_ACT}/part2CINTHEA.mp3` },
           ],
