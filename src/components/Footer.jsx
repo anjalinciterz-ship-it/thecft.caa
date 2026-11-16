@@ -12,6 +12,7 @@ const COLS = [
       { to: '/testimonials', label: 'Testimonials' },
       { to: '/blog', label: 'Insights & Blog' },
       { to: '/faq', label: 'FAQs' },
+      { to: '/books', label: 'Books by Zalah' },
     ],
   },
   {
@@ -21,7 +22,6 @@ const COLS = [
       { to: '/course/accelerator', label: 'Consciousness Accelerator' },
       { to: '/course/sa1', label: 'Spiritual Awakening I' },
       { to: '/course/complete', label: 'The Complete Path' },
-      { to: '/books', label: 'Books by Zalah' },
     ],
   },
   {
