@@ -300,101 +300,56 @@ p{margin:0 0 1em;}
   .user-pill{padding:5px 12px 5px 5px;font-size:12.4px;}
 }
 
-/* ---------- Mega menu panels ---------- */
-.site-header:has(.mm-panel:not(.is-exiting)){background:rgba(21,12,41,.94);}
-/* One standard drop for every panel. They used to size to their own content, so
-   Books fell 285px short of Testimonials' 594px and the navbar visibly jumped
-   between hovers. 600px clears the tallest content any menu needs, so nothing
-   is cut; the shorter menus keep their spare room below rather than at the top,
-   which is what keeps them attached to the navbar. */
+/* ---------- Navbar dropdown panels ---------- */
+/* These were full-bleed mega menus: 600px tall from edge to edge, carrying
+   photographs and course tiles, with the header turned solid plum behind them,
+   so opening one hid the page the visitor was reading. Each panel is now a
+   dropdown anchored under the word that opened it, held to about a third of the
+   viewport in both directions, which leaves the site visible around it. */
 .mm-panel{
-  --mm-h:600px;
-  position:absolute;left:0;right:0;top:100%;z-index:99;
-  height:var(--mm-h);max-height:calc(100dvh - 92px);
+  --mm-w:clamp(300px,34vw,620px);
+  position:absolute;top:100%;z-index:99;
+  display:flex;flex-direction:column;
+  left:clamp(24px,var(--mm-x,24px),calc(100% - var(--mm-w) - 24px));
+  width:var(--mm-w);
+  max-height:min(35vh,calc(100dvh - 104px));
   overflow:hidden;
   background:#150c29;
-  border-bottom:1px solid rgba(255,255,255,.08);
-  box-shadow:0 34px 70px rgba(0,0,0,.5);
-  animation:mm-in .3s cubic-bezier(.2,.7,.3,1);
+  border:1px solid rgba(255,255,255,.08);border-top:0;
+  border-radius:0 0 14px 14px;
+  box-shadow:0 26px 54px rgba(0,0,0,.45);
+  animation:mm-in .22s cubic-bezier(.2,.7,.3,1);
 }
-.mm-panel.is-exiting{animation:mm-out .24s ease forwards;pointer-events:none;}
-@keyframes mm-in{from{opacity:0;transform:translateY(-12px);}to{opacity:1;transform:none;}}
-@keyframes mm-out{from{opacity:1;}to{opacity:0;transform:translateY(-10px);}}
-.mm-inner{max-width:var(--maxw);margin:0 auto;padding:36px 28px 42px;}
-.mm-about{display:grid;grid-template-columns:1.05fr .95fr;gap:48px;align-items:center;}
-.mm-statement h3{margin:0 0 18px;font-family:var(--font-head);font-weight:700;font-size:calc(clamp(30px,3.2vw,44px) * var(--ts-h,1));line-height:1.1;color:var(--text-on-dark);}
-.mm-statement p{margin:0 0 12px;max-width:56ch;color:var(--cream-dim);font-size:calc(14.5px * var(--ts,1));line-height:1.7;}
-.mm-statement .mm-dim{color:var(--cream-dimmer);font-size:calc(13px * var(--ts,1));}
-.mm-photo{border-radius:14px;overflow:hidden;aspect-ratio:16/9;background:var(--ink-800);}
-.mm-photo img{display:block;width:100%;height:100%;object-fit:cover;animation:mm-fade .45s ease;}
-.mm-photo-ph{display:flex;align-items:center;justify-content:center;width:100%;height:100%;background:linear-gradient(135deg,var(--ink-800),var(--violet-500));color:rgba(248,245,239,.8);}
-@keyframes mm-fade{from{opacity:0;transform:scale(1.03);}to{opacity:1;transform:none;}}
-.mm-tiles{display:grid;grid-template-columns:repeat(5,1fr);gap:18px;}
-.mm-tile{
-  position:relative;display:flex;flex-direction:column;
-  border-radius:12px;overflow:hidden;background:var(--cream);color:#120a24;
-  transition:transform .25s,box-shadow .25s;
+.mm-panel.is-exiting{animation:mm-out .2s ease forwards;pointer-events:none;}
+@keyframes mm-in{from{opacity:0;transform:translateY(-8px);}to{opacity:1;transform:none;}}
+@keyframes mm-out{from{opacity:1;}to{opacity:0;transform:translateY(-6px);}}
+.mm-compact{display:flex;flex-direction:column;min-height:0;padding:18px 20px 20px;}
+.mm-title{flex:none;margin:0 0 12px;font-family:var(--font-head);font-weight:700;font-size:calc(17px * var(--ts-h,1));letter-spacing:.02em;color:var(--gold-300);}
+.mm-note{flex:none;margin:0 0 12px;font-size:calc(13px * var(--ts,1));line-height:1.6;color:var(--cream-dim);}
+.mm-note-by{display:block;margin-top:6px;font:800 10px/1 var(--font-body);letter-spacing:.16em;text-transform:uppercase;color:var(--gold-300);}
+/* When a list outgrows the cap it is the list that scrolls, never the whole
+   panel: the heading and the gold action stay put so the panel never looks cut off. */
+.mm-list{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;overflow-y:auto;scrollbar-width:thin;}
+.mm-list-two{display:grid;grid-template-columns:1fr 1fr;gap:0 18px;}
+.mm-item{position:relative;display:flex;align-items:center;gap:10px;padding:7px 22px 7px 8px;border-radius:8px;font-family:var(--font-head);font-weight:600;font-size:calc(15px * var(--ts,1));line-height:1.3;color:var(--cream-dim);transition:color .2s,background .2s;}
+.mm-item:hover{color:var(--text-on-dark);background:rgba(255,255,255,.05);}
+/* The arrow only appears on hover, so it is parked in the padding instead of
+   stealing a few characters of width from every label. */
+.mm-item-arrow{position:absolute;right:8px;top:50%;opacity:0;transform:translateY(-50%) translateX(-6px);transition:.2s;font-family:var(--font-body);}
+.mm-item:hover .mm-item-arrow{opacity:1;transform:translateY(-50%);}
+.mm-all{flex:none;align-self:flex-start;display:inline-flex;align-items:center;gap:9px;margin-top:14px;padding:10px 17px;border-radius:999px;background:linear-gradient(100deg,#f6dfa8,var(--color-champagne-gold) 60%,#d99f3e);color:#241543;font:800 11px/1 var(--font-body);letter-spacing:.09em;text-transform:uppercase;box-shadow:0 8px 20px rgba(232,185,95,.28);transition:filter .2s;}
+.mm-all:hover{filter:brightness(1.06);}
+.mm-all svg{transform:rotate(-45deg);}
+/* A short laptop gives the panel fewer pixels than the list needs, so the
+   padding and type tighten instead of pushing the last row behind a scrollbar. */
+@media (max-height:800px){
+  .mm-compact{padding:14px 16px 15px;}
+  .mm-title{margin-bottom:9px;font-size:calc(16px * var(--ts-h,1));}
+  .mm-note{margin-bottom:9px;font-size:calc(12.5px * var(--ts,1));line-height:1.5;}
+  .mm-item{padding:5px 20px 5px 7px;font-size:calc(14px * var(--ts,1));}
+  .mm-list-two{gap:0 14px;}
+  .mm-all{margin-top:11px;padding:9px 15px;}
 }
-.mm-tile:hover{transform:translateY(-3px);box-shadow:0 14px 34px rgba(10,4,25,.35);}
-.mm-tile-art{display:block;aspect-ratio:1670/942;background:var(--color-lavender-mist);overflow:hidden;}
-.mm-tile-art img{display:block;width:100%;height:100%;object-fit:cover;}
-.mm-tile-body{display:flex;flex-direction:column;align-items:flex-start;gap:10px;padding:12px 13px 14px;flex:1;}
-.mm-tile-top{font-family:var(--font-body);font-weight:700;font-size:calc(13.5px * var(--ts,1));line-height:1.32;}
-.mm-cta{
-  margin-top:auto;display:inline-flex;align-items:center;gap:8px;padding:9px 16px;border-radius:999px;
-  background:linear-gradient(100deg,#f6dfa8,var(--color-champagne-gold) 60%,#d99f3e);
-  color:#241543;font:800 11px/1 var(--font-body);letter-spacing:.09em;text-transform:uppercase;
-  box-shadow:0 8px 20px rgba(232,185,95,.28);transition:filter .2s;
-}
-.mm-cta .mm-arrow{width:20px;height:20px;border-color:rgba(36,21,67,.45);opacity:1;transform:none;}
-.mm-cta .mm-arrow svg{transform:rotate(-45deg);}
-.mm-tile:hover .mm-cta,.mm-promo:hover .mm-cta,.mm-strip:hover .mm-cta{filter:brightness(1.06);}
-.mm-strip{
-  margin-top:18px;display:flex;align-items:center;justify-content:space-between;gap:20px;
-  border-radius:12px;background:var(--cream);color:#120a24;padding:16px 22px;
-  transition:transform .25s,box-shadow .25s;
-}
-.mm-strip:hover{transform:translateY(-2px);box-shadow:0 14px 34px rgba(10,4,25,.35);}
-.mm-strip h4{margin:0 0 4px;font-family:var(--font-head);font-weight:700;font-size:calc(20px * var(--ts-h,1));line-height:1.2;}
-.mm-strip p{margin:0;font-size:12px;line-height:1.6;color:rgba(18,10,36,.66);}
-.mm-strip .mm-cta{margin-top:0;flex:none;padding:11px 20px;font-size:11.5px;}
-.mm-arrow{width:26px;height:26px;border-radius:50%;border:1px solid rgba(255,255,255,.65);display:flex;align-items:center;justify-content:center;opacity:0;transform:translateX(-8px);transition:.3s;}
-.mm-arrow svg{transform:rotate(-45deg);}
-.mm-tile:hover .mm-arrow{opacity:1;transform:none;}
-.mm-promo{display:flex;flex-direction:column;gap:10px;border-radius:12px;background:var(--cream);color:#120a24;padding:18px 17px 16px;transition:transform .25s,box-shadow .25s;}
-.mm-promo:hover{transform:translateY(-3px);box-shadow:0 14px 34px rgba(10,4,25,.35);}
-.mm-promo h4{margin:0;font-family:var(--font-head);font-weight:700;font-size:calc(21px * var(--ts-h,1));line-height:1.22;}
-.mm-promo p{margin:0;font-size:12px;line-height:1.62;color:rgba(18,10,36,.66);}
-.mm-promo .mm-cta{margin-top:auto;align-self:flex-start;}
-.mm-promo-dark{background:linear-gradient(155deg,var(--violet-500),var(--ink-800) 70%);color:var(--text);}
-.mm-promo-dark p{color:rgba(248,245,239,.75);}
-.mm-sublinks{display:flex;flex-direction:column;align-items:flex-start;}
-.mm-item-sm{font-size:calc(17px * var(--ts-h,1));padding:5px 0;}
-.mm-books{display:grid;grid-template-columns:1.15fr .92fr .92fr;gap:26px;align-items:start;}
-.mm-list{display:flex;flex-direction:column;align-items:flex-start;}
-.mm-item{display:flex;align-items:center;gap:10px;padding:7px 0;font-family:var(--font-head);font-weight:600;font-size:calc(23px * var(--ts-h,1));line-height:1.25;color:var(--cream-dim);transition:color .2s;}
-.mm-item:hover{color:var(--text-on-dark);}
-.mm-item-arrow{opacity:0;transform:translateX(-8px);transition:.25s;font-family:var(--font-body);}
-.mm-item:hover .mm-item-arrow{opacity:1;transform:none;}
-/* Spacer only — the hairline was removed 2026-11-06. */
-.mm-rule{width:100%;height:0;background:none;margin:16px 0 12px;}
-.mm-big{font-family:var(--font-head);font-weight:600;font-size:calc(30px * var(--ts-h,1));color:var(--text-on-dark);transition:color .2s;}
-.mm-big:hover{color:var(--gold-300);}
-.mm-blog{display:grid;grid-template-columns:1fr 1fr;gap:44px;align-items:start;}
-.mm-photo-swap{aspect-ratio:16/10;}
-/* Testimonials, FAQs and Connect Us reuse the panel vocabulary above: a list
-   column, cream and plum promo cards, one gold action that opens the page. */
-.mm-quotes,.mm-faq,.mm-connect{display:grid;align-items:start;}
-.mm-quotes{grid-template-columns:1.22fr .88fr;gap:44px;}
-.mm-faq{grid-template-columns:1.05fr .92fr .92fr;gap:26px;}
-.mm-connect{grid-template-columns:1.12fr .88fr;gap:34px;}
-.mm-quote{display:block;padding:13px 0 14px;border-bottom:1px solid rgba(255,255,255,.09);transition:padding-left .25s ease;}
-.mm-quote:has(+ .mm-rule){border-bottom:0;}
-.mm-quote:hover{padding-left:6px;}
-.mm-quote-text{margin:0 0 9px;max-width:58ch;font-family:var(--font-head);font-weight:500;font-size:calc(19px * var(--ts-h,1));line-height:1.45;color:var(--cream-dim);transition:color .2s;}
-.mm-quote:hover .mm-quote-text{color:var(--text-on-dark);}
-.mm-quote-name{display:inline-flex;align-items:center;gap:8px;font:800 10.5px/1 var(--font-body);letter-spacing:.16em;text-transform:uppercase;color:var(--gold-300);}
-.mm-quote:hover .mm-item-arrow{opacity:1;transform:none;}
 @media (max-width:1080px){
   .mm-panel{display:none;}
   .nav-links a::after{display:none;}

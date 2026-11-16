@@ -3,10 +3,9 @@ import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { site } from '../data/site';
 import { useCatalog } from '../lib/catalog';
 import { books } from '../data/books';
-import { blogCategories, postMeta } from '../data/blog';
+import { blogCategories } from '../data/blog';
 import { faqGroups, faqs } from '../data/faqs';
 import { testimonials } from '../data/testimonials';
-import { useBlog } from '../lib/blog';
 import { initials, useAuth } from '../lib/auth';
 import AppearanceToggle from './AppearanceToggle';
 import { Icon } from './icons';
@@ -16,292 +15,135 @@ import { Icon } from './icons';
 const clip = (text, max = 150) =>
   text.length <= max ? text : `${text.slice(0, text.lastIndexOf(' ', max)).replace(/[,.;:—-]\s*$/, '')}…`;
 
-function MenuAbout() {
+/* One shape for all seven panels: a title, at most one line of context, the
+   destinations and one action that opens the page itself. They were full-bleed
+   mega menus carrying photographs and course tiles, which hid the page the
+   visitor was reading, so the extra fields are gone. */
+function MenuPanel({ title, note, noteBy, links, cta, twoUp }) {
   return (
-    <div className="mm-grid mm-about">
-      <div className="mm-statement">
-        <h3>
-          {site.tagline.split(' · ').map((line) => (
-            <span key={line}>
-              {line}.
-              <br />
-            </span>
-          ))}
-        </h3>
-        <p>{site.mission}</p>
-        <p className="mm-dim">{site.facilitator.paras[0]}</p>
-        <div className="mm-rule" />
-        <div className="mm-sublinks">
-          {[
-            { to: '/testimonials', label: 'Testimonials' },
-            { to: '/faq', label: 'FAQs' },
-            { to: '/connect', label: 'Connect Us' },
-          ].map((l) => (
-            <Link key={l.to} to={l.to} className="mm-item mm-item-sm">
+    <div className="mm-compact">
+      <p className="mm-title">{title}</p>
+      {note ? (
+        <p className="mm-note">
+          {note}
+          {noteBy ? <span className="mm-note-by">{noteBy}</span> : null}
+        </p>
+      ) : null}
+      <div className={`mm-list${twoUp ? ' mm-list-two' : ''}`}>
+        {links.map((l) =>
+          l.href ? (
+            <a key={l.label} href={l.href} target={l.external ? '_blank' : undefined} rel="noreferrer" className="mm-item">
+              {l.label}
+              <span className="mm-item-arrow" aria-hidden="true">
+                →
+              </span>
+            </a>
+          ) : (
+            <Link key={l.label} to={l.to} className="mm-item">
               {l.label}
               <span className="mm-item-arrow" aria-hidden="true">
                 →
               </span>
             </Link>
-          ))}
-        </div>
+          ),
+        )}
       </div>
-      <div className="mm-photo">
-        <img src={site.portrait} alt="Zalah, facilitator at The Centre for Transformation" loading="lazy" />
-      </div>
+      <Link to={cta.to} className="mm-all">
+        {cta.label}
+        <Icon name="arrow" size={13} />
+      </Link>
     </div>
+  );
+}
+
+function MenuAbout() {
+  return (
+    <MenuPanel
+      title={site.name}
+      note={clip(site.mission, 118)}
+      links={[
+        { to: '/testimonials', label: 'Testimonials' },
+        { to: '/faq', label: 'FAQs' },
+        { to: '/connect', label: 'Connect Us' },
+      ]}
+      cta={{ to: '/about#story', label: 'Read our story' }}
+    />
   );
 }
 
 function MenuCourses() {
   const { offerings } = useCatalog();
   return (
-    <div className="mm-courses">
-      <div className="mm-tiles">
-        {offerings.filter((c) => c.listed !== false).map((c) => (
-          <Link key={c.id} to={`/course/${c.id}`} className="mm-tile">
-            <span className="mm-tile-art">
-              {c.banner ? <img src={c.banner} alt="" loading="lazy" /> : null}
-            </span>
-            <span className="mm-tile-body">
-              <span className="mm-tile-top">{c.name}</span>
-              <span className="mm-cta">
-                Explore
-                <span className="mm-arrow">
-                  <Icon name="arrow" size={12} />
-                </span>
-              </span>
-            </span>
-          </Link>
-        ))}
-      </div>
-      <Link to="/connect" className="mm-strip">
-        <span>
-          <h4>Not sure where to begin?</h4>
-          <p>Tell us where you are on your path and we will point you to the right first step.</p>
-        </span>
-        <span className="mm-cta">Explore</span>
-      </Link>
-    </div>
+    <MenuPanel
+      twoUp
+      title="The teachings"
+      links={offerings.filter((c) => c.listed !== false).map((c) => ({ to: `/course/${c.id}`, label: c.name }))}
+      cta={{ to: '/courses', label: 'All programs' }}
+    />
   );
 }
 
 function MenuBooks() {
   return (
-    <div className="mm-grid mm-books">
-      <div className="mm-list">
-        {books.map((b) => (
-          <Link key={b.slug} to={`/books/${b.slug}`} className="mm-item">
-            {b.title}
-            <span className="mm-item-arrow" aria-hidden="true">
-              →
-            </span>
-          </Link>
-        ))}
-        <div className="mm-rule" />
-        <Link to="/books" className="mm-big">
-          Browse all books
-        </Link>
-      </div>
-      <Link to="/wisdom-call" className="mm-promo">
-        <h4>Looking for guided practice?</h4>
-        <p>Join the free Wednesday Evening Wisdom Class and practise alongside the community.</p>
-        <span className="mm-cta">Explore</span>
-      </Link>
-      <Link to="/signup" className="mm-promo mm-promo-dark">
-        <h4>Begin your transformation today</h4>
-        <p>Create a free account to track your courses, classes and reading list in one place.</p>
-        <span className="mm-cta">Get Started</span>
-      </Link>
-    </div>
+    <MenuPanel
+      title="The books"
+      links={books.map((b) => ({ to: `/books/${b.slug}`, label: b.title }))}
+      cta={{ to: '/books', label: 'Browse all books' }}
+    />
   );
 }
 
 function MenuBlog() {
-  const { rows } = useBlog();
-  const cats = blogCategories.filter((c) => c.key !== 'all');
-  const coverFor = (key) => {
-    const pool = key === 'all' ? rows : rows.filter((p) => p.category === key);
-    for (const p of pool) {
-      const cover = postMeta(p).cover;
-      if (cover) return cover;
-    }
-    return null;
-  };
-  const [prev, setPrev] = useState('all');
-  const cover = coverFor(prev);
-
   return (
-    <div className="mm-grid mm-blog">
-      <div className="mm-list">
-        <Link to="/blog" className="mm-item" onMouseEnter={() => setPrev('all')}>
-          All Insights
-          <span className="mm-item-arrow" aria-hidden="true">
-            →
-          </span>
-        </Link>
-        {cats.map((c) => (
-          <Link
-            key={c.key}
-            to={`/blog?cat=${c.key}`}
-            className="mm-item"
-            onMouseEnter={() => setPrev(c.key)}
-          >
-            {c.label}
-            <span className="mm-item-arrow" aria-hidden="true">
-              →
-            </span>
-          </Link>
-        ))}
-        <div className="mm-rule" />
-        <Link to="/blog" className="mm-big">
-          Read the blog
-        </Link>
-      </div>
-      <div className="mm-photo mm-photo-swap">
-        {cover ? (
-          <img key={prev} src={cover} alt="" loading="lazy" />
-        ) : (
-          <span className="mm-photo-ph">
-            <Icon name="lotus" size={44} />
-          </span>
-        )}
-      </div>
-    </div>
+    <MenuPanel
+      twoUp
+      title="The blog"
+      links={blogCategories.map((c) => ({ to: c.key === 'all' ? '/blog' : `/blog?cat=${c.key}`, label: c.label }))}
+      cta={{ to: '/blog', label: 'Read the latest' }}
+    />
   );
 }
 
 function MenuTestimonials() {
+  const [first] = testimonials;
   return (
-    <div className="mm-quotes">
-      <div className="mm-list">
-        {testimonials.slice(0, 3).map((t) => (
-          <Link key={t.name} to="/testimonials#t-stories" className="mm-quote">
-            <p className="mm-quote-text">&ldquo;{clip(t.lead)}&rdquo;</p>
-            <span className="mm-quote-name">
-              {t.name}
-              <span className="mm-item-arrow" aria-hidden="true">
-                →
-              </span>
-            </span>
-          </Link>
-        ))}
-        <div className="mm-rule" />
-        <Link to="/testimonials" className="mm-big">
-          See all testimonials
-        </Link>
-      </div>
-      <Link to="/testimonials" className="mm-promo mm-promo-dark">
-        <h4>Real people. Real transformations.</h4>
-        <p>
-          Students who have sat with Zalah for five, twenty, twenty-five years writing about what actually changed,
-          calm, clarity, and a kinder way of living with themselves.
-        </p>
-        <span className="mm-cta">
-          Read every story
-          <span className="mm-arrow">
-            <Icon name="arrow" size={12} />
-          </span>
-        </span>
-      </Link>
-    </div>
+    <MenuPanel
+      title="What students say"
+      note={`\u201C${clip(first.lead, 108)}\u201D`}
+      noteBy={first.name}
+      links={[
+        { to: '/testimonials#t-stories', label: 'Stories from the community' },
+        { to: '/connect', label: 'Share your own story' },
+      ]}
+      cta={{ to: '/testimonials', label: 'Read every story' }}
+    />
   );
 }
 
 function MenuFaqs() {
   return (
-    <div className="mm-faq">
-      <div className="mm-list">
-        {faqGroups.map((g) => (
-          <Link key={g.key} to={`/faq#fq-${g.key}`} className="mm-item mm-item-sm">
-            {g.title}
-            <span className="mm-item-arrow" aria-hidden="true">
-              →
-            </span>
-          </Link>
-        ))}
-      </div>
-      {faqs.slice(0, 1).map((f) => (
-        <Link key={f.q} to={`/faq#fq-${f.category}`} className="mm-promo">
-          <h4>{f.q}</h4>
-          <p>{clip(f.a[0], 190)}</p>
-          <span className="mm-cta">
-            Explore
-            <span className="mm-arrow">
-              <Icon name="arrow" size={12} />
-            </span>
-          </span>
-        </Link>
-      ))}
-      <Link to="/faq" className="mm-promo mm-promo-dark">
-        <h4>{faqs.length} questions, seven topics</h4>
-        <p>Everything about the teachings, the courses, the free Wednesday class and the practical details.</p>
-        <span className="mm-cta">
-          See all FAQs
-          <span className="mm-arrow">
-            <Icon name="arrow" size={12} />
-          </span>
-        </span>
-      </Link>
-    </div>
+    <MenuPanel
+      twoUp
+      title="Questions"
+      links={faqGroups.map((g) => ({ to: `/faq#fq-${g.key}`, label: g.title }))}
+      cta={{ to: '/faq', label: `All ${faqs.length} questions` }}
+    />
   );
 }
 
 function MenuConnect() {
   return (
-    <div className="mm-connect">
-      <div className="mm-list">
-        <Link to="/connect#cn-form" className="mm-item mm-item-sm">
-          Send us a message
-          <span className="mm-item-arrow" aria-hidden="true">
-            →
-          </span>
-        </Link>
-        <Link to="/connect#cn-wisdom" className="mm-item mm-item-sm">
-          Join the Wednesday Wisdom Class
-          <span className="mm-item-arrow" aria-hidden="true">
-            →
-          </span>
-        </Link>
-        <a href={site.calendly} target="_blank" rel="noreferrer" className="mm-item mm-item-sm">
-          Book a call
-          <span className="mm-item-arrow" aria-hidden="true">
-            →
-          </span>
-        </a>
-        <a href={`mailto:${site.email}`} className="mm-item mm-item-sm">
-          {site.email}
-          <span className="mm-item-arrow" aria-hidden="true">
-            →
-          </span>
-        </a>
-        <a href={`tel:${site.phone.replace(/[^\d+]/g, '')}`} className="mm-item mm-item-sm">
-          {site.phone}
-          <span className="mm-item-arrow" aria-hidden="true">
-            →
-          </span>
-        </a>
-        <div className="mm-rule" />
-        <Link to="/connect" className="mm-big">
-          See all ways to connect
-        </Link>
-      </div>
-      <div className="mm-promo mm-promo-dark">
-        <h4>Every meaningful journey begins with a conversation.</h4>
-        <p>
-          {site.address.line1}
-          <br />
-          {site.address.line2}
-        </p>
-        <p>Tell us where you are on your path and we will point you to the right first step.</p>
-        <Link to="/connect" className="mm-cta">
-          Start a conversation
-          <span className="mm-arrow">
-            <Icon name="arrow" size={12} />
-          </span>
-        </Link>
-      </div>
-    </div>
+    <MenuPanel
+      title="Talk with us"
+      links={[
+        { to: '/connect#cn-form', label: 'Send us a message' },
+        { to: '/connect#cn-wisdom', label: 'Join the Wednesday Wisdom Class' },
+        { href: site.calendly, external: true, label: 'Book a call' },
+        { href: `mailto:${site.email}`, label: site.email },
+        { href: `tel:${site.phone.replace(/[^\d+]/g, '')}`, label: site.phone },
+      ]}
+      cta={{ to: '/connect', label: 'See all ways to connect' }}
+    />
   );
 }
 
@@ -327,6 +169,7 @@ const MENU_CONTENT = {
 export default function Header() {
   const [open, setOpen] = useState(false);
   const [menu, setMenu] = useState(null);
+  const [menuX, setMenuX] = useState(0);
   const [exiting, setExiting] = useState(false);
   const t1 = useRef(null);
   const t2 = useRef(null);
@@ -376,10 +219,13 @@ export default function Header() {
     return () => window.removeEventListener('keydown', onKey);
   }, []);
 
-  const openMenu = (key) => {
+  // The panel hangs under whichever word opened it, so it remembers that word's
+  // left edge; CSS clamps the value back inside the viewport.
+  const openMenu = (key, trigger) => {
     clearTimeout(t1.current);
     clearTimeout(t2.current);
     setExiting(false);
+    if (trigger) setMenuX(Math.round(trigger.getBoundingClientRect().left));
     setMenu(key);
   };
 
@@ -411,8 +257,8 @@ export default function Header() {
                 key={item.to}
                 to={item.to}
                 className={`mm-trigger${menu === key && !exiting ? ' is-open' : ''}`}
-                onMouseEnter={() => openMenu(key)}
-                onFocus={() => openMenu(key)}
+                onMouseEnter={(event) => openMenu(key, event.currentTarget)}
+                onFocus={(event) => openMenu(key, event.currentTarget)}
               >
                 {item.label}
               </NavLink>
@@ -472,10 +318,13 @@ export default function Header() {
       {logoutError ? <p className="au-err header-auth-error" role="alert">{logoutError}</p> : null}
 
       {menu && (
-        <div key={menu} className={`mm-panel${exiting ? ' is-exiting' : ''}`}>
-          <div className="mm-inner" onMouseEnter={() => openMenu(menu)}>
-            {MENU_CONTENT[menu]}
-          </div>
+        <div
+          key={menu}
+          className={`mm-panel${exiting ? ' is-exiting' : ''}`}
+          style={{ '--mm-x': `${menuX}px` }}
+          onMouseEnter={() => openMenu(menu)}
+        >
+          {MENU_CONTENT[menu]}
         </div>
       )}
     </header>

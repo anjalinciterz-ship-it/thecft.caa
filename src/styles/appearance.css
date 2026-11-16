@@ -52,7 +52,7 @@
 
 /* ---------- The bands that stay cosmic in light mode ----------
    These are the brand's plum moments — the hero sky, the Wednesday Call, the
-   closer, the Connect CTA, the mega-menu. They keep their background, so they
+   closer, the Connect CTA, the nav dropdowns. They keep their background, so they
    re-declare the on-dark tokens for everything inside them. */
 [data-theme='light'] :is(
   .site-header,
