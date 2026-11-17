@@ -583,30 +583,48 @@ p{margin:0 0 1em;}
      the row is exactly as tall as the tallest of them and every slide is
      stretched to that same height. That gives the two promises at once, equal
      heights and no dead photograph below the last word, which a viewport-sized
-     frame could only ever trade one for the other. */
-  .hero-stage{font-size:calc(clamp(12.5px,3.85cqw,17px) * var(--ts,1));height:auto;display:grid;grid-template-columns:1fr;}
-  .hero-slide{position:relative;inset:auto;grid-area:1/1;display:flex;flex-direction:column;align-items:stretch;text-align:center;padding-left:16px;padding-right:16px;}
+     frame could only ever trade one for the other.
+     The frame is now a floor rather than the whole rule: the hero claims the
+     screen below the header, and the copy grows into it. On a short window the
+     content still wins, because a hero cut in half by the fold is worse than
+     one that asks for a scroll. */
+  .hero-stage{font-size:calc(clamp(12.8px,min(4.5cqw,2svh),19px) * var(--ts,1));height:auto;min-height:calc(100svh - var(--hero-hdr,79px));display:grid;grid-template-columns:1fr;}
+  .hero-slide{position:relative;inset:auto;grid-area:1/1;display:flex;flex-direction:column;align-items:stretch;text-align:center;padding-left:16px;padding-right:16px;padding-bottom:64px;}
   /* The copy box dissolves so its parts can share the column with the cards. */
   .hero-copy{display:contents;}
-  .hero-eyebrow{order:1;justify-content:center;margin:0 0 .7em;padding:0;font-size:.9em;letter-spacing:.18em;line-height:1.55;}
-  /* The heading is the poster. At 2.05em it read as a sub-heading under the
-     photograph; his reference has the serif filling the width. 2.2em is the
-     largest the column takes: the longest gold phrase measures 1.07x the box
-     at that size, so anything bigger strands "Guidance" on a line of its own,
-     and every heading then lands in two or three full lines. */
-  .hero-copy h1{order:2;margin:0 0 .4em;font-size:2.2em;line-height:1.14;text-wrap:pretty;}
+  /* Two auto margins, one above the words and one above the buttons, so the
+     height the copy does not use is split between them instead of opening one
+     hole in the middle of the slide. */
+  .hero-eyebrow{order:1;justify-content:center;margin:auto 0 .8em;padding:0;font-size:1em;letter-spacing:.18em;line-height:1.5;}
+  /* The heading is the poster, and its ceiling is arithmetic: the longest gold
+     phrase measures 10.3x whatever font-size it is given, so 2.2em was already
+     filling 95% of the column. The only way to make it bigger is to give it a
+     wider column, so it steps outside the slide's own padding and buys back
+     those 32 pixels. The divisor is what keeps the phrase off the edge of the
+     glass: at 10.6 the accent line measured 379px inside a 390px screen, which
+     reads as clipped, and 11.2 leaves ~16px at each side while still landing
+     21% above the size the last pass shipped.
+     `balance`, not `pretty`: at the wide end of the phone range a heading can
+     wrap in two ways, and pretty takes the greedy one that leaves "Change" by
+     itself under a five-word line. */
+  .hero-copy h1{order:2;margin:0 -16px .5em;font-size:min(2.3em, calc(100cqw / 11.2));line-height:1.14;text-wrap:balance;}
   .hero-copy h1 .accent{display:inline;}
-  .hero-lead{order:3;margin:0 auto .95em;max-width:34em;font-size:1.02em;line-height:1.5;}
+  .hero-lead{order:3;margin:0 auto 1.1em;max-width:34em;font-size:1.18em;line-height:1.55;}
   /* The benefits read as part of the promise, so they land before the buttons
-     ask for the tap. */
-  .hero-features{order:4;display:grid;grid-template-columns:repeat(3,1fr);gap:0;margin:0 0 1em;padding:0;font-size:.86em;}
+     ask for the tap.
+     .86em is a column-width constraint, not a taste call: each third is 119px
+     at 390 and the gold dot takes 20 of them, so at 1em the longest label,
+     "A Supportive Global Community", had no pair of words that fitted together
+     and stacked one word per line for four lines while its neighbours used two.
+     It is still larger than the size that pass shipped at. */
+  .hero-features{order:4;display:grid;grid-template-columns:repeat(3,1fr);gap:0;margin:0 0 1.2em;padding:0;font-size:.86em;}
   .hero-features li{justify-content:center;min-width:0;}
   .hero-features li+li{padding-left:0;border-left:1px solid rgba(248,245,239,.16);}
   /* The buttons take whatever height the slide is not using, so they land at
      the bottom of the band on every slide instead of floating under the
      paragraph with a dead photograph beneath them. */
-  .hero-actions{order:5;flex-direction:column;align-items:stretch;gap:.6em;margin:0 0 1em;margin-top:auto;}
-  .hero-actions .btn{width:100%;justify-content:center;min-height:52px;font-size:1.05em;padding:.72em 1em;}
+  .hero-actions{order:5;flex-direction:column;align-items:stretch;gap:.7em;margin:0 0 1.1em;margin-top:auto;}
+  .hero-actions .btn{width:100%;justify-content:center;min-height:56px;font-size:1.12em;padding:.8em 1em;}
   /* The cosmic slide's three cards are the one element that made its phone
      composition differ from the other three, so they come out. Every slide is
      now eyebrow, heading, paragraph, benefits, two buttons, tagline, which is
@@ -620,8 +638,33 @@ p{margin:0 0 1em;}
      compositions, where the boards are in the frame. */
   .hero-planks{display:none;}
   /* The tagline no longer claims the slack: the buttons above it do, so it
-     closes the column instead of being flung to the very bottom edge. */
-  .hero-footnote{order:8;margin-top:0;padding-top:10px;text-align:center;font-size:.76em;letter-spacing:.17em;line-height:1.6;}
+     closes the column instead of being flung to the very bottom edge.
+     It gets one line. Two lines put the second one inside the slider dots, and
+     the only way to buy the row back without shrinking the letters is the same
+     trick the heading uses: step past the slide's padding into the full width
+     of the screen and spend the extra 32 pixels on the tracking. The divisor
+     only bites at 320 wide, where the longest tagline measured 310px of a
+     320px screen. */
+  .hero-footnote{order:8;margin:0 -16px;padding-top:10px;text-align:center;font-size:min(.8em, calc(100cqw / 29));letter-spacing:.08em;line-height:1.5;}
+}
+
+/* The header is 79px tall from 390 wide and 92px below that, where the brand
+   lockup wraps, so the hero has to take off a different amount to stop exactly
+   at the fold rather than run the tagline under it. */
+@container (max-width:380px){
+  .hero-stage{--hero-hdr:92px;}
+}
+
+/* Short phones, not narrow ones: an iPhone 8 is 375 wide and only 667 tall, and
+   the lifted column needs 616px under a 92px header, so the band ran 41px past
+   the fold and took the slider dots with it. The type scale already leans on
+   `svh`, but `2svh` is a ceiling that only just bites here, so on a window under
+   700 tall it gives a little more. Bigger words and a hero that ends at the
+   fold cannot both be true on this screen; the dots are navigation, so they win.
+   Width is in the condition because a phone held sideways is 390 tall and would
+   otherwise be resized by this rule while using the tablet composition. */
+@media (max-height:700px) and (max-width:700px){
+  .hero-stage{font-size:calc(clamp(12.2px,min(4.5cqw,1.78svh),19px) * var(--ts,1));}
 }
 
 /* Tablet: the words keep a left column and the three pieces sit as a row along
