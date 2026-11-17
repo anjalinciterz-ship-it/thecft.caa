@@ -2,11 +2,11 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useState } 
 import { apiRequest } from './api';
 
 /**
- * Two brand appearances, both from the locked palette: Cosmic (the plum
- * starfield the site was built in) and Ivory (warm ivory and lavender mist for
- * reading in daylight). Which one a first visitor gets is a site setting; a
- * visitor who chooses remembers, and the choice is theirs alone — it is
- * presentation, never access.
+ * Two brand appearances, both from the locked palette. Light is the site as it
+ * has always shipped, and it is what a first visitor gets. Dark is the same
+ * pages in the cosmic plum-blue sky they were built in. Which one a first
+ * visitor gets is a site setting; a visitor who chooses remembers, and the
+ * choice is theirs alone — it is presentation, never access.
  */
 
 export const APPEARANCES = ['light', 'dark'];
@@ -35,7 +35,7 @@ function systemAppearance() {
 
 export function AppearanceProvider({ children }) {
   const [stored, setStored] = useState(readStored);
-  const [site, setSite] = useState({ defaultTheme: 'dark', toggleEnabled: false });
+  const [site, setSite] = useState({ defaultTheme: 'light', toggleEnabled: true });
   const [system, setSystem] = useState(systemAppearance);
 
   useEffect(() => {
@@ -45,12 +45,14 @@ export function AppearanceProvider({ children }) {
         const appearance = data?.settings?.appearance;
         if (!appearance) return;
         setSite({
-          defaultTheme: SITE_DEFAULTS.includes(appearance.defaultTheme) ? appearance.defaultTheme : 'dark',
+          defaultTheme: SITE_DEFAULTS.includes(appearance.defaultTheme) ? appearance.defaultTheme : 'light',
           toggleEnabled: appearance.toggleEnabled !== false,
         });
       })
       .catch((failure) => {
-        if (failure.code !== 'ABORTED') setSite({ defaultTheme: 'dark', toggleEnabled: false });
+        // No answer from the settings endpoint only means nobody has overridden
+        // the site default, which is light with the switch offered.
+        if (failure.code !== 'ABORTED') setSite({ defaultTheme: 'light', toggleEnabled: true });
       });
     return () => controller.abort();
   }, []);

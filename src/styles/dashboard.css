@@ -1,9 +1,13 @@
 /* ==========================================================
    STUDENT DASHBOARD — tokenised surfaces
    The tokens below default to the cosmic-plum scheme the admin area still
-   wears. `.db-app.db-light` re-declares them as the paper scheme: Warm Ivory
-   canvas, Pure White panels, Lavender Mist fills, Champagne Gold accents and
-   Cosmic Plum used as ink rather than as a background.
+   wears. The member shell now follows the visitor's appearance choice and says
+   so on its root: `.db-app.db-light` re-declares the tokens as the paper scheme
+   — Warm Ivory canvas, Pure White panels, Lavender Mist fills, Champagne Gold
+   accents and Cosmic Plum used as ink rather than as a background — and
+   `.db-app.db-night` keeps the cosmic defaults and repaints the handful of
+   surfaces that were written with paper literals. Both blocks live at the end
+   of the file, after the components they answer.
    Where a surface is deliberately dark in both schemes — a video letterbox, an
    image scrim, a photographic band — the literal stays and the tokens are
    re-declared locally so the text on it keeps its contrast.
@@ -59,6 +63,10 @@
 .db-footer{display:flex;align-items:center;justify-content:space-between;gap:24px;padding:21px 28px 25px;border-top:1px solid var(--db-line);font-size:10px;color:var(--db-muted)}.db-footer>a>img{width:150px;height:48px;object-fit:contain}.db-footer>div{display:flex;gap:20px}.db-footer a{color:var(--db-muted)}.db-footer a:hover{color:var(--db-gold-text)}.db-footer p{font-size:8px;letter-spacing:.16em;text-transform:uppercase;margin:0;color:var(--db-muted)}.db-footer p span{color:var(--db-gold-text);margin:0 5px}
 .db-page-heading{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:24px 0 5px}.db-page-heading h1{margin:0 0 10px}.db-page-heading .db-muted{font-size:13px}.db-page-heading p:last-child{margin:0}.db-page-heading .db-eyebrow{margin-bottom:9px}
 .db-form{display:flex;flex-direction:column;gap:18px;max-width:700px}.db-field{display:flex;flex-direction:column;gap:7px;font-size:12px}.db-app input:not([type=checkbox]):not([type=radio]),.db-app select,.db-app textarea{width:100%;border:1px solid var(--db-field-line);border-radius:9px;background:var(--db-field);color:var(--db-body);padding:11px 13px;box-shadow:none;color-scheme:var(--db-scheme)}.db-app input::selection,.db-app textarea::selection{background:var(--db-gold);color:var(--color-cosmic-plum)}.db-app input[type=checkbox],.db-app input[type=radio]{accent-color:var(--db-gold)}.db-app select option{background:var(--db-option);color:var(--db-body)}.db-app textarea{min-height:110px;resize:vertical}.db-app label{color:var(--db-muted)}.db-app input::placeholder,.db-app textarea::placeholder{color:var(--db-muted)}.db-app fieldset{border:1px solid var(--db-line);border-radius:12px;padding:18px}.db-app legend{color:var(--db-gold-text);padding:0 7px}.db-app table{width:100%;border-collapse:collapse;text-align:left}.db-app th,.db-app td{padding:14px 12px;border-bottom:1px solid var(--db-line)}.db-app th{font-size:11px;color:var(--db-muted);font-weight:500}.db-app td{font-size:12px;color:var(--db-body)}.db-app hr{border:0;border-top:1px solid var(--db-line);margin:20px 0}
+/* The player band is cosmic plum whatever the appearance, because a video stage
+   is always a dark room. Its "Select lesson" caption would otherwise take the
+   shell's muted ink, and paper-muted ink on plum is unreadable. */
+.db-app .cq-plum label{color:rgba(248,245,239,.78)}
 .db-error{border:1px solid var(--db-error-line);background:var(--db-error-bg);padding:15px;border-radius:10px;font-size:12px;color:var(--db-body);width:100%}.db-error .db-text-link{margin-left:12px}.db-error p:last-child{margin:0}.db-loading{padding:34px 20px;display:flex;align-items:center;justify-content:center;gap:12px;color:var(--db-muted);min-height:130px;width:100%;font-size:12px}.db-spinner{display:inline-block;flex:none;width:22px;height:22px;border:2px solid var(--db-line);border-top-color:var(--db-gold-text);border-radius:50%;animation:db-spin .85s linear infinite}@keyframes db-spin{to{transform:rotate(360deg)}}
 .db-auth-gate{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;padding:24px}.db-auth-gate>.db-panel{max-width:460px}.db-search-list>a{display:flex;align-items:center;gap:15px;padding:15px 0;border-bottom:1px solid var(--db-line);text-decoration:none}.db-search-list>a:last-child{border:0}.db-search-list h3{font-size:23px;margin:0 0 4px;color:var(--db-ink)}.db-search-list p{font-size:11px;color:var(--db-muted);margin:0}.db-search-list>a>svg{margin-left:auto;color:var(--db-gold-text)}.db-menu-toggle,.db-drawer-heading,.db-drawer-backdrop{display:none}
 @media(min-width:1550px){.db-app{--db-sidebar:245px}.db-welcome{min-height:335px}.db-welcome-copy{padding:40px 45px}.db-quick-card.db-panel{min-height:185px}.db-sidebar{padding-left:26px}.db-sidebar nav>a{font-size:13px}.db-content{padding-top:8px}}
@@ -91,8 +99,8 @@
 .db-hero{position:relative;display:flex;align-items:center;min-height:296px;border-radius:22px;overflow:hidden;border:1px solid var(--db-line-soft);background:linear-gradient(100deg,var(--color-pure-white) 0%,var(--color-warm-ivory) 44%,rgba(248,245,239,.55) 62%,rgba(248,245,239,0) 80%),var(--color-warm-ivory);box-shadow:var(--db-shadow-soft)}
 .db-hero-art{position:absolute;right:0;top:0;height:100%;width:52%;object-fit:cover;-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 38%);mask-image:linear-gradient(90deg,transparent 0,#000 38%)}
 .db-hero-copy{position:relative;z-index:1;padding:34px 40px;max-width:760px}
-.db-hero .db-eyebrow{display:block;margin:0 0 14px;font-size:11px;letter-spacing:.24em;color:var(--color-cosmic-plum)}
-.db-hero h1{margin:0 0 8px;font-size:clamp(34px,3.3vw,49px);line-height:1.06;color:var(--color-cosmic-plum);overflow-wrap:anywhere}
+.db-hero .db-eyebrow{display:block;margin:0 0 14px;font-size:11px;letter-spacing:.24em;color:var(--db-ink)}
+.db-hero h1{margin:0 0 8px;font-size:clamp(34px,3.3vw,49px);line-height:1.06;color:var(--db-ink);overflow-wrap:anywhere}
 .db-hero-tag{margin:0 0 14px;font-family:var(--font-head);font-style:italic;font-size:clamp(19px,1.65vw,25px);line-height:1.3;color:var(--gold-ink)}
 .db-hero-lead{margin:0;font-size:14px;line-height:1.65;color:var(--db-muted);max-width:520px}
 .db-hero-actions{display:flex;flex-wrap:wrap;gap:14px;margin-top:24px}
@@ -104,7 +112,7 @@
 .db-button-outline:hover{background:var(--db-badge-bg);border-color:var(--db-gold)}
 
 .db-rule-head{margin:0 0 18px}
-.db-rule-head h2{margin:0 0 3px;font-size:29px;line-height:1.15;color:var(--color-cosmic-plum)}
+.db-rule-head h2{margin:0 0 3px;font-size:29px;line-height:1.15;color:var(--db-ink)}
 .db-rule-head p{margin:0;font-size:13px;color:var(--db-muted)}
 
 .db-chip{width:56px;height:56px;flex:none;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;background:var(--color-lavender-mist);color:var(--gold-ink)}
@@ -114,7 +122,7 @@
 .db-next-card.db-panel{position:relative;overflow:hidden;display:flex;align-items:flex-start;gap:18px;padding:26px 24px 60px;min-height:238px;border-radius:20px;transition:border-color .2s,box-shadow .2s,transform .2s}
 .db-next-card.db-panel:hover{border-color:var(--db-gold-line);box-shadow:var(--db-shadow);transform:translateY(-2px)}
 .db-next-body{flex:1;min-width:0}
-.db-next-card h3{margin:2px 0 8px;font-size:24px;line-height:1.1;color:var(--color-cosmic-plum)}
+.db-next-card h3{margin:2px 0 8px;font-size:24px;line-height:1.1;color:var(--db-ink)}
 .db-next-card p{margin:0 0 16px;font-size:13px;line-height:1.6;color:var(--db-muted);max-width:30ch}
 .db-next-link{display:inline-flex;align-items:center;gap:9px;font-size:13px;font-weight:600;color:var(--gold-ink);text-decoration:none}
 /* The link is static, so its overlay resolves against the card rather than the
@@ -134,7 +142,7 @@
 .db-learn-play{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:46px;height:46px;display:grid;place-items:center;border-radius:50%;border:1px solid rgba(255,255,255,.68);background:rgba(18,10,36,.5);color:var(--color-pure-white)}
 .db-learn-copy{flex:1;min-width:0}
 .db-learn-copy .db-eyebrow{margin-bottom:8px;font-size:10px;letter-spacing:.2em;color:var(--gold-ink)}
-.db-learn-copy h3{margin:0 0 10px;font-size:26px;line-height:1.12;color:var(--color-cosmic-plum)}
+.db-learn-copy h3{margin:0 0 10px;font-size:26px;line-height:1.12;color:var(--db-ink)}
 .db-learn-copy h3 a{color:inherit;text-decoration:none}
 .db-learn-copy h3 a:hover{text-decoration:underline}
 .db-learn-meta{display:flex;align-items:center;gap:13px;margin:0 0 14px;font-size:12px;color:var(--db-muted)}
@@ -156,7 +164,7 @@
    absolutely anchored to the bottom of the card. */
 .db-event>*:not(.db-event-art){position:relative;z-index:1}
 .db-event .db-eyebrow{margin:14px 0 6px;font-size:10px;letter-spacing:.2em;color:var(--gold-ink)}
-.db-event h3{margin:0 0 15px;font-size:25px;line-height:1.12;color:var(--color-cosmic-plum)}
+.db-event h3{margin:0 0 15px;font-size:25px;line-height:1.12;color:var(--db-ink)}
 .db-event ul{list-style:none;display:flex;flex-direction:column;gap:9px;margin:0 0 20px;padding:0;font-size:13px;color:rgba(18,10,36,.76)}
 .db-event li{display:flex;align-items:center;justify-content:center;gap:9px}
 .db-event li svg{color:var(--gold-ink)}
@@ -164,7 +172,7 @@
 .db-mini-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
 .db-mini-card.db-panel{position:relative;display:flex;align-items:center;gap:16px;padding:20px 22px;border-radius:18px;transition:border-color .2s,box-shadow .2s}
 .db-mini-card.db-panel:hover{border-color:var(--db-gold-line);box-shadow:var(--db-shadow-soft)}
-.db-mini-card h3{margin:0 0 4px;font-size:20px;line-height:1.15;color:var(--color-cosmic-plum)}
+.db-mini-card h3{margin:0 0 4px;font-size:20px;line-height:1.15;color:var(--db-ink)}
 .db-mini-card h3 a{color:inherit;text-decoration:none}
 .db-mini-card h3 a:after{content:'';position:absolute;inset:0;border-radius:18px}
 .db-mini-card p{margin:0;font-size:12px;line-height:1.55;color:var(--db-muted)}
@@ -289,4 +297,42 @@
      width, so the button drops underneath and takes the full tap width. */
   .db-app .db-class-row{flex-wrap:wrap}
   .db-app .db-open-lesson{width:100%;justify-content:center}
+}
+
+/* ==========================================================
+   2026-11-17 THE NIGHT SHELL
+   The member shell now wears whatever the visitor chose at the switch, and the
+   2026-11-06 comps were drawn with paper literals rather than the tokens. This
+   block re-cuts those few surfaces for the plum canvas: the ink that was Cosmic
+   Plum is Warm Ivory, a white panel is the plum step that reads as raised, and
+   the gold accents stay gold because --gold-ink already steps up to champagne
+   in appearance.css. The photographs are his and are not touched.
+   None of this can reach the daylight shell: every selector below is carried by
+   .db-night, which the shell only wears when the choice is Night.
+========================================================== */
+.db-app.db-night section.db-panel{padding:20px}
+.db-app.db-night .db-panel-narrow{max-width:700px}
+/* The hero card, with the signpost photograph still bleeding in from the right
+   over the plum half of the fade. */
+.db-app.db-night .db-hero{border-color:var(--db-line);background:linear-gradient(100deg,#241a45 0%,rgba(36,26,69,.94) 44%,rgba(36,26,69,.55) 62%,rgba(36,26,69,0) 80%),rgba(18,10,36,.6)}
+/* The event card is a lavender sheet with its own scrim over the picture. Both
+   go to the night step so the list reads on it. */
+.db-app.db-night .db-event{border-color:var(--db-line);background:linear-gradient(165deg,rgba(237,231,245,.1),rgba(237,231,245,.045))}
+.db-app.db-night .db-event:after{background:linear-gradient(180deg,#241a45 4%,rgba(36,26,69,.34) 58%,rgba(36,26,69,.12))}
+.db-app.db-night .db-event ul{color:var(--db-body)}
+.db-app.db-night .db-chip{background:var(--db-inset)}
+.db-app.db-night .db-wave path{fill:rgba(237,231,245,.1)}
+.db-app.db-night .db-wave path+path{fill:rgba(237,231,245,.05)}
+/* A plum button on a plum canvas is not a button. The primary pill takes the
+   gold fill the rest of the shell already uses; the outlined one loses its
+   white mat, which would glow on the night canvas. */
+.db-app.db-night .db-button-plum{background:var(--gold-grad);border-color:var(--db-gold);color:var(--color-cosmic-plum)!important}
+.db-app.db-night :is(.db-button-outline,.db-back,.db-open-lesson){background:rgba(237,231,245,.07)}
+.db-app.db-night :is(.db-button-outline,.db-back,.db-open-lesson):hover{background:var(--db-gold-hover)}
+/* The bare Visit Website link carries words, so it buys the same tap area the
+   daylight pill gets from its own border and padding. */
+.db-app.db-night .db-visit{min-height:44px}
+@media(max-width:650px){
+  .db-app.db-night section.db-panel{padding:17px}
+  .db-app.db-night .db-visit{min-width:44px;justify-content:center}
 }

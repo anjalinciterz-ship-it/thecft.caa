@@ -1,141 +1,265 @@
 /* ==========================================================
-   APPEARANCE — the branded light/dark control
-   Dark is what this site has always been: Cosmic Plum canvas, champagne gold,
-   warm ivory text. Light keeps the same five palette colours and only swaps
-   which ones sit behind the words: Warm Ivory / Pure White / Lavender Mist
-   become the canvas and Cosmic Plum becomes the text.
+   APPEARANCE — the light/dark switch in the navbar
+   Light is this site as it has always shipped: Warm Ivory and Pure White
+   editorial bands, Cosmic Plum hero and header, champagne gold accents. It is
+   the default and nothing in this file changes it.
 
-   Nothing here touches access, routing or data — presentation only, and the
-   control itself is gated by the admin's `appearance.toggleEnabled` setting.
+   Dark is the same page dressed in the cosmic plum-blue sky the site was built
+   in: the paper bands become plum, the black type becomes ivory, gold stays
+   gold, and every photograph, banner and illustration stays exactly where it
+   is. Presentation only, never access.
 
-   Two mechanisms:
-   1. [data-theme='light'] remaps the semantic tokens, so every rule that reads
-      a token flips with it.
-   2. The brand's cosmic bands re-declare the same tokens on themselves. CSS
-      custom properties inherit, so one block keeps every descendant readable
-      while the band keeps its plum background.
+   Three mechanisms, in order of reach:
+   1. [data-theme='dark'] re-declares the semantic tokens the paper rules read,
+      so anything written with a token flips by itself.
+   2. The palette constants cannot be flipped globally, because the plum islands
+      use them as light-on-dark text, so the paper bands re-declare them for
+      themselves and their descendants, and the islands re-declare them back.
+   3. A small number of rules paint paper with literal colours. Those are
+      listed here one at a time, scoped to dark.
 ========================================================== */
 
-[data-theme='light']{
-  /* Canvas: deep space becomes paper. */
-  --ink-950:var(--color-warm-ivory);
-  --ink-900:var(--color-pure-white);
-  --ink-800:var(--color-lavender-mist);
-  --ink-700:var(--color-lavender-mist);
-  --violet-500:var(--color-lavender-mist);
+/* ---------- 1. The tokens every paper surface reads ---------- */
+[data-theme='dark']{
+  /* Reading text: black on paper becomes ivory on plum. */
+  --plum-text:var(--color-warm-ivory);
+  --plum-muted:#d3c9e6;
+  --plum-faint:rgba(255,255,255,.14);
 
-  /* Text: the words that were ivory on plum are now plum on ivory. */
-  --text:var(--color-cosmic-plum);
-  --text-on-dark:var(--color-cosmic-plum);
-  --ink-on-glass:rgba(18,10,36,.72);
-  --cream-dim:rgba(18,10,36,.66);
-  --cream-dimmer:rgba(18,10,36,.46);
+  /* Gold: the deepened gold used on paper is too dark to read on plum, so the
+     accent steps back up to champagne. */
+  --gold-ink:var(--color-champagne-gold);
 
-  /* Gold: the light champagne used on plum is unreadable on paper, so the
-     accent family steps down to the gold-ink already used on light surfaces. */
-  --gold-300:var(--gold-ink);
-  --card-ring-hover:rgba(138,106,31,.42);
+  /* Raised panels: the white cards on paper become the plum step that reads as
+     raised on a night canvas. */
+  --surface-white:#241a45;
+  --surface-lav:#1e1646;
 
-  /* Glass + elevation: light-on-dark frosting becomes paper with a plum cast. */
-  --glass-bg:rgba(255,255,255,.66);
-  --glass-bg-strong:rgba(255,255,255,.86);
-  --glass-border:rgba(18,10,36,.12);
-  --glass-ring:rgba(18,10,36,.12);
-  --glass-shadow:0 20px 50px rgba(18,10,36,.12);
-  --glass-fill:linear-gradient(160deg,rgba(255,255,255,.86) 0%,rgba(255,255,255,.58) 46%,rgba(255,255,255,.78) 100%);
-  --card-shadow:0 20px 46px rgba(18,10,36,.12), inset 0 1px 0 rgba(255,255,255,.6);
-  --card-shadow-hover:0 30px 62px rgba(18,10,36,.18), 0 0 40px rgba(232,185,95,.22), inset 0 1px 0 rgba(255,255,255,.9);
-
-  /* Hairlines that were drawn in light on plum are drawn in plum on paper. */
-  --plum-faint:rgba(18,10,36,.14);
+  /* Elevation: plum-tinted shadows vanish on a plum canvas, so cards lift with
+     a deeper night shadow instead. */
+  --shadow-soft:0 18px 44px rgba(5,2,14,.55);
+  --shadow-lift:0 30px 66px rgba(5,2,14,.7);
 }
 
-/* ---------- The bands that stay cosmic in light mode ----------
-   These are the brand's plum moments — the hero sky, the Wednesday Call, the
-   closer, the Connect CTA, the nav dropdowns. They keep their background, so they
-   re-declare the on-dark tokens for everything inside them. */
-[data-theme='light'] :is(
-  .site-header,
-  .hero-band,
-  .exact-section,
-  .journey-hero,
-  .nxt,
-  .wc-band,
-  .wc2-hero,
-  .wcp-panel,
-  .cx-band,
-  .cc-cta,
-  .cc-brand,
-  .cc-info,
-  .cc-close,
-  .nxt-panel,
+/* ---------- 2. The bands that are paper, repainted cosmic ----------
+   Custom properties inherit, so re-declaring the palette constants on the band
+   turns every background, frame and placeholder inside it without touching the
+   light scheme at all. The three paper steps keep their order, so the alternating
+   rhythm of the original layout survives as three depths of night. */
+[data-theme='dark'] :is(
+  .jy-band,
+  .fac-band,
+  .bs-band,
+  .ts-band,
+  .ts-hero,
+  .ts-stories,
+  .ins-band,
+  .faq-band,
+  .cq-band,
+  .cs-band,
+  .bl-band,
+  .cn-hero,
+  .cn-paths,
+  .cn-wisdom,
+  .cn-form,
+  .fq-band,
+  .cx-card,
+  .site-footer,
+  .touch-pop,
+  .cms-public-page,
+  .cms-blocks,
+  .cms-public-state
+){
+  --color-warm-ivory:#120a24;
+  --color-pure-white:#16103a;
+  --color-lavender-mist:#1a1033;
+  --cream:#120a24;
+}
+
+/* The plum islands inside those bands keep the real palette, because they write
+   their own light-on-dark text with it. */
+[data-theme='dark'] :is(
+  .cq-plum,
   .ts-cta,
   .cn-cta,
-  .cq-plum,
-  .wp-aud-card,
+  .bl-close,
+  .fq-close,
   .wp-details,
-  .wp-count-band .wc2-count,
-  .nxt-stay,
-  .wcp-hero,
-  .wc2-hero,
-  .ab-tedx,
-  .ab-mile-item,
-  .au-grid,
-  .au-hero,
-  .au-card,
-  .touch-pop,
-  .media-frame,
-  .book-cover-frame
+  .wp-aud-card,
+  .wp-hero-art,
+  .ab-tile,
+  .book-card-cover,
+  .fac-talk-ico,
+  .cms-video-stage
 ){
-  --ink-950:#120a24;
-  --ink-900:#1a1033;
-  --ink-800:#241a45;
-  --ink-700:#2f2258;
-  --violet-500:#63409f;
-  --text:var(--color-warm-ivory);
-  --text-on-dark:var(--color-pure-white);
-  --ink-on-glass:rgba(237,231,245,.84);
-  --cream-dim:rgba(237,231,245,.72);
-  --cream-dimmer:rgba(237,231,245,.52);
-  --gold-300:#f3dca6;
-  --card-ring-hover:rgba(232,185,95,.5);
-  --glass-bg:rgba(255,255,255,.06);
-  --glass-bg-strong:rgba(255,255,255,.10);
-  --glass-border:rgba(255,255,255,.16);
-  --glass-ring:rgba(255,255,255,.16);
-  --glass-shadow:0 20px 60px rgba(10,4,25,.45);
-  --glass-fill:linear-gradient(160deg,rgba(255,255,255,.11) 0%,rgba(255,255,255,.035) 46%,rgba(255,255,255,.07) 100%);
-  --card-shadow:0 26px 60px rgba(9,3,22,.55), inset 0 1px 0 rgba(255,255,255,.14);
-  --card-shadow-hover:0 36px 74px rgba(9,3,22,.68), 0 0 42px rgba(232,185,95,.15), inset 0 1px 0 rgba(255,255,255,.2);
+  --color-warm-ivory:#f8f5ef;
+  --color-pure-white:#ffffff;
+  --color-lavender-mist:#ede7f5;
+  --cream:#f8f5ef;
 }
 
-/* ---------- Spill that the token remap cannot reach ----------
-   Rules that paint light-on-dark colours directly, on surfaces the light
-   scheme turns to paper. Scoped narrowly on purpose. */
+/* ---------- 3. Paper painted with literal colours ----------
+   Inside a band the palette constants now mean night, so a rule that asks for
+   "the lightest step" has to be written as the literal light step instead. */
 
-/* Ghost buttons are frosted white in the dark scheme; on paper they need the
-   plum hairline treatment the editorial bands already use. */
-[data-theme='light'] .btn-ghost{
-  background:rgba(255,255,255,.72);
-  border-color:rgba(18,10,36,.26);
-  color:var(--color-cosmic-plum);
+/* The footer writes its own black, and its column links and social marks
+   repeat it. */
+[data-theme='dark'] .site-footer{color:#f8f5ef;border-top-color:rgba(255,255,255,.12);}
+[data-theme='dark'] :is(.ft-col a, .ft-socials a, .ft-brand-line){color:#f8f5ef;}
+[data-theme='dark'] .ft-sep{background:rgba(255,255,255,.2);}
+[data-theme='dark'] :is(.ft-made, .ft-made:hover, .ft-made:focus-visible){color:var(--color-champagne-gold);}
+
+/* Headings on paper were drawn in deep plum, which is the night itself here. */
+[data-theme='dark'] :is(
+  .cn-paths-title, .cn-path h3, .cn-wisdom-copy h2, .cn-card h2, .cn-sent h3,
+  .cn-info h3, .cn-talk h3, .t-dialog .t-name
+){color:#f8f5ef;}
+
+/* Giant section words and doodles are drawn in faded black. */
+[data-theme='dark'] :is(.jy-word, .ts-word){color:rgba(255,255,255,.05);}
+[data-theme='dark'] .jy-doodle{color:rgba(255,255,255,.16);}
+
+/* Testimonial quotes and roles. */
+[data-theme='dark'] .ts-quote p{color:#f8f5ef;}
+[data-theme='dark'] .ts-role{color:rgba(237,231,245,.62);}
+
+/* Slider dots picked out of the dark for paper bands. */
+[data-theme='dark'] :is(.ts-dots, .bs-nav) .slider-dot{background:rgba(255,255,255,.18);border-color:rgba(255,255,255,.26);}
+[data-theme='dark'] :is(.ts-dots, .bs-nav) .slider-dot.is-active{background:var(--gold-grad);border-color:transparent;}
+
+/* Hover veils and empty-state chips drawn in faded black. */
+[data-theme='dark'] .bs-card::after{background:rgba(255,255,255,.06);}
+[data-theme='dark'] .fq-empty{background:rgba(255,255,255,.07);}
+[data-theme='dark'] .wp-step::after{background:rgba(255,255,255,.2);}
+[data-theme='dark'] .bl-article hr{border-top-color:rgba(255,255,255,.16);}
+
+/* Hairlines. Every card and field on paper is outlined in faded black; on plum
+   they are drawn in faded white at the same weights. */
+[data-theme='dark'] :is(
+  .jy-card, .bs-card, .ts-card, .bl-card, .bl-feat, .bl-media, .cq-card, .cq-mod,
+  .cq-fact, .cq-faq, .cq-table, .cq-guide-result, .cq-art, .cn-card, .cn-poster,
+  .faq-item, .fq-item, .wp-why-card, .wp-step, .journey-points, .journey-example,
+  .journey-benefit, .journey-dimension, .journey-steps li, .journey-routine-step,
+  .journey-faq, .journey-cta, .book-card, .book-cover-frame, .cs-card, .cx-card,
+  .touch-pop .md-close, .media-video, .cq-pill
+){border-color:rgba(255,255,255,.14);}
+
+[data-theme='dark'] :is(.jy-card, .bs-card, .ts-card, .bl-card, .cq-card, .faq-item, .cn-card, .cs-card):hover{border-color:rgba(232,185,95,.45);}
+
+/* Fields need a stronger edge than a card does. */
+[data-theme='dark'] :is(.fq-search, .bl-search, .cn-form .form-field, .cq-show-cta){border-color:rgba(255,255,255,.24);}
+[data-theme='dark'] :is(.fq-search, .bl-search){background:rgba(255,255,255,.05);}
+[data-theme='dark'] :is(.fq-tools, .bl-tools){border-bottom-color:rgba(255,255,255,.12);}
+[data-theme='dark'] :is(.fq-main, .bl-main, .bl-related, .fq-close){border-color:rgba(255,255,255,.12);}
+[data-theme='dark'] :is(.cn-again, .btn-ghost) {border-color:rgba(255,255,255,.3);}
+
+/* Placeholders were picked out of black. */
+[data-theme='dark'] :is(input, textarea)::placeholder{color:rgba(237,231,245,.5);}
+/* The ones written with a class chain outspecify the rule above, so they are
+   answered at the same weight. */
+[data-theme='dark'] :is(.touch-pop .form-field input, .touch-pop .form-field textarea,
+  .cn-card .form-field input, .cn-card .form-field textarea,
+  .fq-search input, .bl-search input, .cq-show-cta input)::placeholder{color:rgba(237,231,245,.48);}
+
+/* Dropdown chevrons were stroked in deep gold. */
+[data-theme='dark'] :is(.touch-pop .form-field select, .cn-card .form-field select){
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='9' viewBox='0 0 14 9' fill='none' stroke='%23f3cf8c' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M1 1.2 7 7.2 13 1.2'/%3E%3C/svg%3E");
 }
-[data-theme='light'] .btn-ghost:hover{background:var(--color-pure-white);border-color:var(--gold-ink);}
 
-/* Chips, tracks and slider dots that were picked out of the dark. */
-[data-theme='light'] .chip{background:rgba(18,10,36,.06);border-color:rgba(18,10,36,.16);color:var(--color-cosmic-plum);}
-[data-theme='light'] .divider{background:rgba(18,10,36,.12);}
-[data-theme='light'] .nav-toggle{border-color:rgba(237,231,245,.4);}
+/* Chips and modal buttons that were frosted white on paper. */
+[data-theme='dark'] .cq-chip{background:rgba(255,255,255,.06);}
+[data-theme='dark'] .t-dialog .md-close{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.22);}
 
-/* The starfield is a night sky effect; keep it where the sky is kept. */
-[data-theme='light'] .stars{display:none;}
-[data-theme='light'] :is(.site-header,.hero-band,.exact-section,.journey-hero,.nxt,.wc-band,.wc2-hero,.wcp-hero,.cx-band,.cc-cta,.ts-cta,.cn-cta,.cq-plum,.wp-aud-card,.au-grid,.au-hero,.au-card,.touch-pop) .stars{display:block;}
+/* Inverted fills: on paper these buttons turn into a slab of ink with light
+   type. Here they turn into a slab of light, so the type has to go the other
+   way or it disappears into it. */
+[data-theme='dark'] :is(.jy-band, .cq-band:not(.cq-plum), .bs-band, .ts-band, .ins-band, .faq-band, .touch-band, .fq-band, .bl-band) .btn-ghost:hover,
+[data-theme='dark'] .cn-ghost:hover,
+[data-theme='dark'] :is(.fq-search-clear, .bl-search-clear):hover{background:#f8f5ef;color:#120a24;}
+[data-theme='dark'] :is(.fq-pill.active, .bl-pill.active){background:#f8f5ef;border-color:#f8f5ef;color:#120a24;}
+
+/* Gold hairlines that were darkened for paper step back up to champagne. */
+[data-theme='dark'] :is(.book-card-tracks, .book-card .card-cta, .cover-flip, .faq-item .faq-ico, .faq-chev, .cq-band .journey-chips li, .journey-dimension .num){border-color:rgba(232,185,95,.42);}
+[data-theme='dark'] .cover-flip{background:rgba(255,255,255,.1);}
+[data-theme='dark'] .journey-dimension .num{color:rgba(232,185,95,.55);}
+
+/* The message form's own panel: frosted white on paper, frosted plum on night. */
+[data-theme='dark'] .touch-pop .form-field input,
+[data-theme='dark'] .touch-pop .form-field select,
+[data-theme='dark'] .touch-pop .form-field textarea{background-color:rgba(255,255,255,.06);border-color:rgba(255,255,255,.22);}
+
+/* CMS pages carry their own ink tokens and their own paper literals. They are
+   written in a stylesheet that arrives with the page chunk, i.e. after this
+   one, so the rules below answer it at a weight it cannot tie with. */
+[data-theme='dark'] :is(.cms-public-page, .cms-blocks){
+  --cms-ink:#f8f5ef;
+  --cms-muted:#d3c9e6;
+  --cms-accent:var(--color-champagne-gold);
+  --cms-line:rgba(255,255,255,.16);
+}
+[data-theme='dark'] :is(.cms-public-page, .cms-blocks) :is(.cms-bg-ivory, .cms-bg-white, .cms-tone-ivory){background:#120a24;color:#f8f5ef;}
+[data-theme='dark'] :is(.cms-public-page, .cms-blocks) .cms-tone-ivory{--cms-ink:#f8f5ef;--cms-muted:#d3c9e6;--cms-accent:var(--color-champagne-gold);}
+[data-theme='dark'] :is(.cms-public-page, .cms-blocks) > :is(.db-loading, .db-error){color:#f8f5ef;--color-warm-ivory:#f8f5ef;}
+[data-theme='dark'] .cms-public-state{background:#120a24;color:#f8f5ef;}
+
+/* The audiobook cards on a book page paint their own paper and their headings
+   read the ink token, so the card has to be given a night of its own. The
+   native transport follows it, otherwise a light grey control strip sits in the
+   middle of a plum card. */
+[data-theme='dark'] .audio-card{background:#241a45;border-color:rgba(255,255,255,.14);box-shadow:0 12px 28px rgba(5,2,14,.5);}
+[data-theme='dark'] .audio-card audio{color-scheme:dark;}
+
+/* Error red was deepened for paper. On a night band it falls below three to
+   one, so the same red steps up rather than changing hue. The field outline
+   that says "this one is wrong" is the same red and has to step with it. */
+[data-theme='dark'] :is(.cn-err, .cn-form-err){color:#f2716b;}
+[data-theme='dark'] .cn-card .form-field :is(input, select, textarea)[aria-invalid='true']{border-color:#f2716b;}
+
+/* Photographs keep their frames, but a white mat around a portrait would glow
+   on the night canvas, so the mats go plum too. */
+[data-theme='dark'] :is(.jy-polaroid, .book-cover-frame, .cq-art, .bl-media, .bl-feat-media, .cs-art){background:var(--color-lavender-mist);}
+
+/* ---------- 4. What the switch still does not reach ----------
+   The member dashboard went over to the switch on 2026-11-17: it now wears the
+   appearance the visitor chose, and dashboard.css carries its night palette
+   under `.db-app.db-night`. The admin console did not. Staff sign off on a
+   cosmic room whatever the weather outside, so the one token it borrows from
+   this file stays pinned to its daylight value, and so does the page editor's
+   draft preview — a public page mounted inside a plum room would vanish into
+   its own surroundings if it went night too. */
+[data-theme='dark'] .db-app.ad-app{--gold-ink:#74581a;}
+
+/* The page editor's draft preview is a public page mounted inside the console,
+   and the console is plum, so a preview that went night would vanish into its
+   own surroundings. It is written back to paper. */
+[data-theme='dark'] .db-app.ad-app :is(.cms-public-page, .cms-blocks){
+  --color-warm-ivory:#f8f5ef;
+  --color-pure-white:#ffffff;
+  --color-lavender-mist:#ede7f5;
+  --cream:#f8f5ef;
+  --plum-text:#120a24;
+  --plum-muted:#1b1526;
+  --plum-faint:rgba(18,10,36,.14);
+  --gold-ink:#74581a;
+  --surface-white:#ffffff;
+  --surface-lav:#ede7f5;
+  --shadow-soft:0 16px 40px rgba(18,10,36,.10);
+  --shadow-lift:0 24px 56px rgba(18,10,36,.16);
+  --cms-ink:#2e2240;
+  --cms-muted:#62576e;
+  --cms-accent:#866124;
+  --cms-line:rgba(89,62,116,.19);
+}
+[data-theme='dark'] .db-app.ad-app :is(.cms-public-page, .cms-blocks) :is(.cms-bg-ivory, .cms-tone-ivory){background:#fffaf0;color:#2e2240;}
+[data-theme='dark'] .db-app.ad-app :is(.cms-public-page, .cms-blocks) .cms-bg-white{background:#ffffff;color:#2e2240;}
 
 /* ---------- The control itself ----------
-   Sits in the header next to the account pill. Two states, one click, and the
-   choice is remembered locally so the next visit opens the same way. */
+   Sits in the header next to the account pill. The header keeps its plum sky in
+   both appearances, so the button is written once. The word names what the next
+   click brings, and the choice is remembered locally so the next visit opens the
+   same way. */
 .appearance-toggle{
-  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;flex:none;
   height:38px;padding:0 14px;border-radius:50px;cursor:pointer;
   background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);
   color:var(--color-warm-ivory);
@@ -146,8 +270,13 @@
 .appearance-toggle:focus-visible{outline:2px solid var(--gold-ink);outline-offset:3px;}
 .appearance-toggle svg{width:16px;height:16px;flex:none;}
 .appearance-toggle .ap-word{display:inline;}
+/* Inside the member shell the daylight topbar is paper rather than plum, so the
+   pill is re-cut to match the Visit Website button beside it. The night shell
+   is plum, where the rules above already suit. */
+.db-app.db-light .appearance-toggle{background:rgba(255,255,255,.6);border-color:var(--db-gold-line);color:var(--gold-ink);}
+.db-app.db-light .appearance-toggle:hover{background:var(--db-badge-bg);border-color:var(--db-gold);}
 @media(max-width:520px){
-  .appearance-toggle{width:38px;padding:0;}
+  .appearance-toggle{width:44px;height:44px;padding:0;}
   .appearance-toggle .ap-word{display:none;}
 }
 

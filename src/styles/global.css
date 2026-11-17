@@ -2777,7 +2777,9 @@ img.touch-f-ico{width:16px;height:16px;object-fit:contain;}
 .cq-plum .cq-h2,.cq-plum .cq-show-title{color:var(--text);}
 .cq-plum .cq-title{color:var(--text);}
 .cq-plum .cq-title span{color:var(--color-champagne-gold);}
-.cq-plum .cq-lead,.cq-plum .cq-show-short,.cq-plum p{color:rgba(248,245,239,.78);}
+/* A bare label on a plum band would otherwise inherit the page's dark ink and
+   disappear into the background — the lesson picker in the player is one. */
+.cq-plum .cq-lead,.cq-plum .cq-show-short,.cq-plum p,.cq-plum label{color:rgba(248,245,239,.78);}
 .cq-plum .cq-num,.cq-plum .cq-eyebrow{color:var(--color-champagne-gold);}
 .cq-plum .cq-outcomes li{color:rgba(248,245,239,.92);}
 .cq-plum .cq-outcomes svg{color:var(--color-champagne-gold);}
