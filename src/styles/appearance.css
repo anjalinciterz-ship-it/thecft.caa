@@ -170,6 +170,21 @@
 [data-theme='dark'] .cq-chip{background:rgba(255,255,255,.06);}
 [data-theme='dark'] .t-dialog .md-close{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.22);}
 
+/* The testimonial dialog opens in a portal, so it lives outside every band and
+   none of the §2 re-declarations reach it: its ivory fill stayed ivory while
+   its text token flipped to ivory, and the whole story went unreadable. It is
+   painted for itself here, as the raised night panel. */
+[data-theme='dark'] .t-dialog.md-box{
+  background:#241a45;border-color:rgba(255,255,255,.16);
+  box-shadow:0 40px 90px rgba(2,0,10,.66);
+}
+[data-theme='dark'] .md-root:has(.t-dialog) .md-scrim{background:rgba(6,2,16,.66);}
+
+/* The course introduction popup is a portal too, and it had the same fault: a
+   white box it never repaints, with ink that follows the night tokens. */
+[data-theme='dark'] .cd-box{background:#241a45;}
+[data-theme='dark'] .cd-close{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.22);}
+
 /* Inverted fills: on paper these buttons turn into a slab of ink with light
    type. Here they turn into a slab of light, so the type has to go the other
    way or it disappears into it. */
