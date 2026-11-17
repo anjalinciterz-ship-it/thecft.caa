@@ -145,7 +145,9 @@ export const courses = [
     image: '/images/courses/mind-life-collection.webp',
     banner: '/images/courses/mindlife-banner.webp',
     pageBanner: '/images/courses/mindlife-page-banner.webp',
-    introVideo: introVideo('f6017cb5-1a8c-42c6-ac7b-2cf42e56f887'),
+    // The collection has no intro film of its own, so it opens on the same one
+    // the Consciousness Accelerator uses. Its old guid returned a 404.
+    introVideo: introVideo('4d259eb2-4d10-4f1c-9202-47c90fba7ac4'),
     grad: 'linear-gradient(135deg,#c9973e,#5b3fa6)',
     description:
       'Explore a unique combination of emotional insight, life philosophy and meditation psychology. This collection is designed to help you better understand yourself, your thoughts, and your connection with the world around you.',

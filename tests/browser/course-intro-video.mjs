@@ -1,7 +1,8 @@
-// Proves the five public course pages each carry their own intro film directly
-// under "What This Program Is For", for a visitor who has never signed in. The
-// films come from Bunny's referrer-locked pull zone as plain HLS, so this also
-// proves the browser referrer is enough to get them playing.
+// Proves the five public course pages each carry an intro film directly under
+// "What This Program Is For", for a visitor who has never signed in. The films
+// come from Bunny's referrer-locked pull zone as plain HLS, so this also proves
+// the browser referrer is enough to get them playing. The $299 collection has no
+// film of its own and shares the $199 accelerator's.
 // Run from cft-frontend against the dev stack: node tests/browser/course-intro-video.mjs
 import { fileURLToPath } from 'node:url';
 import { chromium } from '@playwright/test';
@@ -11,7 +12,7 @@ const shots = fileURLToPath(new URL('./shots/', import.meta.url));
 const CDN = 'https://vz-a25c3a97-92c.b-cdn.net';
 const COURSES = [
   { id: 'accelerator', guid: '4d259eb2-4d10-4f1c-9202-47c90fba7ac4' },
-  { id: 'mindlife', guid: 'f6017cb5-1a8c-42c6-ac7b-2cf42e56f887' },
+  { id: 'mindlife', guid: '4d259eb2-4d10-4f1c-9202-47c90fba7ac4' },
   { id: 'sa1', guid: '981721b9-ca89-43c5-8e89-c723d281fe4d' },
   { id: 'sa2', guid: 'e3562118-c57a-47ae-8115-4c939dc79f1e' },
   { id: 'complete', guid: 'a407fe46-51b1-49fb-a851-2f3c24ae6bce' },
