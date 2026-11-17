@@ -584,24 +584,29 @@ p{margin:0 0 1em;}
      stretched to that same height. That gives the two promises at once, equal
      heights and no dead photograph below the last word, which a viewport-sized
      frame could only ever trade one for the other. */
-  .hero-stage{font-size:calc(clamp(13px,3.6cqw,17px) * var(--ts,1));height:auto;display:grid;grid-template-columns:1fr;}
-  .hero-slide{position:relative;inset:auto;grid-area:1/1;display:flex;flex-direction:column;align-items:stretch;text-align:center;}
+  .hero-stage{font-size:calc(clamp(12.5px,3.85cqw,17px) * var(--ts,1));height:auto;display:grid;grid-template-columns:1fr;}
+  .hero-slide{position:relative;inset:auto;grid-area:1/1;display:flex;flex-direction:column;align-items:stretch;text-align:center;padding-left:16px;padding-right:16px;}
   /* The copy box dissolves so its parts can share the column with the cards. */
   .hero-copy{display:contents;}
-  .hero-eyebrow{order:1;justify-content:center;margin:0 0 .7em;padding:0;font-size:.8em;letter-spacing:.18em;line-height:1.55;}
-  .hero-copy h1{order:2;margin:0 0 .4em;font-size:2.05em;line-height:1.14;text-wrap:pretty;}
+  .hero-eyebrow{order:1;justify-content:center;margin:0 0 .7em;padding:0;font-size:.9em;letter-spacing:.18em;line-height:1.55;}
+  /* The heading is the poster. At 2.05em it read as a sub-heading under the
+     photograph; his reference has the serif filling the width. 2.2em is the
+     largest the column takes: the longest gold phrase measures 1.07x the box
+     at that size, so anything bigger strands "Guidance" on a line of its own,
+     and every heading then lands in two or three full lines. */
+  .hero-copy h1{order:2;margin:0 0 .4em;font-size:2.2em;line-height:1.14;text-wrap:pretty;}
   .hero-copy h1 .accent{display:inline;}
-  .hero-lead{order:3;margin:0 auto .95em;max-width:34em;font-size:.97em;line-height:1.5;}
+  .hero-lead{order:3;margin:0 auto .95em;max-width:34em;font-size:1.02em;line-height:1.5;}
   /* The benefits read as part of the promise, so they land before the buttons
      ask for the tap. */
-  .hero-features{order:4;display:grid;grid-template-columns:repeat(3,1fr);gap:0;margin:0 0 1em;padding:0;font-size:.84em;}
+  .hero-features{order:4;display:grid;grid-template-columns:repeat(3,1fr);gap:0;margin:0 0 1em;padding:0;font-size:.86em;}
   .hero-features li{justify-content:center;min-width:0;}
   .hero-features li+li{padding-left:0;border-left:1px solid rgba(248,245,239,.16);}
   /* The buttons take whatever height the slide is not using, so they land at
      the bottom of the band on every slide instead of floating under the
      paragraph with a dead photograph beneath them. */
   .hero-actions{order:5;flex-direction:column;align-items:stretch;gap:.6em;margin:0 0 1em;margin-top:auto;}
-  .hero-actions .btn{width:100%;justify-content:center;min-height:48px;font-size:1em;padding:.72em 1em;}
+  .hero-actions .btn{width:100%;justify-content:center;min-height:52px;font-size:1.05em;padding:.72em 1em;}
   /* The cosmic slide's three cards are the one element that made its phone
      composition differ from the other three, so they come out. Every slide is
      now eyebrow, heading, paragraph, benefits, two buttons, tagline, which is
