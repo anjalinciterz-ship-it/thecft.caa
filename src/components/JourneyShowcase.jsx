@@ -86,7 +86,7 @@ export default function JourneyShowcase() {
               <img
                 src={j.image}
                 srcSet={journeySrcSet(j)}
-                sizes="(max-width: 900px) 88vw, 380px"
+                sizes="(max-width: 900px) 52vw, 420px"
                 alt={j.title}
                 style={{ objectPosition: j.focus }}
                 loading="lazy"

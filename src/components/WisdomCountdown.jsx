@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Icon } from './icons';
 import { dayIn, localTime, timeIn, useNextWisdomCall, visitorZone } from '../lib/schedule';
 
@@ -55,14 +55,29 @@ export default function WisdomCountdown({ heading = 'The next call starts in', v
   const publishedAt = next ? new Date(next.startAt).getTime() : null;
   const [target, setTarget] = useState(() => publishedAt || nextWisdomCall());
   const [now, setNow] = useState(() => Date.now());
+  const root = useRef(null);
+  const [onScreen, setOnScreen] = useState(true);
+
+  /* On the landing page this card sits a screen and a half below the fold, and a
+     ticking second hand is of no use to someone who cannot see it. The clock runs
+     only while the countdown is on screen and resyncs as it comes back. */
+  useEffect(() => {
+    const el = root.current;
+    if (!el || !('IntersectionObserver' in window)) return undefined;
+    const seen = new IntersectionObserver((entries) => setOnScreen(entries[0].isIntersecting), { rootMargin: '120px' });
+    seen.observe(el);
+    return () => seen.disconnect();
+  }, []);
 
   // The published schedule wins as soon as it arrives; the computed Wednesday is
   // only the placeholder shown before anyone has published a class.
   useEffect(() => { if (publishedAt) setTarget(publishedAt); }, [publishedAt]);
   useEffect(() => {
+    if (!onScreen) return undefined;
+    setNow(Date.now());
     const id = setInterval(() => setNow(Date.now()), 1000);
     return () => clearInterval(id);
-  }, []);
+  }, [onScreen]);
   useEffect(() => {
     if (publishedAt || target - now > 0) return;
     setTarget(nextWisdomCall(Date.now() + 1000));
@@ -83,7 +98,7 @@ export default function WisdomCountdown({ heading = 'The next call starts in', v
 
   if (variant === 'card') {
     return (
-      <div className="wc2-count">
+      <div className="wc2-count" ref={root}>
         <span className="wc2-count-badge" aria-hidden="true">
           <Icon name="calendar" size={26} />
         </span>
@@ -112,7 +127,7 @@ export default function WisdomCountdown({ heading = 'The next call starts in', v
   }
 
   return (
-    <div className="wc-count">
+    <div className="wc-count" ref={root}>
       {heading ? <p className="wc-count-head">{heading}</p> : null}
       <div className="wc-tiles" role="timer" aria-live="off">
         {units.map(([value, label]) => (

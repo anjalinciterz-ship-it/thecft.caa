@@ -13,6 +13,8 @@ export const journeys = [
     imageWidth: 1170,
     imageSmall: '/images/photos/consciousness-760.webp',
     imageSmallWidth: 760,
+    imageMini: '/images/photos/consciousness-400.webp',
+    imageMiniWidth: 400,
     focus: 'center 50%',
     hero: {
       eyebrow: 'The journey of awareness',
@@ -153,6 +155,8 @@ export const journeys = [
     imageWidth: 687,
     imageSmall: '/images/photos/self-discovery.webp',
     imageSmallWidth: 687,
+    imageMini: '/images/photos/self-discovery-400.webp',
+    imageMiniWidth: 400,
     focus: 'center 45%',
     hero: {
       eyebrow: 'The journey within',
@@ -305,6 +309,8 @@ export const journeys = [
     imageWidth: 687,
     imageSmall: '/images/photos/inner-peace.webp',
     imageSmallWidth: 687,
+    imageMini: '/images/photos/inner-peace-400.webp',
+    imageMiniWidth: 400,
     focus: 'center 58%',
     hero: {
       eyebrow: 'The art of inner balance',
@@ -451,6 +457,8 @@ export const journeys = [
     imageWidth: 1170,
     imageSmall: '/images/photos/purpose-760.webp',
     imageSmallWidth: 760,
+    imageMini: '/images/photos/purpose-400.webp',
+    imageMiniWidth: 400,
     focus: 'center 50%',
     hero: {
       eyebrow: 'The journey toward meaning',
@@ -620,6 +628,10 @@ export const relatedJourneys = (slug) => journeys.filter((j) => j.slug !== slug)
 // exist at one size only, so declaring a 1400w candidate for a 687px file made
 // the browser treat that file as if it carried twice the pixels it has.
 export const journeySrcSet = (j) =>
-  (j.imageSmall === j.image
-    ? `${j.image} ${j.imageWidth}w`
-    : `${j.imageSmall} ${j.imageSmallWidth}w, ${j.image} ${j.imageWidth}w`);
+  [
+    j.imageMini && `${j.imageMini} ${j.imageMiniWidth}w`,
+    j.imageSmall !== j.image && `${j.imageSmall} ${j.imageSmallWidth}w`,
+    `${j.image} ${j.imageWidth}w`,
+  ]
+    .filter(Boolean)
+    .join(', ');

@@ -1,6 +1,11 @@
 import { useEffect, useState } from 'react';
 import { apiRequest } from './api';
 
+/* The invitation and its countdown sit on the same screen and ask for the same
+   one class, so a request already on its way serves both. It is dropped the
+   moment it lands, so a page opened later still asks afresh. */
+let pending = null;
+
 /**
  * The Wednesday Wisdom Call is a published live class on the server, not a copy
  * block: the invitation shows whatever is actually scheduled. When nothing is
@@ -10,19 +15,34 @@ import { apiRequest } from './api';
 export function useNextWisdomCall() {
   const [state, setState] = useState({ loading: true, next: null, failed: false });
   useEffect(() => {
-    const controller = new AbortController();
-    apiRequest('/live-classes?series=wednesday_wisdom_call&scope=upcoming&limit=1', { signal: controller.signal })
-      .then((data) => setState({ loading: false, next: data?.liveClasses?.[0] || null, failed: false }))
-      .catch((failure) => { if (failure.code !== 'ABORTED') setState({ loading: false, next: null, failed: true }); });
-    return () => controller.abort();
+    let live = true;
+    if (!pending) {
+      pending = apiRequest('/live-classes?series=wednesday_wisdom_call&scope=upcoming&limit=1')
+        .then((data) => ({ next: data?.liveClasses?.[0] || null, failed: false }))
+        .catch(() => ({ next: null, failed: true }))
+        .finally(() => { pending = null; });
+    }
+    pending.then((result) => { if (live) setState({ loading: false, ...result }); });
+    return () => { live = false; };
   }, []);
   return state;
 }
 
+/* A countdown tick reads the same two or three formats a dozen times over, and
+   building an Intl.DateTimeFormat means an ICU look-up every time, so the same
+   zone and shape are built once and reused. */
+const forms = new Map();
+
 function format(value, options, timeZone) {
   if (!value) return null;
+  const key = `${timeZone || ''}|${JSON.stringify(options)}`;
   try {
-    return new Intl.DateTimeFormat('en-US', { ...(timeZone ? { timeZone } : {}), ...options }).format(new Date(value));
+    let form = forms.get(key);
+    if (!form) {
+      form = new Intl.DateTimeFormat('en-US', { ...(timeZone ? { timeZone } : {}), ...options });
+      forms.set(key, form);
+    }
+    return form.format(new Date(value));
   } catch {
     return null;
   }

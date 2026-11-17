@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { testimonials } from '../data/testimonials';
 import { Icon } from './icons';
 
@@ -13,12 +13,25 @@ export default function TestimonialShowcase() {
   const n = testimonials.length;
   const [active, setActive] = useState(0);
   const [paused, setPaused] = useState(false);
+  const stage = useRef(null);
+  const [onScreen, setOnScreen] = useState(true);
+
+  /* The shuffle moves every card in the stage each time, and on the landing page
+     this section is seven screens down. It waits until someone can see it, then
+     carries on from the card it stopped on. */
+  useEffect(() => {
+    const el = stage.current;
+    if (!el || !('IntersectionObserver' in window)) return undefined;
+    const seen = new IntersectionObserver((entries) => setOnScreen(entries[0].isIntersecting), { rootMargin: '120px' });
+    seen.observe(el);
+    return () => seen.disconnect();
+  }, []);
 
   useEffect(() => {
-    if (paused || prefersReduced()) return undefined;
+    if (paused || !onScreen || prefersReduced()) return undefined;
     const id = setInterval(() => setActive((a) => (a + 1) % n), AUTO_MS);
     return () => clearInterval(id);
-  }, [paused, n]);
+  }, [paused, onScreen, n]);
 
   // 0 = centred, 1 = waiting off-stage right, -1 = parked off-stage left.
   const posOf = (i) => {
@@ -33,6 +46,7 @@ export default function TestimonialShowcase() {
     <>
       <div
         className="ts-stage"
+        ref={stage}
         role="group"
         aria-roledescription="carousel"
         aria-label="Student testimonials"

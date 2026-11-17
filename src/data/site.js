@@ -1,3 +1,13 @@
+/* Zalah's own portrait in the widths the layouts that show it can ask for. The
+   compact hero frame is 33 or 34 per cent of the viewport, so a phone needs 350
+   device pixels and a tablet at the 1000px break needs 700; past that the
+   composition is a desktop one and the portrait layer is not in the document at
+   all, which is why the hero stops at 700 rather than offering the full file to
+   a sharp tablet. The facilitator band is wider and does keep the original. */
+const portraitCandidates =
+  '/images/site/zalah-facilitator-350.webp 350w, /images/site/zalah-facilitator-700.webp 700w';
+const bandPortraitCandidates = `${portraitCandidates}, /images/site/zalah-facilitator.jpg 1086w`;
+
 export const site = {
   name: 'The Centre for Transformation',
   shortName: 'CFT',
@@ -15,10 +25,16 @@ export const site = {
   contactSubjects: ['Course Question', 'Wisdom Class', 'Technical Support', 'Something Else'],
   calendly: 'https://calendly.com/iamzale/new-meeting',
   tedTalk: 'https://youtu.be/wdoNDS54yGw',
-  logo: '/images/logo/logo-white.png',
+  /* The wordmark is a pixel-for-pixel webp re-encode of logo-white.png, which
+     stays in the library as the original. Nothing outside these pages reads
+     either file. */
+  logo: '/images/logo/logo-white.webp',
   logoColor: '/images/logo/logo-color.png',
-  crest: '/images/logo/peacock-feather-cosmic.webp',
+  // The navbar and footer never draw the crest wider than 132 CSS pixels, and
+  // the 720px original cost 40 KB to do it.
+  crest: '/images/logo/peacock-feather-cosmic-288.webp',
   portrait: '/images/site/zalah-facilitator.jpg',
+  portraitSrcSet: bandPortraitCandidates,
   hero: {
     eyebrow: 'Welcome to The Centre for Transformation',
     titleLead: 'Navigate Life’s Transformations with',
@@ -58,21 +74,22 @@ export const site = {
       tabletPos: '58% 50%',
       /* The banner is one flat picture: Zalah and the signpost share the same
          pixels, so a phone frame can only show it by cover-cropping, and that
-         magnifies him until his head is most of the screen. The picture is wide
-         enough that its right-hand window holds the whole signpost and the
-         golden hillside with no part of him in it, so the compact layouts use
-         that window as the background and his own portrait as a layer of its
-         own. Same photograph, nothing retouched. */
+         magnifies him until his head fills the screen. Measured from the file,
+         his shirt reaches x 1455 and the signpost's first board starts at 1505,
+         so the picture has exactly one full-height column that carries the
+         whole signpost and none of him. That column is the compact background.
+         Same photograph, nothing retouched. */
       compactArt: {
-        // One candidate, no width descriptor: a phone only ever sees the
-        // picture's right-hand quarter, so it needs the full-resolution file
-        // even though the frame itself is narrow.
-        src: '/images/site/hero-bg-guidance.webp',
-        srcSet: '/images/site/hero-bg-guidance.webp',
-        pos: '100% 50%',
-        tabletPos: '100% 50%',
+        /* One candidate, no width descriptor. A compact frame covers a 2.11:1
+           photograph by height, not by width, so it always shows the same
+           467px slice of it however wide the file is: this 364px window of the
+           same picture paints the identical crop at the identical scale for a
+           third of the bytes, and the full file can add no detail behind it. */
+        src: '/images/site/hero-bg-guidance-window.webp',
+        srcSet: '/images/site/hero-bg-guidance-window.webp',
+        pos: '50% 50%',
+        tabletPos: '50% 50%',
       },
-      compactPortrait: { src: '/images/site/zalah-facilitator.jpg', width: '1086', height: '1448' },
       /* The sentence rides the signpost, one word per plank. The coordinates
          are the plank bands measured out of the photograph itself, as
          percentages of the frame: on the desktop stage the frame and the image
@@ -114,6 +131,19 @@ export const site = {
       // windows are pulled to her rather than to the middle of the frame.
       mobilePos: '47% 50%',
       tabletPos: '48% 50%',
+      /* Covering a 2.11:1 photograph in a portrait frame keeps its whole height,
+         so no amount of horizontal positioning can leave the woman and her dock
+         behind: they are painted across the bottom of the picture. This window
+         is the one full-height column of the same photograph that holds neither,
+         measured from the file: she occupies x 965-1100 and the dock's far corner
+         reaches x 1420, so the window opens at 1430. It keeps the range, the
+         shore and the mirrored water, at the native resolution of that column. */
+      compactArt: {
+        src: '/images/site/hero-bg-lake-window.webp',
+        srcSet: '/images/site/hero-bg-lake-window.webp',
+        pos: '50% 50%',
+        tabletPos: '50% 50%',
+      },
       copy: {
         eyebrow: 'The Centre for Transformation',
         titleLead: 'Discover Inner Peace',
@@ -141,12 +171,13 @@ export const site = {
          and the trees over them, with no part of Zalah in it. His own portrait
          stands in front of that as a layer of its own. */
       compactArt: {
-        src: '/images/site/hero-bg-path.webp',
-        srcSet: '/images/site/hero-bg-path.webp',
+        // The same window rule as the signpost slide, taken from the left edge
+        // this time: 1140px of a picture that only ever shows 467 of them.
+        src: '/images/site/hero-bg-path-window.webp',
+        srcSet: '/images/site/hero-bg-path-window.webp',
         pos: '0% 50%',
         tabletPos: '0% 50%',
       },
-      compactPortrait: { src: '/images/site/zalah-facilitator.jpg', width: '1086', height: '1448' },
       copy: {
         eyebrow: 'A path of awareness, growth & transformation',
         titleLead: 'Walk a Clearer Path to a More Conscious,',
