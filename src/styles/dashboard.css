@@ -315,10 +315,13 @@
 /* The hero card, with the signpost photograph still bleeding in from the right
    over the plum half of the fade. */
 .db-app.db-night .db-hero{border-color:var(--db-line);background:linear-gradient(100deg,#241a45 0%,rgba(36,26,69,.94) 44%,rgba(36,26,69,.55) 62%,rgba(36,26,69,0) 80%),rgba(18,10,36,.6)}
-/* The event card is a lavender sheet with its own scrim over the picture. Both
-   go to the night step so the list reads on it. */
-.db-app.db-night .db-event{border-color:var(--db-line);background:linear-gradient(165deg,rgba(237,231,245,.1),rgba(237,231,245,.045))}
-.db-app.db-night .db-event:after{background:linear-gradient(180deg,#241a45 4%,rgba(36,26,69,.34) 58%,rgba(36,26,69,.12))}
+/* The event card is a lavender sheet with its own scrim over the picture. In
+   the night it takes exactly the fill every other panel uses, so it cannot sit
+   brighter than its neighbours, and the picture fades out through a mask
+   instead of a painted block, which is what made the band above it glow. */
+.db-app.db-night .db-event{border-color:var(--db-line);background:var(--db-panel);box-shadow:var(--db-panel-glow)}
+.db-app.db-night .db-event:after{background:none}
+.db-app.db-night .db-event-art{opacity:.24;filter:saturate(.3);-webkit-mask-image:linear-gradient(180deg,transparent 2%,#000 80%);mask-image:linear-gradient(180deg,transparent 2%,#000 80%)}
 .db-app.db-night .db-event ul{color:var(--db-body)}
 .db-app.db-night .db-chip{background:var(--db-inset)}
 .db-app.db-night .db-wave path{fill:rgba(237,231,245,.1)}
