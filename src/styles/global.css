@@ -517,14 +517,11 @@ p{margin:0 0 1em;}
 @keyframes hero-fade{from{opacity:0;}to{opacity:1;}}
 @keyframes hero-rise{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:none;}}
 
-/* Shared by both compact breakpoints. The header is sticky, so the hero starts
-   beneath it and ends at the bottom edge of the screen; 760px is the floor, for
-   short viewports, where the page scrolls rather than the hero shrinking. */
+/* Shared by both compact breakpoints. Each breakpoint now sizes the band for
+   itself: the phone lets the slides set their own height, the tablet keeps a
+   fixed frame because its column and card row are positioned inside it. */
 @container (max-width:1000px){
-  .hero-stage{
-    aspect-ratio:auto;
-    height:max(760px,calc(100svh - var(--hero-hdr,74px)));
-  }
+  .hero-stage{aspect-ratio:auto;}
   .hero-art img{object-position:var(--hero-art-pos,50% 50%);}
   .hero-slide{padding:16px 20px 52px;}
   /* L2, in the slide's own palette: deepest behind the words, thinnest across
@@ -582,8 +579,13 @@ p{margin:0 0 1em;}
 
 /* Phone: one centred column over the photograph, tap-sized buttons. */
 @container (max-width:700px){
-  .hero-stage{font-size:calc(clamp(13px,3.6cqw,17px) * var(--ts,1));}
-  .hero-slide{display:flex;flex-direction:column;align-items:stretch;text-align:center;}
+  /* The band is a grid, not a fixed frame: all four slides share one cell, so
+     the row is exactly as tall as the tallest of them and every slide is
+     stretched to that same height. That gives the two promises at once, equal
+     heights and no dead photograph below the last word, which a viewport-sized
+     frame could only ever trade one for the other. */
+  .hero-stage{font-size:calc(clamp(13px,3.6cqw,17px) * var(--ts,1));height:auto;display:grid;grid-template-columns:1fr;}
+  .hero-slide{position:relative;inset:auto;grid-area:1/1;display:flex;flex-direction:column;align-items:stretch;text-align:center;}
   /* The copy box dissolves so its parts can share the column with the cards. */
   .hero-copy{display:contents;}
   .hero-eyebrow{order:1;justify-content:center;margin:0 0 .7em;padding:0;font-size:.8em;letter-spacing:.18em;line-height:1.55;}
@@ -595,28 +597,26 @@ p{margin:0 0 1em;}
   .hero-features{order:4;display:grid;grid-template-columns:repeat(3,1fr);gap:0;margin:0 0 1em;padding:0;font-size:.84em;}
   .hero-features li{justify-content:center;min-width:0;}
   .hero-features li+li{padding-left:0;border-left:1px solid rgba(248,245,239,.16);}
-  .hero-actions{order:5;flex-direction:column;align-items:stretch;gap:.6em;margin:0 0 1em;}
+  /* The buttons take whatever height the slide is not using, so they land at
+     the bottom of the band on every slide instead of floating under the
+     paragraph with a dead photograph beneath them. */
+  .hero-actions{order:5;flex-direction:column;align-items:stretch;gap:.6em;margin:0 0 1em;margin-top:auto;}
   .hero-actions .btn{width:100%;justify-content:center;min-height:48px;font-size:1em;padding:.72em 1em;}
-  /* The cosmic slide's three pieces become two chips side by side over the
-     class card, so they stay inside the shared height instead of stacking a
-     fourth, fifth and sixth band under the buttons. */
-  .hero-pieces{order:6;display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:0 0 1em;font-size:.76em;}
-  .hero-cred{grid-column:1;}
-  .hero-quote{grid-column:2;display:grid;grid-template-columns:1fr;align-items:start;padding:.75em .8em;border-radius:1.2em;}
-  .hero-quote::before{display:none;}
-  .hero-quote blockquote{font-size:1.1em;}
-  .hero-quote figcaption{margin-top:.45em;gap:.45em;}
-  .hero-note{grid-column:1/-1;display:flex;align-items:center;gap:.8em;padding:.6em .8em;border-radius:1.2em;}
-  .hero-note svg{width:1.9em;height:1.9em;}
-  .hero-note-lines .v{font-size:1.2em;}
-  .hero-cred{text-align:left;}
-  .hero-cred .lockup{justify-content:flex-start;}
+  /* The cosmic slide's three cards are the one element that made its phone
+     composition differ from the other three, so they come out. Every slide is
+     now eyebrow, heading, paragraph, benefits, two buttons, tagline, which is
+     what puts the buttons at the same height on all four. They keep their
+     places on the tablet and desktop frames, where there is room beside the
+     words for them. */
+  .hero-pieces{display:none;}
   /* The signpost sentence is painted onto the boards themselves, and a phone
      frame shows a window of the photograph that has no signpost in it, so the
      words would float over open ground. They stay on the desktop and tablet
      compositions, where the boards are in the frame. */
   .hero-planks{display:none;}
-  .hero-footnote{order:8;margin-top:auto;padding-top:10px;text-align:center;font-size:.76em;letter-spacing:.17em;line-height:1.6;}
+  /* The tagline no longer claims the slack: the buttons above it do, so it
+     closes the column instead of being flung to the very bottom edge. */
+  .hero-footnote{order:8;margin-top:0;padding-top:10px;text-align:center;font-size:.76em;letter-spacing:.17em;line-height:1.6;}
 }
 
 /* Tablet: the words keep a left column and the three pieces sit as a row along
