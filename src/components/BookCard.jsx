@@ -23,10 +23,12 @@ export default function BookCard({ book }) {
         <h3>{book.title}</h3>
         <p className="by">Author: {book.author}</p>
         <p className="blurb">{book.blurb}</p>
-        {tracks ? <p className="book-card-tracks">{tracks} audio tracks</p> : null}
-        <span className="card-cta">
-          Learn More <Icon name="arrow" size={16} />
-        </span>
+        <div className="book-card-foot">
+          {tracks ? <p className="book-card-tracks">{tracks} audio tracks</p> : null}
+          <span className="card-cta">
+            Learn More <Icon name="arrow" size={16} />
+          </span>
+        </div>
       </div>
     </Link>
   );

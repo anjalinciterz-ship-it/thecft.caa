@@ -1199,7 +1199,12 @@ section{padding:var(--section-py) 0;}
 .book-card h3{font-size:calc(var(--t-h3) * var(--ts-h,1));line-height:1.22;color:var(--text-on-dark);margin:8px 0 4px;}
 .book-card .by{margin:0 0 12px;font-size:12px;letter-spacing:1.4px;text-transform:uppercase;color:var(--cream-dimmer);}
 .book-card .blurb{margin:0 0 18px;font-size:calc(var(--t-body) * var(--ts,1));line-height:1.68;color:var(--cream-dim);}
-.book-card-tracks{margin:12px 0 0;display:inline-flex;align-items:center;gap:8px;align-self:flex-start;font-size:11.5px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--gold-300);border:1px solid rgba(243,220,166,0.34);border-radius:50px;padding:5px 12px;}
+/* The tracks chip and the button are one footer, pinned to the bottom of the
+   card. Without the wrapper a long blurb pushes the chip into the button, and
+   the buttons land on different lines across the row. */
+.book-card-foot{display:flex;flex-direction:column;align-items:flex-start;gap:14px;margin-top:auto;}
+.book-card-foot .card-cta{margin-top:0;}
+.book-card-tracks{margin:0;display:inline-flex;align-items:center;gap:8px;align-self:flex-start;font-size:11.5px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--gold-300);border:1px solid rgba(243,220,166,0.34);border-radius:50px;padding:5px 12px;}
 
 /* ---------- Protected media players ---------- */
 .audio-stack{display:flex;flex-direction:column;gap:28px;}
