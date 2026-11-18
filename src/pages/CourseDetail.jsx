@@ -110,7 +110,7 @@ export default function CourseDetail() {
                 <Icon name="arrow" size={20} />
               </button>
             </div>
-            <div className="cq-post-art">
+            <div className="cq-post-art cq-post-art-wide">
               <button
                 type="button"
                 className="cq-post-art-btn"

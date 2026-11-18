@@ -2876,6 +2876,19 @@ img.touch-f-ico{width:16px;height:16px;object-fit:contain;}
 .cq-post-art-btn .cq-art{transition:transform .35s cubic-bezier(.2,.7,.3,1),box-shadow .35s ease;}
 .cq-post-art-btn:hover .cq-art{transform:translateY(-3px);box-shadow:var(--shadow-lift);}
 .cq-post-art-btn:focus-visible{outline:2px solid var(--gold-400);outline-offset:4px;}
+/* ---------- course detail: the banner takes the room around it ----------
+   The artwork is 16:9 and is never cropped to fit, so growing it vertically
+   means growing it sideways as well. On the course pages the card now reaches
+   across the inter-column gap and into the gutter outside the container, and
+   stops short of the window edge so nothing overflows. The other pages that
+   share .cq-post-art (books, journey, checkout) keep their own widths. */
+@media (min-width:981px){
+  .cq-post-art-wide{
+    --art-bleed:clamp(0px,calc((100vw - var(--maxw)) / 2 - 10px),420px);
+    margin-left:calc(-1 * (clamp(28px,4vw,60px) - 20px));
+    margin-right:calc(-1 * var(--art-bleed));
+  }
+}
 .cd-modal{position:fixed;inset:0;z-index:300;display:grid;place-items:center;padding:24px;}
 .cd-scrim{position:absolute;inset:0;background:rgba(18,10,36,.62);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);animation:cd-fade .25s ease both;}
 .cd-box{
