@@ -102,7 +102,7 @@ export const courses = [
       },
       {
         q: 'How do I enrol and pay?',
-        a: 'The Enroll Now button enrols you right here on this site, and the program opens in My Courses. The price is $199 USD.',
+        a: 'The Buy Now button enrols you right here on this site, and the program opens in My Courses. The price is $199 USD.',
       },
       {
         q: 'Do I need any experience first?',
@@ -173,7 +173,7 @@ export const courses = [
       },
       {
         q: 'How do I enrol and pay?',
-        a: 'The Enroll Now button enrols you right here on this site, and the collection opens in My Courses. The price is $299 USD.',
+        a: 'The Buy Now button enrols you right here on this site, and the collection opens in My Courses. The price is $299 USD.',
       },
       {
         q: 'Is it a single course or a library?',
@@ -231,7 +231,7 @@ export const courses = [
       },
       {
         q: 'How do I enrol and pay?',
-        a: 'The Enroll Now button enrols you right here on this site, and the program opens in My Courses. The price is $1,000 USD.',
+        a: 'The Buy Now button enrols you right here on this site, and the program opens in My Courses. The price is $1,000 USD.',
       },
       {
         q: 'Is SA1 self-paced?',
@@ -289,7 +289,7 @@ export const courses = [
       },
       {
         q: 'How do I enrol and pay?',
-        a: 'The Enroll Now button enrols you right here on this site, and the program opens in My Courses. The price is $2,000 USD.',
+        a: 'The Buy Now button enrols you right here on this site, and the program opens in My Courses. The price is $2,000 USD.',
       },
       {
         q: 'Do I need SA1 before SA2?',
@@ -347,7 +347,7 @@ export const courses = [
       },
       {
         q: 'How do I enrol and pay?',
-        a: 'The Enroll Now button enrols you right here on this site, and the program opens in My Courses. The price is $2,199 USD.',
+        a: 'The Buy Now button enrols you right here on this site, and the program opens in My Courses. The price is $2,199 USD.',
       },
       {
         q: 'Are there 1-on-1 sessions included?',
