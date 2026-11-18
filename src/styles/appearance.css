@@ -172,6 +172,7 @@
 
 /* Chips and modal buttons that were frosted white on paper. */
 [data-theme='dark'] .cq-chip{background:rgba(255,255,255,.06);}
+[data-theme='dark'] .cq-buy-price{background:rgba(255,255,255,.06);}
 [data-theme='dark'] .t-dialog .md-close{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.22);}
 
 /* The testimonial dialog opens in a portal, so it lives outside every band and

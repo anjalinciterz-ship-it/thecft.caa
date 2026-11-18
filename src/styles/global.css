@@ -2849,6 +2849,29 @@ img.touch-f-ico{width:16px;height:16px;object-fit:contain;}
 }
 .cq-detail-btn:hover{transform:translateY(-3px);box-shadow:0 20px 46px rgba(232,185,95,.52);}
 .cq-detail-btn:focus-visible{outline:2px solid var(--gold-400);outline-offset:3px;}
+/* ---------- course detail: the price and Buy Now row ----------
+   Enrolment came back to these pages on 2026-11-18. The price is the same
+   {amount} {CODE} pair every other public price on the site uses, worn as a
+   pill so it reads as a control rather than a caption next to the button. */
+.cq-buy-row{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-top:26px;}
+.cq-buy-price{
+  display:inline-flex;align-items:center;gap:7px;min-height:64px;padding:0 24px;
+  border:1px solid var(--plum-faint);border-radius:100px;background:rgba(255,255,255,.5);
+  font-family:var(--font-display);font-weight:700;color:var(--plum-text);
+  font-size:calc(clamp(22px,2.2vw,28px) * var(--ts-h,1));line-height:1.2;
+}
+.cq-buy-price em{font-family:var(--font-body);font-style:normal;font-size:12px;font-weight:800;letter-spacing:.12em;color:var(--gold-ink);}
+.cq-buy-btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:12px;
+  min-height:64px;padding:20px 40px;border:0;border-radius:100px;
+  background:var(--gold-grad);color:#120a24;text-decoration:none;
+  font-family:var(--font-body);font-size:calc(19px * var(--ts,1));font-weight:800;line-height:1.2;
+  box-shadow:0 14px 36px rgba(232,185,95,.4);
+  transition:transform .3s cubic-bezier(.2,.7,.3,1),box-shadow .3s ease;
+}
+.cq-buy-btn:hover{transform:translateY(-3px);box-shadow:0 20px 46px rgba(232,185,95,.52);color:#120a24;}
+.cq-buy-btn:focus-visible{outline:2px solid var(--gold-400);outline-offset:3px;}
+.cq-buy-row + .cq-detail-btn{margin-top:16px;}
 .cq-post-art-btn{display:block;width:100%;margin:0;padding:0;border:0;background:none;cursor:pointer;text-align:left;border-radius:18px;}
 .cq-post-art-btn .cq-art{transition:transform .35s cubic-bezier(.2,.7,.3,1),box-shadow .35s ease;}
 .cq-post-art-btn:hover .cq-art{transform:translateY(-3px);box-shadow:var(--shadow-lift);}
@@ -2933,6 +2956,7 @@ img.touch-f-ico{width:16px;height:16px;object-fit:contain;}
   .cq-band{padding:48px 0;}
   .cq-grid,.cq-grid-2{grid-template-columns:1fr;}
   .cq-detail-btn{width:100%;padding:18px 26px;}
+  .cq-buy-price,.cq-buy-btn{width:100%;justify-content:center;}
   .cd-modal{padding:14px;}
   .cd-box{padding:20px 16px 22px;}
   .cq-enrol-box{flex-direction:column;align-items:flex-start;}

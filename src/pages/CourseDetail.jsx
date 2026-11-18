@@ -89,29 +89,22 @@ export default function CourseDetail() {
               </div>
               <h1 className="cq-post-title">{course.name}</h1>
               <p className="cq-post-dek">{course.short}</p>
-              {/* Parked on 2026-11-16 when he took price and enrolment off the
-                  course pages. The member still reaches the lessons through the
-                  player below, or My Courses.
-              <p className="cq-price cq-price-lg">
-                <OfferingPrice offering={course} className="" />
-              </p>
-              <div className="cq-show-cta">
+              {/* Back on 2026-11-18. The member keeps the same route out of the
+                  page as before: the button becomes Open course once owned. */}
+              <div className="cq-buy-row">
+                <OfferingPrice offering={course} className="cq-buy-price" />
                 {unlocked ? (
-                  <Link to={`/dashboard/courses/${encodeURIComponent(course.slug)}`} className="btn btn-gold">
+                  <Link to={`/dashboard/courses/${encodeURIComponent(course.slug)}`} className="cq-buy-btn">
                     Open course
-                    <Icon name="arrow" size={16} />
+                    <Icon name="arrow" size={17} />
                   </Link>
                 ) : (
-                  <Link to={`/checkout?course=${encodeURIComponent(course.id)}`} className="btn btn-gold">
-                    Enroll Now
-                    <Icon name="arrow" size={16} />
+                  <Link to={`/checkout?course=${encodeURIComponent(course.id)}`} className="cq-buy-btn">
+                    Buy Now
+                    <Icon name="arrow" size={17} />
                   </Link>
                 )}
-                <a href="#purpose" className="btn btn-ghost">
-                  Explore the Program
-                </a>
               </div>
-              */}
               <button type="button" className="cq-detail-btn" onClick={() => setDetailOpen(true)}>
                 Tap for Detailed Description
                 <Icon name="arrow" size={20} />
