@@ -74,8 +74,13 @@ export const courses = [
     image: '/images/courses/accelerator.png',
     banner: '/images/courses/accelerator-banner.webp',
     // pageBanner is the client's own artwork for the course page only; the
-    // listing cards and the Home showcase keep `banner`.
+    // listing cards and the Home showcase keep `banner`. It is a different file
+    // with a different shape, so it carries its own size: reserving the page
+    // hero with the listing numbers asks for a box about 2% too tall, and the
+    // image then shifts it when it decodes.
     pageBanner: '/images/courses/accelerator-page-banner.webp',
+    pageBannerW: 1688,
+    pageBannerH: 932,
     introVideo: introVideo('4d259eb2-4d10-4f1c-9202-47c90fba7ac4'),
     grad: 'linear-gradient(135deg,#3a2a63,#7a5cd6)',
     description:
@@ -145,6 +150,8 @@ export const courses = [
     image: '/images/courses/mind-life-collection.webp',
     banner: '/images/courses/mindlife-banner.webp',
     pageBanner: '/images/courses/mindlife-page-banner.webp',
+    pageBannerW: 1688,
+    pageBannerH: 932,
     // The collection has no intro film of its own, so it opens on the same one
     // the Consciousness Accelerator uses. Its old guid returned a 404.
     introVideo: introVideo('4d259eb2-4d10-4f1c-9202-47c90fba7ac4'),
@@ -201,7 +208,11 @@ export const courses = [
     categories: ['spiritual-growth'],
     image: '/images/courses/spiritual-awakening-series.png',
     banner: '/images/courses/sa1-banner.webp',
-    pageBanner: '/images/courses/sa1-page-banner.webp',
+    // Both stages of the pathway now open on the one series banner he supplied
+    // for them, so they share the file rather than duplicating it in the bundle.
+    pageBanner: '/images/courses/sa-series-page-banner.webp',
+    pageBannerW: 1688,
+    pageBannerH: 932,
     introVideo: introVideo('981721b9-ca89-43c5-8e89-c723d281fe4d'),
     grad: 'linear-gradient(135deg,#5b3fa6,#c9973e)',
     description:
@@ -259,7 +270,9 @@ export const courses = [
     categories: ['spiritual-growth'],
     image: '/images/courses/spiritual-awakening-series.png',
     banner: '/images/courses/sa2-banner.webp',
-    pageBanner: '/images/courses/sa2-page-banner.webp',
+    pageBanner: '/images/courses/sa-series-page-banner.webp',
+    pageBannerW: 1688,
+    pageBannerH: 932,
     introVideo: introVideo('e3562118-c57a-47ae-8115-4c939dc79f1e'),
     grad: 'linear-gradient(135deg,#2f2258,#5b3fa6)',
     description:
@@ -318,6 +331,8 @@ export const courses = [
     image: '/images/courses/complete-program.png',
     banner: '/images/courses/complete-banner.webp',
     pageBanner: '/images/courses/complete-page-banner.webp',
+    pageBannerW: 1688,
+    pageBannerH: 932,
     introVideo: introVideo('a407fe46-51b1-49fb-a851-2f3c24ae6bce'),
     grad: 'linear-gradient(135deg,#1a1033,#7a5cd6)',
     description:
@@ -327,7 +342,7 @@ export const courses = [
     bonus:
       'Includes 4 free 1-on-1 sessions with Zalah for personalized guidance and direction.',
     bundleIncludes: ['accelerator', 'sa1', 'sa2'],
-    bannerW: 1671,
+    bannerW: 1670,
     bannerH: 941,
     outcomes: [
       'Deepen your awareness',
