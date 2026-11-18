@@ -29,11 +29,13 @@
     <!-- The first hero slide is the largest thing above the fold, so it is the
          LCP. The two rules below are the same two the slide itself offers, split
          on the same 1000px break: below it the slide shows a window of the full
-         resolution picture, above it the usual width candidates. -->
+         resolution picture, above it the usual width candidates. The opening
+         slide is the cosmic composition, whose compact window is cut from the
+         same file rather than a separate one, so both rules read hero-banner. -->
     <link
       rel="preload"
       as="image"
-      href="/images/site/hero-bg-guidance-window.webp"
+      href="/images/site/hero-banner.webp"
       media="(max-width: 1000px)"
       fetchpriority="high"
     />
@@ -41,7 +43,7 @@
       rel="preload"
       as="image"
       media="(min-width: 1001px)"
-      imagesrcset="/images/site/hero-bg-guidance-900.webp 900w, /images/site/hero-bg-guidance.webp 1824w"
+      imagesrcset="/images/site/hero-banner-900.webp 900w, /images/site/hero-banner.webp 1672w"
       imagesizes="100vw"
     />
   </head>

@@ -54,8 +54,12 @@ export const site = {
      artwork is a text-free photograph that fills the frame, and the words over
      it are real HTML that animates as the slide takes the stage. `kind:'live'`
      marks the original cosmic composition, which keeps its floating TEDx cred,
-     wisdom card and quote; the banners supply only background + copy. */
+     wisdom card and quote; the banners supply only background + copy.
+     He asked for the cosmic one to open the rotation, and it is the slide whose
+     artwork index.html preloads: the first entry is the one that loads eager and
+     paints the LCP, so the two must stay in step. */
   heroSlides: [
+    { key: 'cosmic', kind: 'live', title: 'Zalah welcomes you' },
     {
       key: 'guidance',
       kind: 'banner',
@@ -117,7 +121,6 @@ export const site = {
         footnote: 'Greater awareness · A kinder tomorrow',
       },
     },
-    { key: 'cosmic', kind: 'live', title: 'Zalah welcomes you' },
     {
       key: 'lake',
       kind: 'banner',

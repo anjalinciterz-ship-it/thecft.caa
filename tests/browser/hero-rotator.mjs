@@ -30,10 +30,16 @@ const read = (page) => page.evaluate(() => {
     return r ? { w: Math.round(r.width), h: Math.round(r.height), l: Math.round(r.left), t: Math.round(r.top) } : null;
   };
   const art = box(slide?.querySelector('.hero-art'));
+  // Where the image is anchored inside its frame decides which part of it the
+  // crop takes away, so it is the number that says whether the face survives.
+  const artImg = slide?.querySelector('.hero-art img');
+  const artPos = artImg ? getComputedStyle(artImg).objectPosition : null;
+  const artNat = artImg && artImg.naturalWidth ? { w: artImg.naturalWidth, h: artImg.naturalHeight } : null;
   const head = box(slide?.querySelector('.hero-copy h1'));
   const sr = box(slide);
   return {
-    keys: slides.map((s) => s.querySelector('.hero-art')?.getAttribute('src') || '?'),
+    // The frame is a <picture>, so the file it shows lives on the img inside.
+    keys: slides.map((s) => s.querySelector('.hero-art img')?.getAttribute('src') || '?'),
     active,
     dots: document.querySelectorAll('.hero-dots .slider-dot').length,
     dotActive: [...document.querySelectorAll('.hero-dots .slider-dot')].findIndex((d) => d.classList.contains('is-active')),
@@ -44,6 +50,8 @@ const read = (page) => page.evaluate(() => {
     extrasShown: visible(slide?.querySelector('.hero-cred')),
     headline: (slide?.querySelector('.hero-copy h1')?.textContent || '').trim().slice(0, 46),
     art,
+    artPos,
+    artNat,
     head,
     // How much of the slide the photograph actually covers, in %.
     artSpan: art && sr ? { l: +((art.l - sr.l) / sr.w * 100).toFixed(1), r: +((art.l + art.w - sr.l) / sr.w * 100).toFixed(1) } : null,
@@ -59,8 +67,8 @@ await page.waitForSelector('.hero-stage .hero-slide', { timeout: 20000 });
 await page.waitForTimeout(1500);
 
 const start = await read(page);
-check('four slides in the client order', start.keys.length === 4 && /hero-bg-guidance/.test(start.keys[0]) && /hero-banner/.test(start.keys[1]) && /hero-bg-lake/.test(start.keys[2]) && /hero-bg-path/.test(start.keys[3]), start.keys.map((k) => k.split('/').pop()).join(' → '));
-check('opens on the Heart-Centered Guidance slide', start.active === 0 && start.dotActive === 0, `slide ${start.active}`);
+check('four slides in the client order', start.keys.length === 4 && /hero-banner/.test(start.keys[0]) && /hero-bg-guidance/.test(start.keys[1]) && /hero-bg-lake/.test(start.keys[2]) && /hero-bg-path/.test(start.keys[3]), start.keys.map((k) => k.split('/').pop()).join(' → '));
+check('opens on the cosmic welcome slide', start.active === 0 && start.dotActive === 0, `slide ${start.active}`);
 check('one dot per slide', start.dots === 4, `${start.dots} dots`);
 
 // Auto-rotation: 4s cadence, so two advances inside 9s of no interaction.
@@ -68,7 +76,7 @@ await page.waitForTimeout(9000);
 const spun = await read(page);
 check('rotates on its own every few seconds', spun.active !== 0 && spun.active < 4, `landed on slide ${spun.active} after 9s`);
 
-const titles = ['guidance', 'cosmic', 'lake', 'path'];
+const titles = ['cosmic', 'guidance', 'lake', 'path'];
 for (let i = 0; i < 4; i += 1) {
   await page.locator('.hero-dots .slider-dot').nth(i).click();
   await page.waitForTimeout(1300);
@@ -77,9 +85,12 @@ for (let i = 0; i < 4; i += 1) {
   check(`slide ${i + 1} (${titles[i]}): no horizontal overflow`, s.overflow === false, `stage ${s.stageH}px tall`);
   check(`slide ${i + 1} (${titles[i]}): its words are live text`, s.copyShown && s.headline.length > 8, `"${s.headline}"`);
   check(`slide ${i + 1} (${titles[i]}): no hotspot layer is left`, s.zones === 0, `hotspot links ${s.zones}`);
-  if (i === 1) {
+  if (i === 0) {
     check('the original hero keeps its cred, card and quote', s.extrasShown, `extras shown ${s.extrasShown}`);
-    check('the original hero crops from the bottom, not the face', s.art && s.art.h === s.stageH, `art ${s.art?.w}x${s.art?.h} in a ${s.stageH}px stage`);
+    // cover() has to trim this picture somewhere, and the anchor says where:
+    // 50% 0% keeps his head and gives up the glow at his feet instead.
+    const cosmicCoverH = s.artNat && s.art ? Math.round(s.artNat.h * (s.art.w / s.artNat.w)) : 0;
+    check('the original hero crops from the bottom, not the face', /(^|\s)0(%|px)$/.test(s.artPos || '') && cosmicCoverH > s.art.h, `${s.artPos} · drawn ${s.art?.w}x${cosmicCoverH} into a ${s.art?.h}px frame`);
   } else {
     check(`slide ${i + 1} (${titles[i]}): the photograph fills the frame`, s.artSpan && s.artSpan.l < 0.6 && s.artSpan.r > 99.4, `art spans ${s.artSpan?.l}%–${s.artSpan?.r}%`);
     check(`slide ${i + 1} (${titles[i]}): a wash sits between photo and words`, s.veilShown && s.photoSlide, `veil ${s.veilShown} · photo slide ${s.photoSlide}`);
@@ -126,8 +137,10 @@ for (let i = 0; i < 4; i += 1) {
   await p.waitForTimeout(1200);
   const s = await read(p);
   const name = titles[i];
-  check(`phone ${name}: shows live copy in the stacked composition`, s.copyShown && s.headline.length > 8, `"${s.headline}"`);
-  check(`phone ${name}: the headline sits above the whole photograph`, s.head && s.art && s.head.t < s.art.t && s.art.l <= 2 && s.art.w <= 392, `head y ${s.head?.t} · art ${s.art?.w}x${s.art?.h} at x ${s.art?.l}`);
+  check(`phone ${name}: shows live copy over the full-bleed photograph`, s.copyShown && s.headline.length > 8, `"${s.headline}"`);
+  // The compact hero is one frame the photograph fills and the words read
+  // through a wash, not a stack of blocks under a banner.
+  check(`phone ${name}: the photograph fills the screen and the words sit over it`, !!s.art && !!s.artSpan && s.artSpan.l < 0.6 && s.artSpan.r > 99.4 && s.art.l <= 2 && s.art.w <= 392 && !!s.head && s.head.t > s.art.t && s.veilShown, `art ${s.art?.w}x${s.art?.h} at x ${s.art?.l} spans ${s.artSpan?.l}%–${s.artSpan?.r}% · head y ${s.head?.t} · wash ${s.veilShown}`);
   check(`phone ${name}: no horizontal overflow`, s.overflow === false, `art top y ${s.art?.t}`);
   // Clicking a dot scrolls it into view, so pull the stage back to the top
   // before capturing what the slide actually looks like.
@@ -137,14 +150,15 @@ for (let i = 0; i < 4; i += 1) {
 }
 await phone.close();
 
-// Tablets (<=1000px container) are their own composition: words down the left,
-// the photograph and whatever the slide carries beneath it down the right.
+// Tablets (<=1000px container) are their own composition: the photograph fills
+// the frame, the words read down the left column over it, and whatever the
+// slide carries sits under them inside the same frame.
 const pad = await browser.newContext({ viewport: { width: 820, height: 1180 } });
 const t = await pad.newPage();
 await t.goto(`${WEB}/`, { waitUntil: 'domcontentloaded' });
 await t.waitForSelector('.hero-slide', { timeout: 20000 });
 await t.waitForTimeout(1500);
-for (const i of [0, 2, 3]) {
+for (const i of [1, 2, 3]) {
   await t.locator('.hero-dots .slider-dot').nth(i).click();
   // The dots sit at the bottom of a hero that is taller than the viewport, so
   // the click itself scrolls the page. Reading before undoing that measured
@@ -152,28 +166,29 @@ for (const i of [0, 2, 3]) {
   await t.evaluate(() => window.scrollTo(0, 0));
   await t.waitForTimeout(1200);
   const s = await read(t);
-  check(`tablet ${titles[i]}: words on the left, photograph on the right`, s.head && s.art && s.head.l + s.head.w <= s.art.l + 2 && Math.abs(s.art.w / s.art.h - 1.6) < 0.08 && s.copyShown, `head ends x ${s.head && s.head.l + s.head.w} · art starts x ${s.art?.l} (${s.art?.w}x${s.art?.h})`);
+  check(`tablet ${titles[i]}: the photograph fills the frame under the words`, !!s.artSpan && s.artSpan.l < 0.6 && s.artSpan.r > 99.4 && s.copyShown && !!s.head && s.head.l + s.head.w <= 620 && s.veilShown, `art spans ${s.artSpan?.l}%–${s.artSpan?.r}% · head x ${s.head?.l}+${s.head?.w} · wash ${s.veilShown}`);
   check(`tablet ${titles[i]}: the CTAs stay tappable`, s.overflow === false && s.art.t >= 0, `art top y ${s.art?.t} · overflow ${s.overflow}`);
   await t.evaluate(() => window.scrollTo(0, 0));
   await t.waitForTimeout(250);
   await t.screenshot({ path: `${shots}98-hero-${titles[i]}-tablet.png`, clip: { x: 0, y: 0, width: 820, height: 900 } });
 }
-await t.locator('.hero-dots .slider-dot').nth(1).click();
+await t.locator('.hero-dots .slider-dot').nth(0).click();
 await t.evaluate(() => window.scrollTo(0, 0));
 await t.waitForTimeout(1200);
 const tCosmic = await read(t);
 // The three floating pieces are what the desktop hangs over the artwork. Here
-// they follow it down the right column, so nothing can ever sit on the face.
+// they drop into the frame under the copy, so nothing can ever sit on the face
+// and nothing can hang past the bottom of the hero.
 const pieces = await t.evaluate(() => {
   const slide = document.querySelector('.hero-slide.is-active');
-  const art = slide.querySelector('.hero-art').getBoundingClientRect();
+  const stage = document.querySelector('.hero-stage').getBoundingClientRect();
   return ['.hero-cred', '.hero-note', '.hero-quote'].map((sel) => {
     const r = slide.querySelector(sel).getBoundingClientRect();
-    return { sel, shown: r.width > 20 && r.height > 8, belowArt: r.top >= art.bottom - 2, rightCol: r.left >= art.left - 2 };
+    return { sel, shown: r.width > 20 && r.height > 8, insideStage: r.top >= stage.top - 1 && r.bottom <= stage.bottom + 2, onScreen: r.left >= -1 };
   });
 });
-check('tablet cosmic: keeps its two-column composition', tCosmic.headline.startsWith('Navigate Life'), tCosmic.headline);
-check('tablet cosmic: cred, card and quote all stay under the photograph', pieces.every((p) => p.shown && p.belowArt && p.rightCol), pieces.map((p) => `${p.sel} shown ${p.shown} below ${p.belowArt} right ${p.rightCol}`).join(' · '));
+check('tablet cosmic: keeps its copy over the photograph', tCosmic.headline.startsWith('Navigate Life'), tCosmic.headline);
+check('tablet cosmic: cred, card and quote all stay inside the frame', pieces.every((p) => p.shown && p.insideStage && p.onScreen), pieces.map((p) => `${p.sel} shown ${p.shown} inside ${p.insideStage} left ${p.onScreen}`).join(' · '));
 await pad.close();
 
 // Reduced motion: no auto-advance, controls still work.

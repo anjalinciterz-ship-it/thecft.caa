@@ -54,7 +54,7 @@ const VIEWPORTS = [
   { w: 414, h: 896 }, { w: 430, h: 932 }, { w: 768, h: 1024 }, { w: 820, h: 1180 },
   { w: 912, h: 1366 }, { w: 1024, h: 768 }, { w: 1440, h: 900 },
 ];
-const KEYS = ['guidance', 'cosmic', 'lake', 'path'];
+const KEYS = ['cosmic', 'guidance', 'lake', 'path'];
 const CONTENT = '.hero-eyebrow,.hero-copy h1,.hero-lead,.hero-actions,.hero-features,.hero-cred,.hero-note,.hero-quote,.hero-planks,.hero-footnote';
 
 /* Everything about one slide, in page pixels. */
@@ -87,9 +87,13 @@ const measure = (page) =>
       veil: { display: getComputedStyle(veil).display, bg: getComputedStyle(veil).backgroundImage.slice(0, 60) },
       pieces: pieces ? { ...r(pieces), display: getComputedStyle(pieces).display } : null,
       dots: r(dots),
-      boxes,
-      contentTop: Math.min(...boxes.map((b) => b.top)),
-      contentBottom: Math.max(...boxes.map((b) => b.bottom)),
+      // A block the design hides contributes no pixels to the frame, and its
+      // rect is the zero at the top-left of the page: folding those into the
+      // content bounds read as the words spilling out above the hero. So the
+      // bounds are over rendered boxes only, and `rendered` says which ones.
+      boxes: boxes.map((b) => ({ ...b, rendered: b.h > 0 })),
+      contentTop: Math.min(...boxes.filter((b) => b.h > 0).map((b) => b.top)),
+      contentBottom: Math.max(...boxes.filter((b) => b.h > 0).map((b) => b.bottom)),
       docOverflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
       stageRatio: stageCS.aspectRatio,
       // Where the words actually sit, for the legibility pass, with the colour
@@ -173,12 +177,14 @@ try {
       );
       check(`${tag} ${m.key}: buttons inside`, m.text.actions.bottom <= m.slide.bottom - 8, `btn bottom ${Math.round(m.text.actions.bottom)}`);
       check(`${tag} ${m.key}: no sideways overflow`, m.docOverflow <= 0, `overflow ${m.docOverflow}px`);
-      if (m.pieces && m.pieces.display !== 'contents') {
+      if (m.pieces && m.pieces.h > 0) {
         check(
           `${tag} ${m.key}: cards inside the frame`,
           m.pieces.bottom <= m.slide.bottom - 6 && m.pieces.top >= m.slide.top,
           `pieces ${Math.round(m.pieces.top)}-${Math.round(m.pieces.bottom)}`,
         );
+      } else if (m.pieces) {
+        console.log(`SKIP  ${tag} ${m.key}: its floating cards are not shown at this width`);
       }
       if (i === 0 || vp.w <= 430 || (vp.w >= 768 && vp.w <= 912)) {
         await page.screenshot({ path: path.join(shots, `${tag}-${m.key}.png`) });
@@ -188,8 +194,12 @@ try {
     const heights = results.map((r) => Math.round(r.stageH * 10) / 10);
     const spread = Math.max(...heights) - Math.min(...heights);
     check(`${tag}: all four slides share one height`, spread <= 1, heights.join(' / '));
-    const floor = vp.w <= 700 ? 760 : vp.w <= 1000 ? 800 : 0;
-    if (floor) check(`${tag}: height respects the ${floor}px floor`, heights[0] >= floor - 1, `${heights[0]}px`);
+    // The floor is the design's minimum, but a short screen cannot show more
+    // than all of itself. What he asked for on the phone is that the hero fills
+    // the viewport under the header, so the promise is capped by the room.
+    const offered = vp.h - results[0].slide.top;
+    const floor = vp.w <= 700 ? Math.min(760, offered) : vp.w <= 1000 ? Math.min(800, offered) : 0;
+    if (floor) check(`${tag}: height respects the ${Math.round(floor)}px floor`, heights[0] >= floor - 1, `${heights[0]}px, screen offers ${Math.round(offered)}px`);
     const cap = vp.w > 700 && vp.w <= 1000 ? 900 : 0;
     if (cap) check(`${tag}: tablet height capped at ${cap}px`, heights[0] <= cap + 1, `${heights[0]}px`);
 
@@ -224,9 +234,13 @@ try {
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto(`${WEB}/`, { waitUntil: 'load' });
   await page.waitForSelector('.hero-stage');
+  // The rotation opens on the cosmic slide, so take the dot to the photograph
+  // whose slice this is.
+  await page.locator('.hero-dots .slider-dot').nth(KEYS.indexOf('guidance')).click();
+  await page.waitForTimeout(1300);
   const d = await measure(page);
   check('desktop: stage keeps its 1824/862 box', Math.abs(d.stageH - (d.stage.w * 862) / 1824) < 2, `${Math.round(d.stageH)}px`);
-  check('desktop: guidance slice is uncropped', d.art.nw / d.art.nh > 2 && Math.abs(d.art.h - d.stage.h) < 1, `${d.art.nw}x${d.art.nh}`);
+  check('desktop: guidance slice is uncropped', d.key === 'guidance' && d.art.nw / d.art.nh > 2 && Math.abs(d.art.h - d.stage.h) < 1, `${d.key} ${d.art.nw}x${d.art.nh}`);
 
   await browser.close();
 } catch (e) {
