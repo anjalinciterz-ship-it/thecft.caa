@@ -3,7 +3,6 @@ import { Link, useParams } from 'react-router-dom';
 import { getCourse, includeLabel, includeLink, courses as shippedCourses } from '../data/courses';
 import { OfferingPrice, findOffering, useCatalog } from '../lib/catalog';
 import { useAuth } from '../lib/auth';
-import CoursePlayer from '../components/CoursePlayer';
 import { Icon } from '../components/icons';
 import CourseBanner from '../components/CourseBanner';
 import CourseCard from '../components/CourseCard';
@@ -19,7 +18,7 @@ export default function CourseDetail() {
   /* The server row wins for price, currency and lesson counts; the shipped
      content still renders the page when the catalog API is unreachable. */
   const course = findOffering(offerings, id) || getCourse(id);
-  const { user, owns } = useAuth();
+  const { owns } = useAuth();
   const [detailOpen, setDetailOpen] = useState(false);
 
   usePageMeta(
@@ -89,13 +88,14 @@ export default function CourseDetail() {
               </div>
               <h1 className="cq-post-title">{course.name}</h1>
               <p className="cq-post-dek">{course.short}</p>
-              {/* Back on 2026-11-18. The member keeps the same route out of the
-                  page as before: the button becomes Open course once owned. */}
+              {/* Back on 2026-11-18. Nothing plays on this page: owning a course
+                  only changes the button to Open Your Course, which hands the
+                  member to the dashboard. */}
               <div className="cq-buy-row">
                 <OfferingPrice offering={course} className="cq-buy-price" />
                 {unlocked ? (
                   <Link to={`/dashboard/courses/${encodeURIComponent(course.slug)}`} className="cq-buy-btn">
-                    Open course
+                    Open Your Course
                     <Icon name="arrow" size={17} />
                   </Link>
                 ) : (
@@ -123,8 +123,6 @@ export default function CourseDetail() {
           </div>
         </div>
       </section>
-
-      {unlocked && user && <CoursePlayer courseId={course.id} />}
 
       {/* Parked on 2026-11-16 at his request. Everything from The Purpose up to
           the FAQs is off the course pages for now; uncomment to bring it back.
