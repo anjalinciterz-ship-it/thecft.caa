@@ -4,12 +4,12 @@ import react from '@vitejs/plugin-react';
 import { mediaStream } from './dev/media-stream.js';
 
 export default defineConfig({
-  /* The audiobooks live in /media at the repo root, deliberately outside public:
-     Vite only copies public into dist, so 404MB of audio no longer rides in every
-     build or deploy. The dev and preview plugins stream that folder at /media
-     with byte ranges, so local playback is unchanged, and production points at a
-     CDN through VITE_AUDIO_BASE. */
-  plugins: [react(), mediaStream(fileURLToPath(new URL('./media', import.meta.url)))],
+  /* The audiobooks live in /media at the repo root, tracked in git exactly once
+     and never duplicated in public. The dev and preview servers stream that
+     folder at /media with byte ranges, and every build copies it into dist, so
+     the recordings ship inside the bundle and Netlify serves them as ordinary
+     static files. */
+  plugins: [react(), mediaStream(fileURLToPath(new URL('./media', import.meta.url)), fileURLToPath(new URL('./dist', import.meta.url)))],
   build: {
     rollupOptions: {
       output: {

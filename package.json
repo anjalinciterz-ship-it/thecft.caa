@@ -6,7 +6,6 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "stage:media": "node scripts/stage-media.mjs",
     "preview": "vite preview",
     "test:unit": "node --test tests/unit/*.test.js",
     "test:e2e": "playwright test",

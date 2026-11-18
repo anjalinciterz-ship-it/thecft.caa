@@ -1,5 +1,5 @@
 import { createReadStream } from 'node:fs';
-import { stat } from 'node:fs/promises';
+import { cp, stat } from 'node:fs/promises';
 import path from 'node:path';
 
 const TYPES = { '.mp3': 'audio/mpeg', '.m4a': 'audio/mp4', '.mp4': 'video/mp4' };
@@ -58,14 +58,16 @@ function respond(file, type, size, req, res) {
 }
 
 /**
- * Serves the repo-root media folder over /media with byte-range support, in the
- * dev server and in `vite preview`. The audiobooks sit outside public on purpose,
- * so they never enter dist; this is what lets a local build play a track exactly
- * the way the deployed site will once VITE_AUDIO_BASE points at the CDN holding
- * the same files.
+ * The audiobooks. They live in /media at the repo root, tracked in git once, and
+ * this plugin is the only thing that puts them where a player can reach them:
+ * streamed at /media with byte ranges by the dev and preview servers, and copied
+ * into dist by every build so Netlify publishes them as ordinary static files.
+ * Bunny Stream is out of the picture for book audio (2026-11-18): the recordings
+ * are served from the bundle, and the CDN only still carries the films.
  */
-export function mediaStream(mediaRoot) {
+export function mediaStream(mediaRoot, distRoot) {
   const root = path.resolve(mediaRoot);
+  const out = distRoot ? path.resolve(distRoot) : null;
   const middleware = (req, res) => {
     if (req.method !== 'GET' && req.method !== 'HEAD') {
       res.statusCode = 405;
@@ -85,6 +87,12 @@ export function mediaStream(mediaRoot) {
     },
     configurePreviewServer(server) {
       server.middlewares.use('/media', middleware);
+    },
+    /* Vite empties dist on every build, so the recordings have to be put back
+       each time. They are the only large thing in the publish folder. */
+    async closeBundle() {
+      if (!out) return;
+      await cp(root, path.join(out, 'media'), { recursive: true });
     },
   };
 }

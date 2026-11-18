@@ -3,11 +3,10 @@
 # (Site settings → Environment variables) to the Render URL, so the same commit
 # works whether the API lives on the same host or on Render.
 #
-# VITE_AUDIO_BASE is the other one to set there: the audiobooks no longer ship
-# inside dist, so the deployed players need the origin that serves those bytes
-# (a Bunny storage or pull zone). Left unset the build still asks for /media, and
-# `npm run build && npm run stage:media` is the fallback that keeps publishing the
-# files as Netlify static assets instead.
+# The audiobooks ride inside the bundle: `npm run build` copies the tracked
+# repo-root media folder into dist, so Netlify serves the 18 recordings itself as
+# static files with byte ranges. No CDN origin and no environment variable is
+# needed for book audio.
 [build]
   command = "npm run build"
   publish = "dist"
@@ -57,8 +56,8 @@
   [headers.values]
     Cache-Control = "public, max-age=0, must-revalidate"
 
-# Only present when the build is followed by `npm run stage:media`. Range
-# requests are served by Netlify's own static file handler.
+# The audiobook recordings, published by the build. Range requests are served by
+# Netlify's own static file handler, which is what makes scrubbing work.
 [[headers]]
   for = "/media/*"
   [headers.values]

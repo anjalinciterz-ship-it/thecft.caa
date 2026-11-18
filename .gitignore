@@ -20,6 +20,6 @@ yarn-error.log*
 tests/browser/shots/
 
 # The audiobooks live in /media at the repo root and belong in git exactly once,
-# there. `npm run stage:media` repeats them into dist for a self-hosted deploy,
-# and that copy is what must never be committed.
+# there. `npm run build` repeats them into dist for Netlify to publish, and that
+# generated copy is what must never be committed.
 dist/media/
