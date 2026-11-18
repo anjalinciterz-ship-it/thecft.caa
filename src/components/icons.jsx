@@ -204,13 +204,6 @@ const paths = {
       <path d="M10.1 8.9 15.5 12l-5.4 3.1Z" fill="currentColor" stroke="none" />
     </>
   ),
-  linkedin: (
-    <path
-      fill="currentColor"
-      stroke="none"
-      d="M4.7 3a2.1 2.1 0 1 0 0 4.2 2.1 2.1 0 0 0 0-4.2ZM2.9 9.1h3.7V21H2.9Zm6.2 0h3.5v1.6h.1c.5-.9 1.8-1.9 3.6-1.9 3.9 0 4.6 2.5 4.6 5.8V21h-3.7v-5.7c0-1.4 0-3.1-1.9-3.1s-2.2 1.5-2.2 3V21H9.1Z"
-    />
-  ),
 };
 
 export function Icon({ name, size = 24, className, style }) {
