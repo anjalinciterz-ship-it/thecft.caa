@@ -21,17 +21,17 @@ const painted = (page, selector, property) => page.evaluate(
 test('the site default opens the page and the visitor choice is remembered afterwards', async ({ page }) => {
   await setAppearance({ defaultTheme: 'dark' });
   await page.goto('/');
-  await expect(page.locator('.appearance-toggle')).toBeVisible();
+  await expect(page.locator('.ft-theme')).toBeVisible();
   expect(await theme(page)).toBe('dark');
 
-  await page.locator('.appearance-toggle').click();
+  await page.locator('.ft-theme').click();
   await expect.poll(() => theme(page)).toBe('light');
   expect(await page.evaluate(() => localStorage.getItem('cft-appearance'))).toBe('light');
 
   await page.reload({ waitUntil: 'networkidle' });
   expect(await theme(page)).toBe('light');
 
-  await page.locator('.appearance-toggle').click();
+  await page.locator('.ft-theme').click();
   await expect.poll(() => theme(page)).toBe('dark');
   expect(await page.evaluate(() => localStorage.getItem('cft-appearance'))).toBe('dark');
 });
@@ -67,7 +67,7 @@ test('hiding the control does not change what either appearance shows', async ({
   await setAppearance({ toggleEnabled: false, defaultTheme: 'light' });
   await page.goto('/courses');
   await expect.poll(() => theme(page)).toBe('light');
-  await expect(page.locator('.appearance-toggle')).toHaveCount(0);
+  await expect(page.locator('.ft-theme')).toHaveCount(0);
   // Same programs, same prices, same calls — only the switch is gone.
   await expect(page.getByRole('link', { name: /Open course|Enrol|View|Explore/i })).not.toHaveCount(0);
   expect(await painted(page, 'body', 'backgroundColor')).toBe('rgb(255, 255, 255)');

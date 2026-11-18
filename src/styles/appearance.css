@@ -274,33 +274,9 @@
 [data-theme='dark'] .db-app.ad-app :is(.cms-public-page, .cms-blocks) .cms-bg-white{background:#ffffff;color:#2e2240;}
 
 /* ---------- The control itself ----------
-   Sits in the header next to the account pill. The header keeps its plum sky in
-   both appearances, so the button is written once. The word names what the next
-   click brings, and the choice is remembered locally so the next visit opens the
-   same way. */
-.appearance-toggle{
-  display:inline-flex;align-items:center;justify-content:center;gap:8px;flex:none;
-  height:38px;padding:0 14px;border-radius:50px;cursor:pointer;
-  background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);
-  color:var(--color-warm-ivory);
-  font:700 12px/1 var(--font-body);letter-spacing:.06em;
-  transition:background .2s ease,border-color .2s ease,color .2s ease,transform .2s ease;
-}
-.appearance-toggle:hover{background:rgba(255,255,255,.16);border-color:rgba(243,220,166,.55);transform:translateY(-1px);}
-.appearance-toggle:focus-visible{outline:2px solid var(--gold-ink);outline-offset:3px;}
-.appearance-toggle svg{width:16px;height:16px;flex:none;}
-.appearance-toggle .ap-word{display:inline;}
-/* Inside the member shell the daylight topbar is paper rather than plum, so the
-   pill is re-cut to match the Visit Website button beside it. The night shell
-   is plum, where the rules above already suit. */
-.db-app.db-light .appearance-toggle{background:rgba(255,255,255,.6);border-color:var(--db-gold-line);color:var(--gold-ink);}
-.db-app.db-light .appearance-toggle:hover{background:var(--db-badge-bg);border-color:var(--db-gold);}
-@media(max-width:520px){
-  .appearance-toggle{width:44px;height:44px;padding:0;}
-  .appearance-toggle .ap-word{display:none;}
-}
-
-@media (prefers-reduced-motion:reduce){
-  .appearance-toggle{transition:none;}
-  .appearance-toggle:hover{transform:none;}
-}
+   One switch, in the footer of whichever page you are standing on, public or
+   member. The button is drawn once in global.css and the night layer above
+   already re-cuts it for a plum sky. Out front it hangs under the social
+   marks; in the member shell it sits in a row, so it keeps the shape and
+   gives back the top gap. */
+.db-app .ft-theme{margin-top:0;min-height:44px;}
