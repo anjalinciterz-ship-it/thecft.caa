@@ -106,6 +106,10 @@
    repeat it. */
 [data-theme='dark'] .site-footer{color:#f8f5ef;border-top-color:rgba(255,255,255,.12);}
 [data-theme='dark'] :is(.ft-col a, .ft-socials a, .ft-brand-line){color:#f8f5ef;}
+/* The footer's theme button is gold on paper by day, so at night it takes the
+   same gold mark the developer credit uses rather than the ivory links. */
+[data-theme='dark'] .ft-theme{background:rgba(255,255,255,.06);border-color:rgba(232,185,95,.42);color:var(--color-champagne-gold);}
+[data-theme='dark'] .ft-theme:hover{background:rgba(255,255,255,.13);border-color:rgba(232,185,95,.72);}
 [data-theme='dark'] .ft-sep{background:rgba(255,255,255,.2);}
 [data-theme='dark'] :is(.ft-made, .ft-made:hover, .ft-made:focus-visible){color:var(--color-champagne-gold);}
 

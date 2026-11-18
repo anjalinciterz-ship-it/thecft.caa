@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { site } from '../data/site';
+import { useAppearance } from '../lib/appearance';
 import { Icon } from './icons';
 
 // Columns mirror the reference footer layout, but every entry is a page or
@@ -50,6 +51,26 @@ const COLS = [
   },
 ];
 
+/* The theme choice left the navbar, so it lives here instead: one bolt under
+   the social marks that names the appearance the next click brings. */
+function ThemeSwitch() {
+  const { theme, setAppearance, toggleEnabled } = useAppearance();
+  if (!toggleEnabled) return null;
+  const next = theme === 'light' ? 'dark' : 'light';
+  const label = next === 'light' ? 'Switch to lighter' : 'Switch to cosmic';
+  return (
+    <button
+      type="button"
+      className="ft-theme"
+      onClick={() => setAppearance(next)}
+      aria-label={label}
+    >
+      <Icon name="bolt" size={15} />
+      {label}
+    </button>
+  );
+}
+
 export default function Footer() {
   return (
     <footer className="site-footer">
@@ -89,6 +110,7 @@ export default function Footer() {
               </a>
             ))}
           </div>
+          <ThemeSwitch />
         </div>
       </div>
 

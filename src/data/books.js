@@ -60,17 +60,10 @@ export const books = [
       heading: 'The Audiobook',
       groups: [
         {
-          label: 'Book 1',
-          tracks: [1, 2, 3, 4, 5, 6].map((n) => ({
-            label: `Book 1 · Track ${n}`,
+          label: null,
+          tracks: [1, 2, 3, 4, 5, 6, 7, 8].map((n) => ({
+            label: `Track ${n}`,
             src: `${SECRET_OF_CREATION}/Audio Track ${n}.mp3`,
-          })),
-        },
-        {
-          label: 'Book 2',
-          tracks: [1, 2].map((n) => ({
-            label: `Book 2 · Track ${n}`,
-            src: `${SECRET_OF_CREATION}/Audio Track ${n + 6}.mp3`,
           })),
         },
       ],
@@ -131,17 +124,13 @@ export const books = [
       groups: [
         {
           label: null,
-          tracks: [1, 2, 3, 4, 5, 6, 7, 8, 9].map((n) => ({
-            label: `Track ${n}`,
-            src: `${CAUGHT_IN_THE_ACT}/${n}-Audio-Track.mp3`,
-          })),
-        },
-        {
-          // He asked for this recording to open under its own heading. Cards
-          // still number by position, so it stays Audio Track 10.
-          label: 'Book 2',
           tracks: [
+            ...[1, 2, 3, 4, 5, 6, 7, 8, 9].map((n) => ({
+              label: `Track ${n}`,
+              src: `${CAUGHT_IN_THE_ACT}/${n}-Audio-Track.mp3`,
+            })),
             // Named the way the client stored it rather than N-Audio-Track.mp3.
+            // Cards still number by position, so it stays Audio Track 10.
             { label: 'Track 10', src: `${CAUGHT_IN_THE_ACT}/part2CINTHEA.mp3` },
           ],
         },

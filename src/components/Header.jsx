@@ -2,7 +2,6 @@ import { lazy, Suspense, useEffect, useRef, useState } from 'react';
 import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { site } from '../data/site';
 import { initials, useAuth } from '../lib/auth';
-import AppearanceToggle from './AppearanceToggle';
 import { Icon } from './icons';
 
 const HeaderMenus = lazy(() => import('./HeaderMenus'));
@@ -146,7 +145,6 @@ export default function Header() {
         </nav>
 
         <div className="nav-actions">
-          <AppearanceToggle />
           {isAuthed ? (
             <>
               <Link to="/dashboard" className="user-pill">

@@ -927,6 +927,17 @@ section{padding:var(--section-py) 0;}
 .ft-socials{display:flex;gap:16px;}
 .ft-socials a{color:#120a24;}
 .ft-socials a:hover{color:var(--violet-500);}
+/* The theme choice sits under the social marks. It is a button, not a link,
+   because it changes what the page looks like rather than where you go. */
+.ft-theme{
+  display:inline-flex;align-items:center;gap:8px;margin-top:20px;padding:11px 14px;
+  border:1px solid rgba(138,106,31,.45);border-radius:50px;background:rgba(255,255,255,.55);
+  color:var(--gold-ink);font:700 11px/1 var(--font-body);letter-spacing:.09em;text-transform:uppercase;
+  white-space:nowrap;cursor:pointer;transition:background .2s ease,border-color .2s ease,color .2s ease;
+}
+.ft-theme svg{flex:none;}
+.ft-theme:hover{background:#fff;border-color:rgba(138,106,31,.75);}
+.ft-theme:focus-visible{outline:2px solid var(--color-champagne-gold);outline-offset:3px;}
 .ft-bottom{border-top:1px solid rgba(18,10,36,.18);}
 /* Emblem left, the legal line dead centre, the developer credit right. A
    three-column grid rather than space-between, so the centre stays centred no
@@ -962,7 +973,10 @@ section{padding:var(--section-py) 0;}
 }
 @media(max-width:640px){.ft-made{padding:12px 2px;}.ft-legal a{padding:12px 6px;margin:-12px -6px;}}
 @media(max-width:1080px){.ft-cols{grid-template-columns:repeat(3,1fr);}.ft-follow{border-left:0;padding-left:0;}}
-@media(max-width:640px){.ft-cols{grid-template-columns:repeat(2,minmax(0,1fr));gap:26px;}}
+@media(max-width:640px){.ft-cols{grid-template-columns:repeat(2,minmax(0,1fr));gap:26px;}
+  /* Two columns leave the follow column about 154px, narrower than the pill, so
+     it takes the full cell and lets the words stack rather than run past it. */
+  .ft-theme{width:100%;justify-content:center;white-space:normal;line-height:1.35;padding:10px 14px;}}
 
 /* ---------- Misc utility ---------- */
 .text-center{text-align:center;}
@@ -4040,6 +4054,7 @@ img.touch-f-ico{width:16px;height:16px;object-fit:contain;}
   .ft-socials{gap:6px;flex-wrap:wrap;}
   .ft-socials a{display:inline-flex;align-items:center;justify-content:center;min-width:44px;min-height:44px;}
   .ft-made{display:inline-flex;align-items:center;min-height:44px;}
+  .ft-theme{min-height:44px;}
   /* The dot is painted inside the padding box so nine gold pixels can be
      tapped as a forty-four; the row loses its gaps to keep the spacing the
      same, because the padding now supplies it. The two- and three-class

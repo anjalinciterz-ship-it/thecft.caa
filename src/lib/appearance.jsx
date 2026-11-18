@@ -2,11 +2,11 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useState } 
 import { apiRequest } from './api';
 
 /**
- * Two brand appearances, both from the locked palette. Light is the site as it
- * has always shipped, and it is what a first visitor gets. Dark is the same
- * pages in the cosmic plum-blue sky they were built in. Which one a first
- * visitor gets is a site setting; a visitor who chooses remembers, and the
- * choice is theirs alone — it is presentation, never access.
+ * Two brand appearances, both from the locked palette. Cosmic dark is what a
+ * first visitor gets; light is the same pages in the ivory and paper they
+ * shipped with before. Which one a first visitor gets is a site setting; a
+ * visitor who chooses remembers, and the choice is theirs alone — it is
+ * presentation, never access.
  */
 
 export const APPEARANCES = ['light', 'dark'];
@@ -14,6 +14,7 @@ export const APPEARANCES = ['light', 'dark'];
 // appearance a visitor can pick for themselves.
 const SITE_DEFAULTS = [...APPEARANCES, 'system'];
 const STORAGE_KEY = 'cft-appearance';
+const SITE_DEFAULT = 'dark';
 const AppearanceContext = createContext(null);
 
 function readStored() {
@@ -35,7 +36,7 @@ function systemAppearance() {
 
 export function AppearanceProvider({ children }) {
   const [stored, setStored] = useState(readStored);
-  const [site, setSite] = useState({ defaultTheme: 'light', toggleEnabled: true });
+  const [site, setSite] = useState({ defaultTheme: SITE_DEFAULT, toggleEnabled: true });
   const [system, setSystem] = useState(systemAppearance);
 
   useEffect(() => {
@@ -45,14 +46,14 @@ export function AppearanceProvider({ children }) {
         const appearance = data?.settings?.appearance;
         if (!appearance) return;
         setSite({
-          defaultTheme: SITE_DEFAULTS.includes(appearance.defaultTheme) ? appearance.defaultTheme : 'light',
+          defaultTheme: SITE_DEFAULTS.includes(appearance.defaultTheme) ? appearance.defaultTheme : SITE_DEFAULT,
           toggleEnabled: appearance.toggleEnabled !== false,
         });
       })
       .catch((failure) => {
         // No answer from the settings endpoint only means nobody has overridden
-        // the site default, which is light with the switch offered.
-        if (failure.code !== 'ABORTED') setSite({ defaultTheme: 'light', toggleEnabled: true });
+        // the site default, which is cosmic with the switch offered.
+        if (failure.code !== 'ABORTED') setSite({ defaultTheme: SITE_DEFAULT, toggleEnabled: true });
       });
     return () => controller.abort();
   }, []);

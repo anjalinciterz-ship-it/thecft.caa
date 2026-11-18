@@ -350,20 +350,9 @@ export default function Connect() {
                   <li>
                     <Icon name="mail" size={18} />
                     <span>
-                      <em>Email &amp; Phone</em>
-                      <b className="cn-contact-line">
-                        <a href={`mailto:${site.email}`}>{site.email}</a>
-                        <i aria-hidden="true">·</i>
-                        <a href={`tel:${site.phone.replace(/[^0-9]/g, '')}`}>{site.phone}</a>
-                      </b>
-                    </span>
-                  </li>
-                  <li>
-                    <Icon name="pin" size={18} />
-                    <span>
-                      <em>Location</em>
+                      <em>Email</em>
                       <b>
-                        {site.address.line1}, {site.address.line2}
+                        <a href={`mailto:${site.email}`}>{site.email}</a>
                       </b>
                     </span>
                   </li>

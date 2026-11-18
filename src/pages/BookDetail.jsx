@@ -112,9 +112,6 @@ export default function BookDetail() {
         <section className="cq-band cq-lav">
           <div className="container">
             <div className="cq-prose">
-              <span className="cq-eyebrow">
-                Listen
-              </span>
               <h2 className="cq-h2">Listen to the Book</h2>
             </div>
             <div className="cq-audio-wrap">
