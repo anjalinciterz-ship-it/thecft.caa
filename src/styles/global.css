@@ -487,6 +487,15 @@ p{margin:0 0 1em;}
 .hero-note-lines .v{display:block;font-family:var(--font-head);font-size:1.45em;color:#f0c97e;}
 .hero-note-lines .m{display:block;margin-top:.45em;font-size:.8em;color:rgba(238,231,250,0.75);}
 .hero-quote{left:82%;top:55.4%;width:14.4%;margin:0;padding:1.5em 1.4em;font-size:1em;}
+/* The desktop glass card was the one piece of the composition that painted
+   before its words: the wide cascade reaches the quote late, so the frame sat
+   empty for most of every four-second turn. It now arrives on the same beat as
+   its first word, which is what the compact layouts already do below. The beat
+   is handed over as --piece-delay from TIMING.wide.quote in Home.jsx, so the
+   card and the text cannot drift apart. */
+@container (min-width:1001px){
+  .hero-slide.is-active .hero-quote{animation:hero-fade .7s ease var(--piece-delay,0s) both;}
+}
 .hero-quote blockquote{margin:0;font-family:var(--font-head);font-size:1.6em;line-height:1.25;color:#fff4e2;}
 .hero-quote figcaption{display:flex;align-items:center;gap:.7em;margin-top:.9em;font-size:1.02em;line-height:1.2;color:#f0d5a0;}
 .hero-cred{position:absolute;left:82.2%;top:10.4%;width:14%;z-index:3;font-size:1em;text-align:right;line-height:1.1;}

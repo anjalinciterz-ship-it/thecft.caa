@@ -245,7 +245,11 @@ function HeroSlide({ slide, h, eager, active, t }) {
             </span>
           </Link>
 
-          <figure className="hero-quote" key={runKey('quote', active)}>
+          <figure
+            className="hero-quote"
+            key={runKey('quote', active)}
+            style={{ '--piece-delay': `${t.quote[0]}s` }}
+          >
             <blockquote>
               <TextEffect per="word" preset="spring" delay={t.quote[0]} step={t.quote[1]} intensity={0.3}>
                 {`“${site.quote.text}”`}
