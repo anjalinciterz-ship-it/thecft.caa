@@ -142,7 +142,6 @@ function MenuConnect() {
         { to: '/connect#cn-wisdom', label: 'Join the Wednesday Wisdom Class' },
         { href: site.calendly, external: true, label: 'Book a call' },
         { href: `mailto:${site.email}`, label: site.email },
-        { href: `tel:${site.phone.replace(/[^\d+]/g, '')}`, label: site.phone },
       ]}
       cta={{ to: '/connect', label: 'See all ways to connect' }}
     />
