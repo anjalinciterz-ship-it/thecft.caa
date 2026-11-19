@@ -198,8 +198,7 @@
 [data-theme='dark'] :is(.fq-pill.active, .bl-pill.active){background:#f8f5ef;border-color:#f8f5ef;color:#120a24;}
 
 /* Gold hairlines that were darkened for paper step back up to champagne. */
-[data-theme='dark'] :is(.book-card-tracks, .book-card .card-cta, .cover-flip, .faq-item .faq-ico, .faq-chev, .cq-band .journey-chips li, .journey-dimension .num){border-color:rgba(232,185,95,.42);}
-[data-theme='dark'] .cover-flip{background:rgba(255,255,255,.1);}
+[data-theme='dark'] :is(.book-card-tracks, .book-card .card-cta, .faq-item .faq-ico, .faq-chev, .cq-band .journey-chips li, .journey-dimension .num){border-color:rgba(232,185,95,.42);}
 [data-theme='dark'] .journey-dimension .num{color:rgba(232,185,95,.55);}
 
 /* The message form's own panel: frosted white on paper, frosted plum on night. */

@@ -1348,14 +1348,20 @@ section{padding:var(--section-py) 0;}
 
 .book-cover-frame{position:relative;border-radius:var(--radius-md);overflow:hidden;box-shadow:0 32px 72px rgba(8,3,20,0.62);border:1px solid rgba(255,255,255,0.16);}
 .book-cover-frame img{width:100%;height:auto;display:block;}
+/* The flip used to sit on the cover itself, at left:14px bottom:14px over
+   whatever artwork that page shipped, and the label disappeared into it. It is
+   a separate control now, below the book, and a solid gold pill instead of a
+   translucent one so it stays legible on every band. */
+.book-cover-stack{display:flex;flex-direction:column;align-items:center;gap:14px;}
 .cover-flip{
-  position:absolute;left:14px;bottom:14px;padding:9px 16px;border-radius:50px;cursor:pointer;
-  font-family:var(--font-body);font-size:12px;font-weight:800;letter-spacing:.4px;color:var(--gold-300);
-  background:rgba(18,10,36,0.62);border:1px solid rgba(243,220,166,0.45);
-  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
-  transition:background .2s ease, color .2s ease;
+  display:inline-flex;align-items:center;justify-content:center;
+  padding:12px 22px;border:0;border-radius:999px;cursor:pointer;
+  font-family:var(--font-body);font-size:13.5px;font-weight:800;letter-spacing:.3px;
+  color:#120a24;background:var(--gold-grad);box-shadow:0 10px 26px rgba(232,185,95,0.32);
+  transition:filter .2s ease, box-shadow .2s ease;
 }
-.cover-flip:hover{background:linear-gradient(98deg,#fbe7bc,#ce9c42);color:#120a24;border-color:transparent;}
+.cover-flip:hover{filter:brightness(1.05);box-shadow:0 14px 34px rgba(232,185,95,0.42);}
+.cover-flip:focus-visible{outline:2px solid var(--color-champagne-gold);outline-offset:3px;}
 .book-sub{font-family:var(--font-head);font-size:calc(23px * var(--ts-h,1));font-style:italic;color:var(--gold-300);margin:0 0 6px;}
 .book-quote{margin:24px 0;padding:0;font-family:var(--font-head);font-size:calc(22px * var(--ts-h,1));line-height:1.45;font-style:italic;color:var(--text-on-dark);}
 .book-nav-links{display:flex;gap:14px;flex-wrap:wrap;}
@@ -3785,13 +3791,6 @@ img.touch-f-ico{width:16px;height:16px;object-fit:contain;}
   box-shadow:var(--shadow-lift);
   background:var(--color-lavender-mist);
 }
-.cover-flip{
-  color:var(--gold-ink);
-  background:rgba(255,255,255,.86);
-  border-color:rgba(138,106,31,.45);
-  backdrop-filter:none;-webkit-backdrop-filter:none;
-}
-.cover-flip:hover{background:var(--gold-grad);color:#120a24;border-color:transparent;}
 .book-sub{color:var(--gold-ink);}
 .book-quote{color:var(--plum-text);}
 

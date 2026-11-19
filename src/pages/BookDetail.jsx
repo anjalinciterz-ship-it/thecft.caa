@@ -10,13 +10,15 @@ function Cover({ book }) {
   const src = side === 'front' ? book.cover.front : book.cover.back;
   const small = side === 'front' ? book.cover.frontSmall : book.cover.backSmall;
   return (
-    <div className="book-cover-frame">
-      <img
-        src={small}
-        srcSet={`${small} 560w, ${src} 1024w`}
-        sizes="(max-width: 900px) 62vw, 340px"
-        alt={`${book.title} ${side} cover`}
-      />
+    <div className="book-cover-stack">
+      <div className="book-cover-frame">
+        <img
+          src={small}
+          srcSet={`${small} 560w, ${src} 1024w`}
+          sizes="(max-width: 900px) 62vw, 340px"
+          alt={`${book.title} ${side} cover`}
+        />
+      </div>
       <button type="button" className="cover-flip" onClick={() => setSide(side === 'front' ? 'back' : 'front')}>
         {side === 'front' ? 'See the back cover' : 'See the front cover'}
       </button>
