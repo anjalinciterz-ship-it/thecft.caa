@@ -73,9 +73,10 @@ export const courses = [
     categories: ['consciousness', 'life-transformation'],
     image: '/images/courses/accelerator.png',
     banner: '/images/courses/accelerator-banner.webp',
-    // pageBanner is the client's own artwork for the course page only; the
-    // listing cards and the Home showcase keep `banner`. It is a different file
-    // with a different shape, so it carries its own size: reserving the page
+    // pageBanner is the client's own artwork, used for the course page hero and
+    // since 2026-11-19 for the Home program rail too. The /courses listing cards
+    // keep `banner`, which the server catalog owns. It is a different file with a
+    // different shape, so it carries its own size: reserving the page
     // hero with the listing numbers asks for a box about 2% too tall, and the
     // image then shifts it when it decodes.
     pageBanner: '/images/courses/accelerator-page-banner.webp',

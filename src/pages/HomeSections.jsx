@@ -106,6 +106,11 @@ function Programs() {
           {rail.map((c, i) => {
             const on = i === active;
             const price = formatMoney(c.price, c.currency);
+            // He sent the course-page artwork for these cards too (2026-11-19).
+            // `pageBanner` is static-only, so it is the one field the server
+            // catalog cannot overwrite; `banner` stays the fallback for an
+            // offering the admin publishes later.
+            const art = c.pageBanner ? { src: c.pageBanner, w: c.pageBannerW, h: c.pageBannerH } : { src: c.banner, w: c.bannerW, h: c.bannerH };
             return (
               <article
                 key={c.id}
@@ -123,7 +128,7 @@ function Programs() {
                 }}
               >
                 <div className="cs-art">
-                  {c.banner ? <img src={c.banner} alt="" width={c.bannerW} height={c.bannerH} loading="lazy" /> : null}
+                  {art.src ? <img src={art.src} alt="" width={art.w} height={art.h} loading="lazy" /> : null}
                 </div>
                 <div className="cs-body">
                   <span className="cs-num" aria-hidden="true">
