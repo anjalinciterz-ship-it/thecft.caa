@@ -1,6 +1,5 @@
 import { Link } from 'react-router-dom';
 import { site } from '../data/site';
-import ThemeSwitch from './ThemeSwitch';
 import { Icon } from './icons';
 
 // Columns mirror the reference footer layout, but every entry is a page or
@@ -90,7 +89,6 @@ export default function Footer() {
               </a>
             ))}
           </div>
-          <ThemeSwitch />
         </div>
       </div>
 

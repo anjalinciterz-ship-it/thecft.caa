@@ -161,14 +161,16 @@ async function measure(page) {
     await page.waitForTimeout(400);
     check('only one panel at a time', (await page.locator('.mm-panel').count()) === 1);
 
-    // Daylight appearance. The toggle itself only appears when the server says
-    // visitors may choose, so the stored preference is written directly here.
+    // Cosmic blue is the only appearance. A browser left over from the days when
+    // a visitor could choose still carries cft-appearance, so this proves the
+    // stored value is no longer read: the page stays on the night sky.
     await page.mouse.move(700, 700);
     await page.waitForTimeout(500);
     await page.evaluate(() => localStorage.setItem('cft-appearance', 'light'));
     await page.reload({ waitUntil: 'networkidle' });
     await page.waitForSelector('.nav-links a', { timeout: 20000 });
-    check('harness is in the daylight appearance', (await page.evaluate(() => document.documentElement.dataset.theme)) === 'light');
+    check('a stale light preference is ignored', (await page.evaluate(() => document.documentElement.dataset.theme)) === 'dark');
+    await page.evaluate(() => localStorage.removeItem('cft-appearance'));
     await page.locator('.nav-links a[href="/about"]').first().hover();
     await page.waitForSelector('.mm-panel', { timeout: 5000 });
     await page.waitForTimeout(300);
@@ -176,7 +178,7 @@ async function measure(page) {
       const cs = getComputedStyle(el);
       return { color: cs.color, bg: getComputedStyle(el.closest('.mm-panel')).backgroundColor };
     });
-    check('daylight keeps the panel a cosmic band', panelColor.bg === 'rgb(21, 12, 41)', `${panelColor.bg} / ${panelColor.color}`);
+    check('the panel stays a cosmic band', panelColor.bg === 'rgb(21, 12, 41)', `${panelColor.bg} / ${panelColor.color}`);
     const contrast = await page.locator('.mm-panel .mm-item').first().evaluate((el) => {
       // The token colours arrive as whatever CSS color space the palette uses,
       // so a canvas is asked to normalise them to reds/greens/blues.
@@ -203,11 +205,8 @@ async function measure(page) {
       const [hi, lo] = [lum(fg), lum(bg)].sort((a, b) => b - a);
       return { ratio: Math.round(((hi + 0.05) / (lo + 0.05)) * 100) / 100, raw: getComputedStyle(el).color };
     });
-    check('daylight panel links stay readable', contrast.ratio >= 4.5, `${contrast.ratio}:1 (${contrast.raw})`);
-    await page.screenshot({ path: path.join(shots, 'light-mode.png') });
-    await page.evaluate(() => localStorage.setItem('cft-appearance', 'dark'));
-    await page.reload({ waitUntil: 'networkidle' });
-    await page.waitForSelector('.nav-links a', { timeout: 20000 });
+    check('panel links stay readable', contrast.ratio >= 4.5, `${contrast.ratio}:1 (${contrast.raw})`);
+    await page.screenshot({ path: path.join(shots, 'panel-cosmic-only.png') });
 
     // A short laptop is where the 35% cap actually bites, so every panel is
     // re-measured at 1100x720: it must still hold the ratio and either fit

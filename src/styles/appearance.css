@@ -1,13 +1,15 @@
 /* ==========================================================
-   APPEARANCE — the light/dark switch in the navbar
-   Light is this site as it has always shipped: Warm Ivory and Pure White
-   editorial bands, Cosmic Plum hero and header, champagne gold accents. It is
-   the default and nothing in this file changes it.
+   APPEARANCE — cosmic blue, and only cosmic blue
+   He retired the light theme on 2026-11-19: no switch, no visitor choice, no
+   device following. index.html declares data-theme="dark" and this file paints
+   from it, so the night sky is what the page opens with and what it stays.
 
-   Dark is the same page dressed in the cosmic plum-blue sky the site was built
-   in: the paper bands become plum, the black type becomes ivory, gold stays
-   gold, and every photograph, banner and illustration stays exactly where it
-   is. Presentation only, never access.
+   The light layer underneath is not decoration for a button nobody has. It is
+   the base the whole site is written against: Warm Ivory and Pure White bands,
+   black type, the plum islands. This file re-declares that vocabulary in plum
+   and ivory, so a page written once reads correctly in the only appearance we
+   ship. Removing the base layer would mean rewriting every rule in global.css
+   and dashboard.css for one colour choice, so it stays and this stays on top.
 
    Three mechanisms, in order of reach:
    1. [data-theme='dark'] re-declares the semantic tokens the paper rules read,
@@ -21,6 +23,7 @@
 
 /* ---------- 1. The tokens every paper surface reads ---------- */
 [data-theme='dark']{
+  color-scheme: dark;
   /* Reading text: black on paper becomes ivory on plum. */
   --plum-text:var(--color-warm-ivory);
   --plum-muted:#d3c9e6;
@@ -106,10 +109,6 @@
    repeat it. */
 [data-theme='dark'] .site-footer{color:#f8f5ef;border-top-color:rgba(255,255,255,.12);}
 [data-theme='dark'] :is(.ft-col a, .ft-socials a, .ft-brand-line){color:#f8f5ef;}
-/* The footer's theme button is gold on paper by day, so at night it takes the
-   same gold mark the developer credit uses rather than the ivory links. */
-[data-theme='dark'] .ft-theme{background:rgba(255,255,255,.06);border-color:rgba(232,185,95,.42);color:var(--color-champagne-gold);}
-[data-theme='dark'] .ft-theme:hover{background:rgba(255,255,255,.13);border-color:rgba(232,185,95,.72);}
 [data-theme='dark'] .ft-sep{background:rgba(255,255,255,.2);}
 [data-theme='dark'] :is(.ft-made, .ft-made:hover, .ft-made:focus-visible){color:var(--color-champagne-gold);}
 
@@ -272,11 +271,3 @@
 }
 [data-theme='dark'] .db-app.ad-app :is(.cms-public-page, .cms-blocks) :is(.cms-bg-ivory, .cms-tone-ivory){background:#fffaf0;color:#2e2240;}
 [data-theme='dark'] .db-app.ad-app :is(.cms-public-page, .cms-blocks) .cms-bg-white{background:#ffffff;color:#2e2240;}
-
-/* ---------- The control itself ----------
-   One switch, in the footer of whichever page you are standing on, public or
-   member. The button is drawn once in global.css and the night layer above
-   already re-cuts it for a plum sky. Out front it hangs under the social
-   marks; in the member shell it sits in a row, so it keeps the shape and
-   gives back the top gap. */
-.db-app .ft-theme{margin-top:0;min-height:44px;}

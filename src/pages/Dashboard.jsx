@@ -1,10 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link, NavLink, Navigate, Route, Routes, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../lib/auth';
-import { useAppearance } from '../lib/appearance';
 import { usePageMeta } from '../lib/seo';
 import { site } from '../data/site';
-import ThemeSwitch from '../components/ThemeSwitch';
 import { ContinueCard, CourseTile, DashIcon, EmptyState, EventCard, MemberHero, MiniCard, PageHeading, RequestState, RuleHead, dateTime, money, safeImage, useDashboardResource } from '../components/DashboardUI';
 import DashboardWelcome from './DashboardWelcome';
 import { MyCourses, ExplorePrograms, DashboardCourse } from './DashboardLearning';
@@ -154,7 +152,6 @@ function DashboardSearch() {
 
 export default function Dashboard() {
   const { user, loading, authError, refreshSession, logout } = useAuth();
-  const { theme } = useAppearance();
   const location = useLocation();
   const navigate = useNavigate();
   // const [drawer, setDrawer] = useState(false); // parked with the sidebar below
@@ -222,14 +219,12 @@ export default function Dashboard() {
     finally { setLoggingOut(false); }
   };
   const avatar = safeImage(user.avatarUrl);
-  // One switch, one memory: the member's choice is the public site's choice, so
-  // the shell wears the same appearance here as it does out front. The logo
-  // travels with it — the coloured mark is for paper, the white one for plum.
-  const night = theme === 'dark';
-  return <div className={`db-app${night ? ' db-night' : ' db-light'}`}>
+  // Cosmic blue is the only appearance, so the member shell is always the night
+  // one and always carries the white logo.
+  return <div className="db-app db-night">
     <a className="db-skip" href="#dashboard-content">Skip to dashboard content</a>
     <header className="db-topbar">
-      <div className="db-brand"><img className="db-crest" src={site.crest} alt="" aria-hidden="true" /><Link to="/dashboard" aria-label="CFT dashboard"><img src={night ? site.logo : site.logoColor} alt={site.name} /></Link></div>
+      <div className="db-brand"><img className="db-crest" src={site.crest} alt="" aria-hidden="true" /><Link to="/dashboard" aria-label="CFT dashboard"><img src={site.logo} alt={site.name} /></Link></div>
       <nav className="db-nav" aria-label="Dashboard sections">
         <NavLink end to={homePath}>Home</NavLink>
         {navLinks.map(([path, label]) => <NavLink key={path} to={`/dashboard/${path}`}>{label}</NavLink>)}
@@ -244,6 +239,6 @@ export default function Dashboard() {
     {drawer && <div className="db-drawer-backdrop" onClick={() => setDrawer(false)} aria-hidden="true" />}
     <aside ref={sidebar} tabIndex={-1} className={`db-sidebar${drawer ? ' is-open' : ''}`} id="dashboard-navigation" {...(drawer ? { role: 'dialog', 'aria-modal': true, 'aria-label': 'Dashboard navigation' } : { 'aria-label': 'Dashboard navigation' })}><div className="db-drawer-heading"><img src={site.logo} alt="CFT" /><button className="db-icon-button" aria-label="Close navigation" onClick={() => setDrawer(false)}><DashIcon name="close" /></button></div><nav aria-label="Student navigation">{navigation.map(([path, icon, label]) => <NavLink key={path} end={!path} to={`/dashboard${path ? `/${path}` : ''}`}><DashIcon name={icon} size={23} /><span>{label}</span></NavLink>)}</nav><div className="db-support db-panel"><span className="db-icon-ring"><DashIcon name="lotus" size={29} /></span><h2>Need Support?</h2><p>We’re here for you.</p><a className="db-button-secondary" href={`mailto:${site.email}?subject=CFT%20member%20support`}>Contact support<DashIcon name="arrow" size={15} /></a></div><Link className="db-sidebar-visit" to="/"><DashIcon name="external" size={17} />Visit website</Link></aside>
     */}
-    <div className="db-main"><div id="dashboard-content" tabIndex={-1} className="db-content"><Routes><Route index element={<DashboardHome library={library} />} /><Route path="welcome" element={<DashboardWelcome />} /><Route path="courses" element={<MyCourses />} /><Route path="courses/:slug" element={<DashboardCourse />} /><Route path="courses/:slug/lesson/:lessonId" element={<DashboardCourse />} /><Route path="library" element={<FreeBooks />} /><Route path="calls" element={<CallsAndBookings />} /><Route path="explore" element={<ExplorePrograms />} /><Route path="explore/:slug" element={<DashboardCourse />} /><Route path="live-classes" element={<LiveClasses />} /><Route path="bookings" element={<Bookings />} /><Route path="orders" element={<Orders />} /><Route path="certificates" element={<Certificates />} /><Route path="community/*" element={<Community />} /><Route path="wishlist" element={<Wishlist />} /><Route path="settings" element={<Settings />} /><Route path="notifications" element={<Notifications />} />{/* <Route path="search" element={<DashboardSearch />} /> — parked with the search bar */}<Route path="*" element={<div className="db-panel"><EmptyState title="This page isn’t in your dashboard" action={<Link className="db-button" to="/dashboard">Back to dashboard</Link>}>Use the navigation to find your learning space.</EmptyState></div>} /></Routes></div><footer className="db-footer"><img className="db-crest" src={site.crest} alt="" aria-hidden="true" /><Link to="/dashboard"><img src={night ? site.logo : site.logoColor} alt="The Centre for Transformation" /></Link><div><Link to="/privacy">Privacy</Link><Link to="/terms">Terms</Link><a href={`mailto:${site.email}`}>Support</a></div><ThemeSwitch /><p className="db-footer-legal">{site.name} &copy; {new Date().getFullYear()} (copyright) <span aria-hidden="true">|</span> All rights reserved to {site.name} <span aria-hidden="true">|</span> <a className="db-made" href="https://vaibhavbuilds.space/" target="_blank" rel="noreferrer">Developed by Vaibhav</a></p></footer></div>
+    <div className="db-main"><div id="dashboard-content" tabIndex={-1} className="db-content"><Routes><Route index element={<DashboardHome library={library} />} /><Route path="welcome" element={<DashboardWelcome />} /><Route path="courses" element={<MyCourses />} /><Route path="courses/:slug" element={<DashboardCourse />} /><Route path="courses/:slug/lesson/:lessonId" element={<DashboardCourse />} /><Route path="library" element={<FreeBooks />} /><Route path="calls" element={<CallsAndBookings />} /><Route path="explore" element={<ExplorePrograms />} /><Route path="explore/:slug" element={<DashboardCourse />} /><Route path="live-classes" element={<LiveClasses />} /><Route path="bookings" element={<Bookings />} /><Route path="orders" element={<Orders />} /><Route path="certificates" element={<Certificates />} /><Route path="community/*" element={<Community />} /><Route path="wishlist" element={<Wishlist />} /><Route path="settings" element={<Settings />} /><Route path="notifications" element={<Notifications />} />{/* <Route path="search" element={<DashboardSearch />} /> — parked with the search bar */}<Route path="*" element={<div className="db-panel"><EmptyState title="This page isn’t in your dashboard" action={<Link className="db-button" to="/dashboard">Back to dashboard</Link>}>Use the navigation to find your learning space.</EmptyState></div>} /></Routes></div><footer className="db-footer"><img className="db-crest" src={site.crest} alt="" aria-hidden="true" /><Link to="/dashboard"><img src={site.logo} alt="The Centre for Transformation" /></Link><div><Link to="/privacy">Privacy</Link><Link to="/terms">Terms</Link><a href={`mailto:${site.email}`}>Support</a></div><p className="db-footer-legal">{site.name} &copy; {new Date().getFullYear()} (copyright) <span aria-hidden="true">|</span> All rights reserved to {site.name} <span aria-hidden="true">|</span> <a className="db-made" href="https://vaibhavbuilds.space/" target="_blank" rel="noreferrer">Developed by Vaibhav</a></p></footer></div>
   </div>;
 }

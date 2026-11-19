@@ -872,10 +872,6 @@ section{padding:var(--section-py) 0;}
 .t-card{
   display:flex;flex-direction:column;height:100%;margin:0;padding:var(--card-pad);
 }
-.t-mark{
-  position:absolute;top:6px;left:14px;z-index:-1;
-  font-family:var(--font-head);font-size:calc(108px * var(--ts-h,1));line-height:1;color:rgba(243,220,166,0.15);
-}
 .t-body{position:relative;margin:0 0 16px;}
 .t-body p{color:rgba(237,231,245,0.76);font-size:calc(var(--t-body) * var(--ts,1));line-height:1.68;margin:0 0 12px;}
 .t-body p:first-child{color:var(--text-on-dark);}
@@ -902,7 +898,6 @@ section{padding:var(--section-py) 0;}
 .t-wall{align-items:start;}
 @media(max-width:640px){
   .t-card{padding:26px 20px 20px;}
-  .t-mark{font-size:calc(88px * var(--ts-h,1));}
   .t-dialog .md-canvas{padding:26px 22px 22px;}
   .t-dialog .t-body p{font-size:calc(15px * var(--ts,1));}
 }
@@ -936,17 +931,6 @@ section{padding:var(--section-py) 0;}
 .ft-socials{display:flex;gap:16px;}
 .ft-socials a{color:#120a24;}
 .ft-socials a:hover{color:var(--violet-500);}
-/* The theme choice sits under the social marks. It is a button, not a link,
-   because it changes what the page looks like rather than where you go. */
-.ft-theme{
-  display:inline-flex;align-items:center;gap:8px;margin-top:20px;padding:11px 14px;
-  border:1px solid rgba(138,106,31,.45);border-radius:50px;background:rgba(255,255,255,.55);
-  color:var(--gold-ink);font:700 11px/1 var(--font-body);letter-spacing:.09em;text-transform:uppercase;
-  white-space:nowrap;cursor:pointer;transition:background .2s ease,border-color .2s ease,color .2s ease;
-}
-.ft-theme svg{flex:none;}
-.ft-theme:hover{background:#fff;border-color:rgba(138,106,31,.75);}
-.ft-theme:focus-visible{outline:2px solid var(--color-champagne-gold);outline-offset:3px;}
 .ft-bottom{border-top:1px solid rgba(18,10,36,.18);}
 /* Emblem left, the legal line dead centre, the developer credit right. A
    three-column grid rather than space-between, so the centre stays centred no
@@ -983,9 +967,6 @@ section{padding:var(--section-py) 0;}
 @media(max-width:640px){.ft-made{padding:12px 2px;}.ft-legal a{padding:12px 6px;margin:-12px -6px;}}
 @media(max-width:1080px){.ft-cols{grid-template-columns:repeat(3,1fr);}.ft-follow{border-left:0;padding-left:0;}}
 @media(max-width:640px){.ft-cols{grid-template-columns:repeat(2,minmax(0,1fr));gap:26px;}
-  /* Two columns leave the follow column about 154px, narrower than the pill, so
-     it takes the full cell and lets the words stack rather than run past it. */
-  .ft-theme{width:100%;justify-content:center;white-space:normal;line-height:1.35;padding:10px 14px;}
   /* Four forty-four tap targets will not sit in one 154px row, and letting them
      wrap left the fourth icon alone underneath. Two by two fills the column. */
   .ft-socials{display:grid;grid-template-columns:repeat(2,44px);gap:6px;justify-content:start;}}
@@ -1833,10 +1814,6 @@ section{padding:var(--section-py) 0;}
   transform:translate(calc(-50% - 160%),-50%) perspective(1100px) rotateY(16deg) rotate(-6deg);
   z-index:1;filter:brightness(.82) saturate(.55);
 }
-.ts-mark{
-  display:block;font-family:var(--font-head);font-weight:700;font-size:calc(58px * var(--ts-h,1));line-height:.6;
-  color:var(--gold-500);margin:0 0 22px;
-}
 .ts-quote{margin:0 0 24px;max-width:46ch;}
 .ts-quote p{margin:0;font-size:calc(17px * var(--ts-h,1));line-height:1.62;font-weight:500;color:#120a24;}
 .ts-who{display:flex;flex-direction:column;gap:5px;}
@@ -1960,7 +1937,6 @@ section{padding:var(--section-py) 0;}
 .ts-word{color:rgba(18,10,36,.07);}
 .ts-card{background:var(--surface-white);border:1px solid rgba(18,10,36,.08);box-shadow:var(--shadow-soft);}
 .ts-card.is-left,.ts-card.is-right{filter:brightness(.96) saturate(.85);}
-.ts-mark{color:var(--gold-500);}
 .ts-dots .slider-dot{background:rgba(18,10,36,.16);border-color:rgba(18,10,36,.2);}
 .ts-dots .slider-dot:hover{background:rgba(232,185,95,.6);}
 .ts-dots .slider-dot.is-active{background:var(--gold-grad);border-color:transparent;}
@@ -2202,10 +2178,6 @@ img.touch-f-ico{width:16px;height:16px;object-fit:contain;}
   box-shadow:0 18px 42px rgba(18,10,36,.10);
 }
 .t-card:focus-visible{outline:2px solid var(--gold-ink);outline-offset:3px;}
-.t-mark{
-  position:static;z-index:auto;display:block;margin:0 0 12px;
-  font-family:var(--font-head);font-size:calc(54px * var(--ts-h,1));line-height:.7;color:var(--gold-500);opacity:.95;
-}
 .t-body{margin:0 0 4px;}
 .t-body p{color:var(--plum-muted);font-size:calc(16.5px * var(--ts,1));line-height:1.72;margin:0 0 12px;}
 .t-body p:first-child{color:var(--plum-text);}
@@ -2234,7 +2206,6 @@ img.touch-f-ico{width:16px;height:16px;object-fit:contain;}
   box-shadow:0 30px 80px rgba(9,4,22,.35);
 }
 .t-dialog .md-canvas{padding:40px 42px 30px;}
-.t-dialog .t-mark{font-size:calc(64px * var(--ts-h,1));margin:0 0 12px;}
 .t-dialog .t-name{
   font-family:var(--font-head);font-size:calc(27px * var(--ts-h,1));font-weight:700;letter-spacing:.4px;
   text-transform:none;color:var(--color-cosmic-plum);margin:0 0 8px;padding-right:46px;
@@ -3702,9 +3673,8 @@ img.touch-f-ico{width:16px;height:16px;object-fit:contain;}
   .bs-nav .slider-dots{justify-content:center;}
   .bs-nav .slider-dot{background:rgba(18,10,36,.16);border-color:rgba(18,10,36,.2);}
 
-  /* TESTIMONIALS: cream circle quote badge, stars, side peeks,
+  /* TESTIMONIALS: stars, side peeks,
      circle arrows flanking centered dots. */
-  .ts-mark{display:grid;place-items:center;width:52px;height:52px;margin:0 auto 10px;border-radius:50%;background:var(--color-warm-ivory);color:var(--gold-ink);font-size:calc(34px * var(--ts-h,1));line-height:1;}
   .ts-stars{display:block;margin-top:8px;color:var(--gold-ink);font-size:calc(13px * var(--ts,1));letter-spacing:6px;text-align:center;}
   .ts-card.is-center{z-index:1;}
   .ts-card.is-right{transform:translate(calc(-50% + 82%),-50%) rotate(8deg) scale(.92);z-index:0;}
@@ -4098,7 +4068,6 @@ img.touch-f-ico{width:16px;height:16px;object-fit:contain;}
   .ft-socials{gap:6px;flex-wrap:wrap;}
   .ft-socials a{display:inline-flex;align-items:center;justify-content:center;min-width:44px;min-height:44px;}
   .ft-made{display:inline-flex;align-items:center;min-height:44px;}
-  .ft-theme{min-height:44px;}
   /* The dot is painted inside the padding box so nine gold pixels can be
      tapped as a forty-four; the row loses its gaps to keep the spacing the
      same, because the padding now supplies it. The two- and three-class
