@@ -64,7 +64,7 @@ export default function TestimonialShowcase() {
               aria-hidden={pos !== 0}
             >
               <blockquote className="ts-quote">
-                <p>{t.lead}</p>
+                <p>{`“${t.lead}”`}</p>
               </blockquote>
               <figcaption className="ts-who">
                 <span className="ts-name">{t.name}</span>
