@@ -78,7 +78,7 @@ export default function CourseDetail() {
             <span aria-hidden="true">/</span>
             <span>{course.name}</span>
           </nav>
-          <div className="cq-post-grid">
+          <div className="cq-post-grid cq-post-grid-art">
             <div className="cq-post-copy">
               <div className="cq-chips">
                 <span className="cq-chip">{course.level}</span>

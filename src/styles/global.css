@@ -2837,6 +2837,9 @@ img.touch-f-ico{width:16px;height:16px;object-fit:contain;}
 .cq-wisdom-box{display:flex;align-items:center;justify-content:space-between;gap:30px;flex-wrap:wrap;}
 .cq-wisdom-when{font-size:calc(13px * var(--ts,1));font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--gold-ink);margin:12px 0 0;}
 .cq-post-grid{display:grid;grid-template-columns:52fr 48fr;gap:clamp(28px,4vw,60px);align-items:center;}
+/* The course pages split the hero evenly. Books, journey and checkout keep
+   52/48, so only this banner grows. */
+.cq-post-grid-art{grid-template-columns:50fr 50fr;}
 .cq-post-title{font-family:var(--font-display);font-weight:700;color:var(--plum-text);font-size:calc(clamp(30px,4vw,52px) * var(--ts-h,1));line-height:1.1;margin:16px 0 0;}
 .cq-post-dek{color:var(--plum-muted);font-size:calc(clamp(15px,1.4vw,18px) * var(--ts,1));line-height:1.7;margin:14px 0 0;max-width:560px;}
 /* ---------- course detail: one action, the description popup ----------
@@ -2881,13 +2884,13 @@ img.touch-f-ico{width:16px;height:16px;object-fit:contain;}
 .cq-post-art-btn:focus-visible{outline:2px solid var(--gold-400);outline-offset:4px;}
 /* ---------- course detail: the banner takes the room around it ----------
    The artwork is 16:9 and is never cropped to fit, so growing it vertically
-   means growing it sideways as well. On the course pages the card now reaches
-   across the inter-column gap and into the gutter outside the container, and
-   stops short of the window edge so nothing overflows. The other pages that
-   share .cq-post-art (books, journey, checkout) keep their own widths. */
+   means growing it sideways as well. On the course pages the card takes an
+   equal share of the grid and then reaches across the inter-column gap and
+   out to within 10px of the window edge, so it never overflows. The other
+   pages that share .cq-post-art (books, journey, checkout) keep their own widths. */
 @media (min-width:981px){
   .cq-post-art-wide{
-    --art-bleed:clamp(0px,calc((100vw - var(--maxw)) / 2 - 10px),420px);
+    --art-bleed:clamp(0px,calc(18px + max(0px,(100vw - var(--maxw)) / 2)),420px);
     margin-left:calc(-1 * (clamp(28px,4vw,60px) - 20px));
     margin-right:calc(-1 * var(--art-bleed));
   }
