@@ -13,7 +13,15 @@
 
 # public/_redirects already ships the SPA fallback, so deep links like
 # /dashboard/courses resolve to index.html instead of a 404. This block mirrors
-# it so the rule also holds if the file ever moves.
+# it so the rule also holds if the file ever moves. Rules are matched top to
+# bottom and the first match wins, so the media rule has to sit above the
+# catch-all: it is what stops a missing recording from being answered with the
+# app document, which is the failure that poisoned visitors' caches in November.
+[[redirects]]
+  from = "/media/*"
+  to = "/404.html"
+  status = 404
+
 [[redirects]]
   from = "/*"
   to = "/index.html"

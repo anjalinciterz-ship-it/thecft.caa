@@ -1,1 +1,20 @@
-/*    /index.html   200
+# Netlify reads the first rule that matches, top to bottom, so the order here is
+# the whole point: a missing recording answers 404 instead of falling through to
+# the app document below.
+#
+# That fall-through is what broke the audiobooks on individual phones. Between the
+# November 16 and November 18 deploys the /media folder was not in the publish
+# directory, so every request for an mp3 was answered with index.html and a 200,
+# and the /media cache header in netlify.toml told the browser to keep that
+# document for thirty days. A browser caches by url, not by device, so the handsets
+# that tried to listen in that window kept replaying their own cached copy of the
+# app and heard nothing, while every other device was fine. A 404 cannot do that:
+# it is not a playable file, and the player reports it as a failure instead.
+#
+# Existing files are never shadowed by a rule that is not forced, so all 18
+# recordings still come from disk with byte ranges.
+/media/*    /404.html    404
+
+# Single page app: deep links like /dashboard/courses resolve to the document and
+# React takes the route from there.
+/*          /index.html   200

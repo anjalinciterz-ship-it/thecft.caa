@@ -1,11 +1,25 @@
 // The three Zalah books, in the order the client specified (2026-10-13).
 // Copy is transcribed verbatim from the client's own books-page document.
-// Audio `src` values are paths inside the Bunny "audioforbooks" storage zone,
-// resolved by mediaUrl in components/ProtectedMedia.jsx.
+// Audio `src` values are file names inside the bundle's /media folder, resolved
+// by mediaUrl in components/ProtectedMedia.jsx.
 
-// Folder and file names exactly as the client stored them in that zone.
-const SECRET_OF_CREATION = 'Book 1- Secret of creation';
-const CAUGHT_IN_THE_ACT = 'Book 2 – CAUGHT in the ACT';
+// Renamed to plain ASCII on 2026-11-20, for two reasons. These were the client's
+// own names from his Bunny zone, so one folder read "Book 2 <en dash> CAUGHT in
+// the ACT": a non-ASCII character and spaces, meaning every recording was
+// requested through a percent-encoded path, which is one more thing a phone
+// carrier, a proxy or an in-app browser can get wrong. And the players had to be
+// re-pointed regardless, because the devices that opened these pages during the
+// November 16 to 18 deploy window cached the SPA's index.html in place of the
+// mp3 and kept serving themselves that for 30 days. New path, new cache key,
+// those handsets recover on their own. The originals are still in the
+// audioforbooks zone under their own names if a re-export is ever wanted.
+const SECRET_OF_CREATION = 'secret-of-creation';
+const CAUGHT_IN_THE_ACT = 'caught-in-the-act';
+
+// Both books numbered the same way now, zero padded so the folder lists in
+// listening order. The tenth track of book two was the client's
+// "part2CINTHEA.mp3", which is the same recording under a name only he knows.
+const track = (folder, n) => `${folder}/track-${String(n).padStart(2, '0')}.mp3`;
 
 export const books = [
   {
@@ -63,7 +77,7 @@ export const books = [
           label: null,
           tracks: [1, 2, 3, 4, 5, 6, 7, 8].map((n) => ({
             label: `Track ${n}`,
-            src: `${SECRET_OF_CREATION}/Audio Track ${n}.mp3`,
+            src: track(SECRET_OF_CREATION, n),
           })),
         },
       ],
@@ -124,15 +138,10 @@ export const books = [
       groups: [
         {
           label: null,
-          tracks: [
-            ...[1, 2, 3, 4, 5, 6, 7, 8, 9].map((n) => ({
-              label: `Track ${n}`,
-              src: `${CAUGHT_IN_THE_ACT}/${n}-Audio-Track.mp3`,
-            })),
-            // Named the way the client stored it rather than N-Audio-Track.mp3.
-            // Cards still number by position, so it stays Audio Track 10.
-            { label: 'Track 10', src: `${CAUGHT_IN_THE_ACT}/part2CINTHEA.mp3` },
-          ],
+          tracks: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((n) => ({
+            label: `Track ${n}`,
+            src: track(CAUGHT_IN_THE_ACT, n),
+          })),
         },
       ],
     },

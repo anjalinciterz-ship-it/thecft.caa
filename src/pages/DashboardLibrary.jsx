@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { books, meditation } from '../data/books';
 import { mediaUrl } from '../components/ProtectedMedia';
@@ -20,14 +20,26 @@ function AudioLibrary({ audio }) {
   const first = rows.find((row) => row.src);
   const [active, setActive] = useState(first ? first.src : '');
   const [trouble, setTrouble] = useState(false);
+  const player = useRef(null);
+  /* Moving `src` is not enough to get a phone back for the bytes. Safari in
+     particular can sit on a finished load, so the element is re-armed on
+     purpose each time the selection changes. */
+  useEffect(() => {
+    setTrouble(false);
+    player.current?.load();
+  }, [active]);
   if (!first) return <p className="db-muted">The recordings for this title are being prepared.</p>;
+  const choose = (src) => {
+    if (src === active) player.current?.load();
+    setActive(src);
+  };
   return <div className="db-library-player">
     <ul className="db-tracks">{rows.map((row) => row.kind === 'group'
       ? <li className="db-track-group" key={`group-${row.label}`}>{row.label}</li>
-      : <li key={row.src}><button type="button" className={`db-track${row.src === active ? ' is-active' : ''}`} aria-pressed={row.src === active} onClick={() => { setActive(row.src); setTrouble(false); }}><DashIcon name="play" size={13} />{row.label}</button></li>)}
+      : <li key={row.src}><button type="button" className={`db-track${row.src === active ? ' is-active' : ''}`} aria-pressed={row.src === active} onClick={() => choose(row.src)}><DashIcon name="play" size={13} />{row.label}</button></li>)}
     </ul>
-    <audio controls src={mediaUrl(active)} preload="none" controlsList="nodownload noremoteplayback" onContextMenu={noSave} onDragStart={noSave} onError={() => setTrouble(true)} />
-    {trouble && <p className="db-muted" role="status">This recording isn’t reaching us right now. Try again in a moment, or write to support and we’ll send it to you directly.</p>}
+    <audio ref={player} controls src={mediaUrl(active)} preload="none" controlsList="nodownload noremoteplayback" onContextMenu={noSave} onDragStart={noSave} onError={() => setTrouble(true)} onPlaying={() => setTrouble(false)} />
+    {trouble && <p className="db-muted" role="status">This recording isn’t reaching us right now. Tap the track again to try once more, or write to support and we’ll send it to you directly.</p>}
   </div>;
 }
 
