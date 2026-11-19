@@ -1358,7 +1358,6 @@ section{padding:var(--section-py) 0;}
 .cover-flip:hover{background:linear-gradient(98deg,#fbe7bc,#ce9c42);color:#120a24;border-color:transparent;}
 .book-sub{font-family:var(--font-head);font-size:calc(23px * var(--ts-h,1));font-style:italic;color:var(--gold-300);margin:0 0 6px;}
 .book-quote{margin:24px 0;padding:0;font-family:var(--font-head);font-size:calc(22px * var(--ts-h,1));line-height:1.45;font-style:italic;color:var(--text-on-dark);}
-.book-quote::before{content:"\201C";display:block;font-size:calc(54px * var(--ts-h,1));line-height:.55;color:var(--gold-400);margin-bottom:10px;}
 .book-nav-links{display:flex;gap:14px;flex-wrap:wrap;}
 
 @media(max-width:980px){
@@ -3795,7 +3794,6 @@ img.touch-f-ico{width:16px;height:16px;object-fit:contain;}
 .cover-flip:hover{background:var(--gold-grad);color:#120a24;border-color:transparent;}
 .book-sub{color:var(--gold-ink);}
 .book-quote{color:var(--plum-text);}
-.book-quote::before{color:var(--gold-400);}
 
 /* ---------- journey detail ---------- */
 .journey-hero h1,.journey-hero h1 .accent{color:var(--plum-text);}
