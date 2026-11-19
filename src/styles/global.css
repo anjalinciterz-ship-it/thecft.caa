@@ -2742,7 +2742,24 @@ img.touch-f-ico{width:16px;height:16px;object-fit:contain;}
 .cq-hero .cq-lead{margin-inline:auto;}
 .cq-hero-cta{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-top:30px;}
 .cq-show{border-top:1px solid rgba(18,10,36,.06);}
-.cq-show-grid{display:grid;grid-template-columns:45fr 55fr;gap:clamp(28px,4vw,64px);align-items:center;}
+/* He said the five banners read too small (2026-11-19), so the artwork takes the
+   wide track on every row and the row itself grows sideways into the page gutter
+   rather than the image being cropped or the copy being squeezed: the CTA row
+   under each description needs 491px on one line, and 45fr of the old 1220
+   column only gave it 471. */
+.cq-show-grid{display:grid;grid-template-columns:55fr 45fr;gap:clamp(24px,3vw,44px);align-items:center;max-width:1360px;}
+.cq-show-grid.cq-art-right{grid-template-columns:45fr 55fr;}
+/* Below ~1183px of viewport the 45fr text column falls under the 491px the CTA
+   row needs on one line, so the split evens out, and under 1080px the row stacks
+   and the banner runs full width instead. */
+@media (max-width:1185px){
+  .cq-show-grid,.cq-show-grid.cq-art-right{grid-template-columns:50fr 50fr;}
+}
+@media (max-width:1080px){
+  .cq-show-grid,.cq-show-grid.cq-art-right{grid-template-columns:1fr;}
+  .cq-show-art,.cq-show-art.cq-flip{order:2;}
+  .cq-show-body{order:1;}
+}
 .cq-show-art.cq-flip{order:2;}
 .cq-art{display:block;width:100%;height:auto;border-radius:18px;border:1px solid rgba(18,10,36,.10);box-shadow:var(--shadow-soft);background:var(--color-lavender-mist);}
 /* Journey heroes now use portrait photographs, so the tall ones are capped and
@@ -2935,7 +2952,7 @@ img.touch-f-ico{width:16px;height:16px;object-fit:contain;}
 .cq-player{padding:clamp(40px,5vw,70px) 0;}
 .cq-home{border-top:1px solid rgba(18,10,36,.06);}
 @media (max-width:980px){
-  .cq-show-grid,.cq-post-grid,.cq-guide-result{grid-template-columns:1fr;}
+  .cq-show-grid,.cq-show-grid.cq-art-right,.cq-post-grid,.cq-guide-result{grid-template-columns:1fr;}
   .cq-show-art,.cq-show-art.cq-flip{order:2;}
   .cq-show-body{order:1;}
   .cq-grid{grid-template-columns:repeat(2,1fr);}

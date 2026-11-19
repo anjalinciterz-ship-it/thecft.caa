@@ -15,7 +15,10 @@ export default function CourseShowcase({ course, index }) {
   const owned = owns(course.id);
   return (
     <section id={`program-${course.id}`} className={`cq-band cq-show ${SURFACES[index % SURFACES.length]}`}>
-      <div className="container cq-show-grid">
+      {/* The artwork always takes the wide track, whichever side it sits on. When
+          the flip only reordered the columns, the image fell into the narrow one
+          and three of the five banners rendered ~22% shorter than the other two. */}
+      <div className={imgLeft ? 'container cq-show-grid' : 'container cq-show-grid cq-art-right'}>
         <div className={imgLeft ? 'cq-show-art' : 'cq-show-art cq-flip'}>
           <CourseBanner course={course} loading={index === 0 ? 'eager' : 'lazy'} />
         </div>
