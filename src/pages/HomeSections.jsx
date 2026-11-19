@@ -478,7 +478,7 @@ function ClosingConnect() {
                     </div>
                     <div className="form-field touch-field">
                       <Icon name="chat" size={16} className="touch-f-ico" />
-                      <select name="subject" aria-label="Subject" defaultValue="" required>
+                      <select name="topic" aria-label="Subject" defaultValue="" required>
                         <option value="">Select a Subject</option>
                         {site.contactSubjects.map((s) => (
                           <option key={s}>{s}</option>

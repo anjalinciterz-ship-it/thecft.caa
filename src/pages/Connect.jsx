@@ -91,7 +91,8 @@ function ContactForm() {
       setFormError('Please fix the highlighted fields and try again.');
       return;
     }
-    const body = { name: `${values.first.trim()} ${values.last.trim()}`, email: values.email.trim(), subject: values.subject, message: values.message.trim() };
+    // The inbox stores this as topic, which is the name the API contract uses.
+    const body = { name: `${values.first.trim()} ${values.last.trim()}`, email: values.email.trim(), topic: values.subject, message: values.message.trim() };
     const signature = JSON.stringify(body);
     if (submission.current?.signature !== signature) submission.current = { signature, key: crypto.randomUUID() };
     setFormError(''); setStatus('sending'); pending.current = true;
