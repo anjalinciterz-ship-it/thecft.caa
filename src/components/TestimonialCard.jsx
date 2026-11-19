@@ -14,10 +14,6 @@ export default function TestimonialCard({ t }) {
   return (
     <MorphingDialog transition={{ type: 'spring', bounce: 0.05, duration: 0.28 }} maxWidth={720}>
       <MorphingDialogTrigger as="figure" className="t-card" label={`Read ${t.name}'s full testimonial`}>
-        <span className="t-mark" aria-hidden="true">
-          “
-        </span>
-
         <blockquote className="t-body">
           <p>{t.lead}</p>
         </blockquote>
@@ -33,10 +29,6 @@ export default function TestimonialCard({ t }) {
       <MorphingDialogContainer>
         <MorphingDialogContent className="t-dialog" label={`Testimonial from ${t.name}`}>
           <MorphingDialogClose />
-
-          <span className="t-mark" aria-hidden="true">
-            “
-          </span>
 
           <MorphingDialogTitle as="h2" className="t-name">
             {t.name}

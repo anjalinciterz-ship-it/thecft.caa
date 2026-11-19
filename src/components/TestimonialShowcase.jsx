@@ -63,9 +63,6 @@ export default function TestimonialShowcase() {
               className={`ts-card${pos === 0 ? ' is-center' : pos === 1 ? ' is-right' : ' is-left'}`}
               aria-hidden={pos !== 0}
             >
-              <span className="ts-mark" aria-hidden="true">
-                “
-              </span>
               <blockquote className="ts-quote">
                 <p>{t.lead}</p>
               </blockquote>
